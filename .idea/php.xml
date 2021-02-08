@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PhpCSFixer">
+    <phpcsfixer_settings>
+      <PhpCSFixerConfiguration tool_path="$USER_HOME$/.config/composer/vendor/bin/php-cs-fixer" />
+    </phpcsfixer_settings>
+  </component>
+  <component name="PhpCodeSniffer">
+    <phpcs_settings>
+      <PhpCSConfiguration beautifier_path="$USER_HOME$/.config/composer/vendor/bin/phpcbf" tool_path="$USER_HOME$/.config/composer/vendor/bin/phpcs" timeout="8000" />
+    </phpcs_settings>
+  </component>
+</project>
