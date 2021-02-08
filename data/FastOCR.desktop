@@ -1,0 +1,14 @@
+[Desktop Entry]
+Name=FastOCR
+GenericName=OCR Tool
+GenericName[zh_CN]=OCR 识别工具
+Comment=A OCR tool for Linux desktop
+Keywords=capture;ocr;
+Exec=fastocr
+Icon=
+Terminal=false
+Type=Application
+Categories=Graphics;
+StartupNotify=false
+X-DBUS-StartupType=Unique
+X-KDE-DBUS-Restricted-Interfaces=org.kde.kwin.Screenshot

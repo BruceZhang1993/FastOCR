@@ -2,12 +2,14 @@ import asyncio
 import sys
 
 from PySide2.QtWidgets import QApplication
+from dbus.mainloop import glib
 from qasync import QEventLoop
 
-from fast_ocr.grabber import CaptureWidget
+from fastocr.grabber import CaptureWidget
 
 
 def main():
+    glib.DBusGMainLoop(set_as_default=True)
     app = QApplication(sys.argv)
     app.setQuitOnLastWindowClosed(True)
     loop = QEventLoop(app)

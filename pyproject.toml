@@ -9,12 +9,16 @@ python = ">=3.7,<3.10"
 qasync = "^0.13.0"
 PySide2 = "^5.15.2"
 baidu-aip = "^2.2.18"
+dbus-python = "^1.2.16"
 
 [tool.poetry.dev-dependencies]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+fastocr = 'fastocr.__main__:main'
 
 [[tool.poetry.source]]
 name = "douban"

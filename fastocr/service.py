@@ -3,7 +3,7 @@ from configparser import ConfigParser
 
 from aip import AipOcr
 
-from fast_ocr.util import Singleton
+from fastocr.util import Singleton
 
 
 class OcrService(metaclass=Singleton):

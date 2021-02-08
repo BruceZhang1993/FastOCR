@@ -1,21 +1,68 @@
 import sys
 from typing import Optional
 
-from PySide2.QtCore import QObject, QRect, QPoint, Signal, QByteArray, QBuffer, QIODevice
+from PySide2.QtCore import QObject, QRect, QPoint, Signal, QByteArray, QBuffer, QIODevice, QDir
 from PySide2.QtGui import QGuiApplication, QScreen, QPixmap, QKeyEvent, Qt, QPaintEvent, QPainter, QColor, QMouseEvent, \
     QRegion
 from PySide2.QtWidgets import QApplication, QWidget
+from dbus import DBusException
 from qasync import asyncSlot
 
-from fast_ocr.service import OcrService
-from fast_ocr.util import check_exists, run_command
+from fastocr.service import OcrService
+from fastocr.util import check_exists, run_command, DesktopInfo
+
+import dbus
 
 
 class ScreenGrabber(QObject):
     def grab_entire_desktop(self) -> Optional[QPixmap]:
         if sys.platform == 'linux':
+            if DesktopInfo.is_wayland():
+                try:
+                    if DesktopInfo.desktop_environment() == DesktopInfo.GNOME:
+                        return self.grab_entire_desktop_wayland_gnome()
+                    if DesktopInfo.desktop_environment() == DesktopInfo.KDE:
+                        return self.grab_entire_desktop_wayland_kde()
+                    if DesktopInfo.desktop_environment() == DesktopInfo.SWAY:
+                        return self.grab_entire_desktop_wayland_sway()
+                except DBusException as e:
+                    print(e)
             return self.grab_entire_desktop_x11()
         return None
+
+    @staticmethod
+    def grab_entire_desktop_wayland_sway() -> Optional[QPixmap]:
+        bus = dbus.SessionBus()
+        obj = bus.get_object('org.freedesktop.portal.Desktop', '/org/freedesktop/portal/desktop')
+        reply = obj.get_dbus_method('Screenshot', 'org.freedesktop.portal.Screenshot')('', {})
+        if reply:
+            res = QPixmap(reply)
+        else:
+            res = None
+        return res
+
+    @staticmethod
+    def grab_entire_desktop_wayland_kde() -> Optional[QPixmap]:
+        bus = dbus.SessionBus()
+        obj = bus.get_object('org.kde.KWin', '/Screenshot')
+        reply = obj.get_dbus_method('screenshotFullscreen')()
+        if reply:
+            res = QPixmap(reply)
+        else:
+            res = None
+        return res
+
+    @staticmethod
+    def grab_entire_desktop_wayland_gnome() -> Optional[QPixmap]:
+        path = QDir.tempPath() + '/tmp_fastocr_screenshot.tmp'
+        bus = dbus.SessionBus()
+        obj = bus.get_object('org.gnome.Shell', '/org/gnome/Shell/Screenshot')
+        reply = obj.get_dbus_method('Screenshot', 'org.gnome.Shell.Screenshot')(False, False, path)
+        if reply:
+            res = QPixmap(path)
+        else:
+            res = None
+        return res
 
     @staticmethod
     def grab_entire_desktop_x11() -> QPixmap:
