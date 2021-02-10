@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 from configparser import ConfigParser
 
 from aip import AipOcr
@@ -20,9 +20,11 @@ class OcrService(metaclass=Singleton):
         self.client.setSocketTimeoutInMillis(20000)
 
     def read_config(self):
-        file = os.path.dirname(__file__) + '/../config.ini'
-        if not os.path.exists(file):
-            return
+        file = Path.home() / '.config' / 'FastOCR' / 'config.ini'
+        if not file.exists():
+            file = Path(__file__).parent.parent / 'config.ini'
+            if not file.exists():
+                return
         parser = ConfigParser()
         parser.read(file)
         self.APP_ID = parser.get('BaiduOCR', 'APP_ID')
