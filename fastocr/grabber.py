@@ -1,17 +1,13 @@
 import sys
 from typing import Optional
 
-from PySide2.QtCore import QObject, QRect, QPoint, Signal, QByteArray, QBuffer, QIODevice, QDir
+from PySide2.QtCore import QObject, QRect, QPoint, Signal, QDir
 from PySide2.QtGui import QGuiApplication, QScreen, QPixmap, QKeyEvent, Qt, QPaintEvent, QPainter, QColor, QMouseEvent, \
     QRegion
 from PySide2.QtWidgets import QApplication, QWidget
-from dbus import DBusException
-from qasync import asyncSlot
 
-from fastocr.service import OcrService
-from fastocr.util import check_exists, run_command, DesktopInfo
-
-import dbus
+from fastocr.bus import app_dbus
+from fastocr.util import DesktopInfo
 
 
 class ScreenGrabber(QObject):
@@ -25,14 +21,14 @@ class ScreenGrabber(QObject):
                         return self.grab_entire_desktop_wayland_kde()
                     if DesktopInfo.desktop_environment() == DesktopInfo.SWAY:
                         return self.grab_entire_desktop_wayland_sway()
-                except DBusException as e:
+                except Exception as e:
                     print(e)
             return self.grab_entire_desktop_x11()
         return None
 
     @staticmethod
     def grab_entire_desktop_wayland_sway() -> Optional[QPixmap]:
-        bus = dbus.SessionBus()
+        bus = app_dbus.session_bus
         obj = bus.get_object('org.freedesktop.portal.Desktop', '/org/freedesktop/portal/desktop')
         reply = obj.get_dbus_method('Screenshot', 'org.freedesktop.portal.Screenshot')('', {})
         if reply:
@@ -43,7 +39,7 @@ class ScreenGrabber(QObject):
 
     @staticmethod
     def grab_entire_desktop_wayland_kde() -> Optional[QPixmap]:
-        bus = dbus.SessionBus()
+        bus = app_dbus.session_bus
         obj = bus.get_object('org.kde.KWin', '/Screenshot')
         reply = obj.get_dbus_method('screenshotFullscreen')()
         if reply:
@@ -54,8 +50,8 @@ class ScreenGrabber(QObject):
 
     @staticmethod
     def grab_entire_desktop_wayland_gnome() -> Optional[QPixmap]:
+        bus = app_dbus.session_bus
         path = QDir.tempPath() + '/tmp_fastocr_screenshot.tmp'
-        bus = dbus.SessionBus()
         obj = bus.get_object('org.gnome.Shell', '/org/gnome/Shell/Screenshot')
         reply = obj.get_dbus_method('Screenshot', 'org.gnome.Shell.Screenshot')(False, False, path)
         if reply:
@@ -101,35 +97,10 @@ class CaptureWidget(QWidget):
         self._endpos: Optional[QPoint] = None
         self.move(0, 0)
         self.resize(self.screenshot.size())
-        # noinspection PyUnresolvedReferences
-        self.captured.connect(self.start_ocr)
-
-    @staticmethod
-    def pixmap_to_bytes(pixmap: QPixmap) -> bytes:
-        ba = QByteArray()
-        bf = QBuffer(ba)
-        bf.open(QIODevice.WriteOnly)
-        ok = pixmap.save(bf, 'PNG')
-        assert ok
-        return ba.data()
-
-    @asyncSlot(QPixmap)
-    async def start_ocr(self, pixmap: QPixmap):
-        result = OcrService().basic_general_ocr(self.pixmap_to_bytes(pixmap))
-        data = '\n'.join([w_.get('words', '') for w_ in result.get('words_result', [])])
-        clipboard = QApplication.clipboard()
-        clipboard.setText(data)
-        _, ok = await check_exists('notify-send')
-        if ok:
-            arguments = ['-u', 'normal', '-t', '5000', '-a', 'FastOCR', '-i', 'Finished', 'OCR 识别成功', '已复制到系统剪切板']
-            await run_command('notify-send', *arguments, allow_fail=True)
-        self.close()
-        QApplication.quit()
 
     def keyPressEvent(self, event: QKeyEvent):
         if event.key() == Qt.Key_Escape:
             self.close()
-            QApplication.quit()
         if event.key() == Qt.Key_Enter or event.key() == Qt.Key_Return:
             if self._startpos is None or self._endpos is None:
                 return

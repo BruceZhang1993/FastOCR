@@ -1,4 +1,5 @@
 import asyncio
+import fcntl
 import os
 
 
@@ -18,12 +19,12 @@ class DesktopInfo:
     SWAY = 'sway'
     OTHER = 'other'
 
-    XDG_CURRENT_DESKTOP = os.environ.get('XDG_CURRENT_DESKTOP')
-    WAYLAND_DISPLAY = os.environ.get('WAYLAND_DISPLAY')
-    XDG_SESSION_TYPE = os.environ.get('XDG_SESSION_TYPE')
-    GNOME_DESKTOP_SESSION_ID = os.environ.get('GNOME_DESKTOP_SESSION_ID')
-    DESKTOP_SESSION = os.environ.get('DESKTOP_SESSION')
-    KDE_FULL_SESSION = os.environ.get('KDE_FULL_SESSION')
+    XDG_CURRENT_DESKTOP = os.environ.get('XDG_CURRENT_DESKTOP', '')
+    WAYLAND_DISPLAY = os.environ.get('WAYLAND_DISPLAY', '')
+    XDG_SESSION_TYPE = os.environ.get('XDG_SESSION_TYPE', '')
+    GNOME_DESKTOP_SESSION_ID = os.environ.get('GNOME_DESKTOP_SESSION_ID', '')
+    DESKTOP_SESSION = os.environ.get('DESKTOP_SESSION', '')
+    KDE_FULL_SESSION = os.environ.get('KDE_FULL_SESSION', '')
 
     @staticmethod
     def is_wayland():
@@ -34,9 +35,9 @@ class DesktopInfo:
     def desktop_environment():
         ret = DesktopInfo.OTHER
         if 'gnome' in DesktopInfo.XDG_CURRENT_DESKTOP.lower() \
-                or DesktopInfo.GNOME_DESKTOP_SESSION_ID is not None:
+                or DesktopInfo.GNOME_DESKTOP_SESSION_ID == '':
             ret = DesktopInfo.GNOME
-        elif DesktopInfo.KDE_FULL_SESSION is not None \
+        elif DesktopInfo.KDE_FULL_SESSION == '' \
                 or DesktopInfo.DESKTOP_SESSION.lower() == 'kde-plasma':
             ret = DesktopInfo.KDE
         elif 'sway' in DesktopInfo.XDG_CURRENT_DESKTOP.lower():
@@ -57,3 +58,19 @@ async def run_command(*args, allow_fail=False):
     if not allow_fail and process.returncode != 0:
         raise Exception(stderr.decode().strip())
     return stdout.decode().strip(), stderr.decode().strip(), process.returncode
+
+
+def instance_already_running(label="default"):
+    """
+    Detect if an an instance with the label is already running, globally
+    at the operating system level.
+    """
+    lock_file_pointer = os.open(f"/tmp/fastocr_{label}.lock", os.O_WRONLY | os.O_CREAT)
+
+    try:
+        fcntl.lockf(lock_file_pointer, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        already_running = False
+    except IOError:
+        already_running = True
+
+    return already_running
