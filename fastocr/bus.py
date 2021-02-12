@@ -1,3 +1,4 @@
+import asyncio
 from typing import Optional, Any
 
 import dbus
@@ -31,9 +32,9 @@ class AppDBusObject(dbus.service.Object):
         obj.session_bus = session_bus
         return obj
 
-    @dbus.service.method(INTERFACE, in_signature='', out_signature='')
-    def captureToClipboard(self):
-        self.tray.start_capture()
+    @dbus.service.method(INTERFACE, in_signature='d', out_signature='')
+    def captureToClipboard(self, seconds: float):
+        asyncio.gather(self.tray.run_capture(seconds + .5))
 
     @dbus.service.method(INTERFACE, in_signature='', out_signature='')
     def quitApp(self):

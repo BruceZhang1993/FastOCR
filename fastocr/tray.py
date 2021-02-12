@@ -61,10 +61,13 @@ class AppTray(QSystemTrayIcon):
         clipboard.setText(data)
         self.showMessage('OCR 识别成功', '已复制到系统剪切板', QIcon.fromTheme('object-select-symbolic'), 5000)
 
-    @qasync.asyncSlot()
-    async def start_capture(self):
+    async def run_capture(self, seconds=.5):
         self.contextMenu().close()
-        await asyncio.sleep(.5)
+        await asyncio.sleep(seconds)
         self.capture_widget = CaptureWidget()
         self.capture_widget.captured.connect(self.start_ocr)
         self.capture_widget.showFullScreen()
+
+    @qasync.asyncSlot()
+    async def start_capture(self):
+        await self.run_capture(.5)
