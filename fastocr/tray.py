@@ -1,4 +1,5 @@
 import asyncio
+from pathlib import Path
 from typing import Optional
 
 import qasync
@@ -8,6 +9,7 @@ from PySide2.QtWidgets import QSystemTrayIcon, QMenu, QApplication
 
 from fastocr.grabber import CaptureWidget
 from fastocr.service import OcrService
+from fastocr.util import open_in_default
 
 
 class AppTray(QSystemTrayIcon):
@@ -22,9 +24,20 @@ class AppTray(QSystemTrayIcon):
         self.setContextMenu(QMenu())
         context_menu = self.contextMenu()
         capture_action = context_menu.addAction('Capture')
+        setting_action = context_menu.addAction('Setting')
         quit_action = context_menu.addAction('Quit')
         capture_action.triggered.connect(self.start_capture)
+        setting_action.triggered.connect(self.open_setting)
         quit_action.triggered.connect(self.quit_app)
+
+    @qasync.asyncSlot()
+    async def open_setting(self):
+        setting_dir = Path.home() / '.config' / 'FastOCR'
+        setting_dir.mkdir(parents=True, exist_ok=True)
+        setting_file = setting_dir / 'config.ini'
+        if not setting_file.exists():
+            setting_file.touch()
+        await open_in_default(setting_file.as_posix())
 
     def quit_app(self, _):
         self.hide()
@@ -47,16 +60,6 @@ class AppTray(QSystemTrayIcon):
         clipboard = qasync.QApplication.clipboard()
         clipboard.setText(data)
         self.showMessage('OCR 识别成功', '已复制到系统剪切板', QIcon.fromTheme('object-select-symbolic'), 5000)
-
-    # def start_ocr_dbus(self, pixmap: QPixmap):
-    #     self.capture_widget.close()
-    #     result = OcrService().basic_general_ocr(self.pixmap_to_bytes(pixmap))
-    #     data = '\n'.join([w_.get('words', '') for w_ in result.get('words_result', [])])
-    #
-    # def dbus_capture(self):
-    #     self.capture_widget = CaptureWidget()
-    #     self.capture_widget.captured.connect(self.start_ocr_dbus)
-    #     self.capture_widget.showFullScreen()
 
     @qasync.asyncSlot()
     async def start_capture(self):

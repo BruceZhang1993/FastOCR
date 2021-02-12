@@ -1,6 +1,7 @@
 import asyncio
 import fcntl
 import os
+import sys
 
 
 class Singleton(type):
@@ -58,6 +59,15 @@ async def run_command(*args, allow_fail=False):
     if not allow_fail and process.returncode != 0:
         raise Exception(stderr.decode().strip())
     return stdout.decode().strip(), stderr.decode().strip(), process.returncode
+
+
+async def open_in_default(filename):
+    if sys.platform == 'darwin':
+        await run_command('open', filename)
+    if sys.platform == 'win32':
+        await run_command('start', filename)
+    if sys.platform == 'linux':
+        await run_command('xdg-open', filename)
 
 
 def instance_already_running(label="default"):

@@ -23,8 +23,7 @@ class ScreenGrabber(QObject):
                         return self.grab_entire_desktop_wayland_sway()
                 except Exception as e:
                     print(e)
-            return self.grab_entire_desktop_x11()
-        return None
+        return self.grab_entire_desktop_qt()
 
     @staticmethod
     def grab_entire_desktop_wayland_sway() -> Optional[QPixmap]:
@@ -61,7 +60,7 @@ class ScreenGrabber(QObject):
         return res
 
     @staticmethod
-    def grab_entire_desktop_x11() -> QPixmap:
+    def grab_entire_desktop_qt() -> QPixmap:
         geo = QRect()
         for screen in QGuiApplication.screens():
             screen: QScreen
