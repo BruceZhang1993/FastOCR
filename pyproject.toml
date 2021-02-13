@@ -1,8 +1,13 @@
 [tool.poetry]
 name = "fastocr"
-version = "0.1.0"
-description = ""
+version = "0.1.1"
+description = "FastOCR is a desktop application for OCR API."
+license = "LGPL-3.0-only"
 authors = ["Bruce Zhang <zttt183525594@gmail.com>"]
+homepage = "https://github.com/BruceZhang1993/FastOCR"
+repository = "https://github.com/BruceZhang1993/FastOCR"
+documentation = "https://github.com/BruceZhang1993/FastOCR"
+keywords = ["ocr"]
 
 [tool.poetry.dependencies]
 python = ">=3.7,<3.10"
