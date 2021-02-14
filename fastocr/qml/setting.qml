@@ -40,12 +40,6 @@ ApplicationWindow {
         }
     }
 
-    Column {
-        anchors.fill: parent
-        padding: 0
-        anchors.bottomMargin: 50
-    }
-
     GroupBox {
         id: group1
         anchors.left: parent.left
@@ -75,7 +69,7 @@ ApplicationWindow {
 
             TextField {
                 id: appid_input
-                text: backend.appid ?? ''
+                text: backend ? backend.appid : ''
             }
 
             Label {
@@ -85,7 +79,7 @@ ApplicationWindow {
 
             TextField {
                 id: apikey_input
-                text: backend.apikey ?? ''
+                text: backend ? backend.apikey : ''
             }
 
             Label {
@@ -95,7 +89,7 @@ ApplicationWindow {
 
             TextField {
                 id: seckey_input
-                text: backend.seckey ?? ''
+                text: backend ? backend.seckey : ''
             }
         }
     }

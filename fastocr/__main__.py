@@ -16,7 +16,7 @@ def main():
     loop = QEventLoop(app)
     asyncio.set_event_loop(loop)
     from fastocr.bus import app_dbus
-    app_dbus.tray = AppTray()
+    app_dbus.tray = AppTray(bus=app_dbus)
     app_dbus.tray.show()
     with loop:
         sys.exit(loop.run_forever())

@@ -8,6 +8,7 @@ from PySide2.QtGui import QPixmap, QIcon, QWindow
 from PySide2.QtQml import QQmlApplicationEngine
 from PySide2.QtWidgets import QSystemTrayIcon, QMenu, QApplication
 
+from fastocr.bus import AppDBusObject
 from fastocr.grabber import CaptureWidget
 from fastocr.service import OcrService
 from fastocr.setting import Setting
@@ -49,8 +50,9 @@ class SettingBackend(QObject):
 
 
 class AppTray(QSystemTrayIcon):
-    def __init__(self):
+    def __init__(self, bus=None):
         super(AppTray, self).__init__()
+        self.bus: AppDBusObject = bus
         self.capture_widget: Optional[CaptureWidget] = None
         self.engine: Optional[QQmlApplicationEngine] = None
         self.setting_window: Optional[QWindow] = None
@@ -101,19 +103,24 @@ class AppTray(QSystemTrayIcon):
         assert ok
         return ba.data()
 
-    @qasync.asyncSlot(QPixmap)
-    async def start_ocr(self, pixmap: QPixmap):
+    @qasync.asyncSlot(QPixmap, bool)
+    async def start_ocr(self, pixmap: QPixmap, no_copy: bool = False):
         self.capture_widget.close()
         result = OcrService().basic_general_ocr(self.pixmap_to_bytes(pixmap))
         data = '\n'.join([w_.get('words', '') for w_ in result.get('words_result', [])])
-        clipboard = qasync.QApplication.clipboard()
-        clipboard.setText(data)
-        self.showMessage('OCR 识别成功', '已复制到系统剪切板', QIcon.fromTheme('object-select-symbolic'), 5000)
+        if no_copy:
+            self.bus.captured(data)
+            self.showMessage('OCR 识别成功', '已发送 DBus 信号', QIcon.fromTheme('object-select-symbolic'), 5000)
+        else:
+            self.bus.captured(data)
+            clipboard = qasync.QApplication.clipboard()
+            clipboard.setText(data)
+            self.showMessage('OCR 识别成功', '已复制到系统剪切板', QIcon.fromTheme('object-select-symbolic'), 5000)
 
-    async def run_capture(self, seconds=.5):
+    async def run_capture(self, seconds=.5, no_copy=False):
         self.contextMenu().close()
         await asyncio.sleep(seconds)
-        self.capture_widget = CaptureWidget()
+        self.capture_widget = CaptureWidget(no_copy)
         self.capture_widget.captured.connect(self.start_ocr)
         self.capture_widget.showFullScreen()
 

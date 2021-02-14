@@ -1,9 +1,11 @@
 import asyncio
-from typing import Optional, Any
+from typing import Optional
 
 import dbus
-import dbus.service
 import dbus.mainloop.glib
+import dbus.service
+
+import fastocr.tray
 
 
 # noinspection PyPep8Naming
@@ -13,7 +15,7 @@ class AppDBusObject(dbus.service.Object):
 
     def __init__(self, conn=None, object_path=None, bus_name=None):
         super().__init__(conn, object_path, bus_name)
-        self.tray: Optional[Any] = None
+        self.tray: Optional['fastocr.tray.AppTray'] = None
         self.session_bus: Optional[dbus.SessionBus] = None
 
     @classmethod
@@ -32,9 +34,13 @@ class AppDBusObject(dbus.service.Object):
         obj.session_bus = session_bus
         return obj
 
-    @dbus.service.method(INTERFACE, in_signature='d', out_signature='')
-    def captureToClipboard(self, seconds: float):
-        asyncio.gather(self.tray.run_capture(seconds + .5))
+    @dbus.service.signal(INTERFACE, signature='s')
+    def captured(self, text):
+        pass
+
+    @dbus.service.method(INTERFACE, in_signature='db', out_signature='')
+    def captureToClipboard(self, seconds: float, no_copy: bool):
+        asyncio.gather(self.tray.run_capture(seconds + .5, no_copy))
 
     @dbus.service.method(INTERFACE, in_signature='', out_signature='')
     def quitApp(self):

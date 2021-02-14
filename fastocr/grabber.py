@@ -82,10 +82,11 @@ class ScreenGrabber(QObject):
 
 
 class CaptureWidget(QWidget):
-    captured = Signal(QPixmap)
+    captured = Signal(QPixmap, bool)
 
-    def __init__(self):
+    def __init__(self, no_copy=False):
         super().__init__()
+        self.no_copy = no_copy
         self.painter = QPainter()
         self.setCursor(Qt.CrossCursor)
         self.setWindowState(Qt.WindowFullScreen)
@@ -112,7 +113,7 @@ class CaptureWidget(QWidget):
                 (self._endpos.y() - self._startpos.y()) * ratio,
             ))
             # noinspection PyUnresolvedReferences
-            self.captured.emit(cropped)
+            self.captured.emit(cropped, self.no_copy)
 
     def mousePressEvent(self, event: QMouseEvent):
         self._clipping_state = 1
