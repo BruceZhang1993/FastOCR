@@ -1,8 +1,6 @@
-from pathlib import Path
-from configparser import ConfigParser
-
 from aip import AipOcr
 
+from fastocr.setting import Setting
 from fastocr.util import Singleton
 
 
@@ -20,16 +18,10 @@ class OcrService(metaclass=Singleton):
         self.client.setSocketTimeoutInMillis(20000)
 
     def read_config(self):
-        file = Path.home() / '.config' / 'FastOCR' / 'config.ini'
-        if not file.exists():
-            file = Path(__file__).parent.parent / 'config.ini'
-            if not file.exists():
-                return
-        parser = ConfigParser()
-        parser.read(file)
-        self.APP_ID = parser.get('BaiduOCR', 'APP_ID')
-        self.API_KEY = parser.get('BaiduOCR', 'API_KEY')
-        self.SECRET_KEY = parser.get('BaiduOCR', 'SECRET_KEY')
+        self.setting = Setting()
+        self.APP_ID = self.setting.get('BaiduOCR', 'APP_ID')
+        self.API_KEY = self.setting.get('BaiduOCR', 'API_KEY')
+        self.SECRET_KEY = self.setting.get('BaiduOCR', 'SECRET_KEY')
 
     def basic_general_ocr(self, image: bytes):
         return self.client.basicGeneral(image, {

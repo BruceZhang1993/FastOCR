@@ -8,6 +8,7 @@ homepage = "https://github.com/BruceZhang1993/FastOCR"
 repository = "https://github.com/BruceZhang1993/FastOCR"
 documentation = "https://github.com/BruceZhang1993/FastOCR"
 keywords = ["ocr"]
+include = ["fastocr/qml/*.qml"]
 
 [tool.poetry.dependencies]
 python = ">=3.7,<3.10"

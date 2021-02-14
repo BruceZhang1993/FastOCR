@@ -13,7 +13,6 @@ def main():
         print('Only one instance allowed')
         sys.exit(1)
     app = QApplication(sys.argv)
-    app.setQuitOnLastWindowClosed(True)
     loop = QEventLoop(app)
     asyncio.set_event_loop(loop)
     from fastocr.bus import app_dbus

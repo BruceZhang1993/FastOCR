@@ -3,20 +3,67 @@ from pathlib import Path
 from typing import Optional
 
 import qasync
-from PySide2.QtCore import QByteArray, QBuffer, QIODevice
-from PySide2.QtGui import QPixmap, QIcon
+from PySide2.QtCore import QByteArray, QBuffer, QIODevice, QObject, Property, Slot
+from PySide2.QtGui import QPixmap, QIcon, QWindow
+from PySide2.QtQml import QQmlApplicationEngine
 from PySide2.QtWidgets import QSystemTrayIcon, QMenu, QApplication
 
 from fastocr.grabber import CaptureWidget
 from fastocr.service import OcrService
-from fastocr.util import open_in_default
+from fastocr.setting import Setting
+
+
+# noinspection PyPep8Naming
+class SettingBackend(QObject):
+    def __init__(self, parent=None):
+        super(SettingBackend, self).__init__(parent)
+        self.setting = Setting()
+
+    @Slot()
+    def save(self):
+        self.setting.save()
+
+    def getAppid(self) -> str:
+        return self.setting.get('BaiduOCR', 'APP_ID')
+
+    def setAppid(self, text: str):
+        self.setting.set('BaiduOCR', 'APP_ID', text)
+
+    appid = Property(str, getAppid, setAppid)
+
+    def getApikey(self) -> str:
+        return self.setting.get('BaiduOCR', 'API_KEY')
+
+    def setApikey(self, text: str):
+        self.setting.set('BaiduOCR', 'API_KEY', text)
+
+    apikey = Property(str, getApikey, setApikey)
+
+    def getSeckey(self) -> str:
+        return self.setting.get('BaiduOCR', 'SECRET_KEY')
+
+    def setSeckey(self, text: str):
+        self.setting.set('BaiduOCR', 'SECRET_KEY', text)
+
+    seckey = Property(str, getSeckey, setSeckey)
 
 
 class AppTray(QSystemTrayIcon):
     def __init__(self):
         super(AppTray, self).__init__()
         self.capture_widget: Optional[CaptureWidget] = None
+        self.engine: Optional[QQmlApplicationEngine] = None
+        self.setting_window: Optional[QWindow] = None
+        self.backend: Optional[SettingBackend] = None
+        self.load_qml()
         self.initialize()
+
+    def load_qml(self):
+        self.engine = QQmlApplicationEngine()
+        self.backend = SettingBackend()
+        self.engine.rootContext().setContextProperty('backend', self.backend)
+        self.engine.load((Path(__file__).parent / 'qml' / 'setting.qml').as_posix())
+        self.setting_window = self.engine.rootObjects()[0]
 
     # noinspection PyUnresolvedReferences
     def initialize(self):
@@ -37,9 +84,11 @@ class AppTray(QSystemTrayIcon):
         setting_file = setting_dir / 'config.ini'
         if not setting_file.exists():
             setting_file.touch()
-        await open_in_default(setting_file.as_posix())
+        # await open_in_default(setting_file.as_posix())
+        self.setting_window.show()
 
     def quit_app(self, _):
+        self.setting_window.close()
         self.hide()
         QApplication.quit()
 
