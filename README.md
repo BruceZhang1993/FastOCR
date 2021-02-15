@@ -7,10 +7,34 @@ FastOCR is a desktop application for OCR API.
 
 ## Installation
 
+### Arch Linux
+
+[fastocr-git @ AUR](https://aur.archlinux.org/packages/fastocr-git/)
+
+Build from AUR or install with your favorite AUR helper.
+
+```shell
+yay -S fastocr-git  # Using yay
+pikaur -S fastocr-git  # Using pikaur
+# ...
+```
+
+### PyPI
+
+[fastocr @ PyPI](https://pypi.org/project/fastocr/)
+
+```shell
+pip install --user fastocr
+# Then copy desktop file to ~/.local/share/applications
+```
+
+### Manually
+
 Proudly use [DepHell](https://dephell.readthedocs.io/) to generate setup.py file.
 
 ```shell
 python setup.py install
+# Then copy desktop file to ~/.local/share/applications
 ```
 
 ## Development
