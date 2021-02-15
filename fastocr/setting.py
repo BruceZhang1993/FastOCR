@@ -1,4 +1,4 @@
-from configparser import ConfigParser
+from configparser import ConfigParser, NoSectionError
 from pathlib import Path
 from typing import Optional
 
@@ -32,11 +32,18 @@ class Setting(metaclass=Singleton):
 
     def get(self, section, key):
         self.lazy_load()
-        return self.parser.get(section, key)
+        try:
+            return self.parser.get(section, key)
+        except NoSectionError:
+            return ''
 
     def set(self, section, key, value: Optional[str]):
         self.lazy_load()
-        return self.parser.set(section, key, value)
+        try:
+            return self.parser.set(section, key, value)
+        except NoSectionError:
+            self.parser.add_section(section)
+            return self.parser.set(section, key, value)
 
     def save(self):
         self.lazy_load()
