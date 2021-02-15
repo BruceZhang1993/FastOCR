@@ -26,7 +26,7 @@ setup(
     entry_points={"console_scripts": ["fastocr = fastocr.__main__:main"]},
     packages=['fastocr'],
     package_dir={"": "."},
-    package_data={},
+    package_data={"fastocr": ["qml/*.qml"]},
     install_requires=['baidu-aip==2.*,>=2.2.18', 'dbus-python==1.*,>=1.2.16', 'pyside2==5.*,>=5.15.2', 'qasync==0.*,>=0.13.0'],
     extras_require={"dev": ["dephell==0.*,>=0.8.3"]},
 )
