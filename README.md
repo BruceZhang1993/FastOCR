@@ -30,7 +30,8 @@ pip install --user fastocr
 
 ### Manually
 
-Proudly use [DepHell](https://dephell.readthedocs.io/) to generate setup.py file.
+Proudly use [DepHell](https://dephell.readthedocs.io/) to generate
+setup.py file.
 
 ```shell
 python setup.py install
@@ -51,10 +52,34 @@ poetry install
 fastocr
 ```
 
+## DBus
+
+Service name: `io.github.brucezhang1993.FastOCR`
+
+Object: `/io/github/brucezhang1993/FastOCR`
+
+### Methods
+
+| Actions            | Arguments           | Description                                                 |
+|:-------------------|:--------------------|:------------------------------------------------------------|
+| captureToClipboard | {seconds} {no_copy} | Capture and OCR to system clipboard or dbus signal          |
+|                    |                     | seconds: Delay capture in seconds                           |
+|                    |                     | no_copy: If true, the result will not be saved in clipboard |
+| quitApp            | --                  | Quit app                                                    |
+
+### Signal
+
+| Signals  | Arguments | Description                            |
+|:---------|:----------|:---------------------------------------|
+| captured | {text}    | OCR result will be sent to this signal |
+|          |           | text: OCR result in plain text         |
+
 ## Contributing
 
 Pull requests are welcome.
-For major changes, please open an issue first to discuss what you would like to change.
+
+For major changes, please open an issue first to discuss what you would
+like to change.
 
 ## License
 
