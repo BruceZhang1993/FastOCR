@@ -36,11 +36,11 @@ def run():
 @click.argument('formation', type=click.Choice(['desktop', 'config']), required=True)
 def generate(formation):
     if formation == 'desktop':
-        path = Path(__file__).parent.parent / 'data' / 'FastOCR.desktop'
+        path = Path(__file__).parent / 'data' / 'FastOCR.desktop'
         with path.open('r') as f:
             print(f.read())
     elif formation == 'config':
-        path = Path(__file__).parent.parent / 'data' / 'config.example.ini'
+        path = Path(__file__).parent / 'data' / 'config.example.ini'
         with path.open('r') as f:
             print(f.read())
 
