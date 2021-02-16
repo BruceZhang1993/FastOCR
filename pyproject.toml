@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fastocr"
-version = "0.1.1"
+version = "0.1.2"
 description = "FastOCR is a desktop application for OCR API."
 license = "LGPL-3.0-only"
 authors = ["Bruce Zhang <zttt183525594@gmail.com>"]
@@ -8,7 +8,7 @@ homepage = "https://github.com/BruceZhang1993/FastOCR"
 repository = "https://github.com/BruceZhang1993/FastOCR"
 documentation = "https://github.com/BruceZhang1993/FastOCR"
 keywords = ["ocr"]
-include = ["fastocr/qml/*.qml"]
+include = ["fastocr/qml/*.qml", "data/FastOCR.desktop", "data/config.example.ini"]
 
 [tool.poetry.dependencies]
 python = ">=3.7,<3.10"
@@ -16,6 +16,7 @@ qasync = "^0.13.0"
 PySide2 = "^5.15.2"
 baidu-aip = "^2.2.18"
 dbus-python = "^1.2.16"
+click = "^7.1.2"
 
 [tool.poetry.dev-dependencies]
 dephell = "^0.8.3"

@@ -1,14 +1,23 @@
 import asyncio
 import sys
+from pathlib import Path
 
+import click
 from PySide2.QtWidgets import QApplication
 from qasync import QEventLoop
 
+from fastocr.third_party.click_default_group import DefaultGroup
 from fastocr.tray import AppTray
 from fastocr.util import instance_already_running
 
 
+@click.group(cls=DefaultGroup, default_if_no_args=True)
 def main():
+    pass
+
+
+@main.command(default=True)
+def run():
     if instance_already_running():
         print('Only one instance allowed')
         sys.exit(1)
@@ -20,6 +29,19 @@ def main():
     app_dbus.tray.show()
     with loop:
         sys.exit(loop.run_forever())
+
+
+@main.command()
+@click.argument('formation', type=click.Choice(['desktop', 'config']), required=True)
+def generate(formation):
+    if formation == 'desktop':
+        path = Path(__file__).parent.parent / 'data' / 'FastOCR.desktop'
+        with path.open('r') as f:
+            print(f.read())
+    elif formation == 'config':
+        path = Path(__file__).parent.parent / 'data' / 'config.example.ini'
+        with path.open('r') as f:
+            print(f.read())
 
 
 if __name__ == '__main__':
