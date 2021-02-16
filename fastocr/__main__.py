@@ -6,17 +6,18 @@ import click
 from PySide2.QtWidgets import QApplication
 from qasync import QEventLoop
 
-from fastocr.third_party.click_default_group import DefaultGroup
 from fastocr.tray import AppTray
 from fastocr.util import instance_already_running
 
 
-@click.group(cls=DefaultGroup, default_if_no_args=True)
-def main():
-    pass
+@click.group(invoke_without_command=True)
+@click.pass_context
+def main(ctx):
+    if ctx.invoked_subcommand is None:
+        run()
 
 
-@main.command(default=True)
+@main.command()
 def run():
     if instance_already_running():
         print('Only one instance allowed')

@@ -24,7 +24,7 @@ setup(
     license='LGPL-3.0-only',
     keywords='ocr',
     entry_points={"console_scripts": ["fastocr = fastocr.__main__:main"]},
-    packages=['fastocr', 'fastocr.third_party'],
+    packages=['fastocr'],
     package_dir={"": "."},
     package_data={"fastocr": ["qml/*.qml"]},
     install_requires=['baidu-aip==2.*,>=2.2.18', 'click==7.*,>=7.1.2', 'dbus-python==1.*,>=1.2.16', 'pyside2==5.*,>=5.15.2', 'qasync==0.*,>=0.13.0'],
