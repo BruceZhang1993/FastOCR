@@ -1,7 +1,7 @@
 # FastOCR
 
-![GitHub top language](https://img.shields.io/github/languages/top/BruceZhang1993/FastOCR?style=flat-square)
-![GitHub](https://img.shields.io/github/license/BruceZhang1993/FastOCR?style=flat-square)
+[![GitHub top language](https://img.shields.io/github/languages/top/BruceZhang1993/FastOCR?style=flat-square)](https://github.com/BruceZhang1993/FastOCR/search?l=python)
+[![GitHub](https://img.shields.io/github/license/BruceZhang1993/FastOCR?style=flat-square)](https://github.com/BruceZhang1993/FastOCR/blob/master/LICENSE)
 
 FastOCR is a desktop application for OCR API.
 
