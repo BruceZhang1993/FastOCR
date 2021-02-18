@@ -9,7 +9,7 @@ ApplicationWindow {
     width: 480
     height: 640
     title: 'FastOCR Setting'
-    flags: Qt.Window | Qt.WindowMinMaxButtonsHint
+    flags: Qt.Window
 
     footer: ToolBar {
         ButtonGroup {
@@ -35,7 +35,7 @@ ApplicationWindow {
             }
 
             Button {
-                text: 'Cancel'
+                text: 'Close'
                 onClicked: setting.visible = false
             }
         }
