@@ -45,7 +45,7 @@ class AppDBusObject(dbus.service.Object):
         return obj
 
     @dbus.service.signal(INTERFACE, signature='s')
-    def captured(self, text: str):
+    def captured(self, text):
         """
         DBus signal: captured
         Receive captured text recognized by OCR
@@ -55,7 +55,7 @@ class AppDBusObject(dbus.service.Object):
         pass
 
     @dbus.service.method(INTERFACE, in_signature='db', out_signature='')
-    def captureToClipboard(self, seconds: float, no_copy: bool):
+    def captureToClipboard(self, seconds, no_copy):
         """
         DBus method: captureToClipboard
         :param seconds: seconds for delayed capture
