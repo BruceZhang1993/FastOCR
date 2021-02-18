@@ -28,6 +28,7 @@ ApplicationWindow {
                     backend.appid = appid_input.text
                     backend.apikey = apikey_input.text
                     backend.seckey = seckey_input.text
+                    backend.accurate = accurate_input.checked
                     backend.save()
                     setting.visible = false
                 }
@@ -90,6 +91,12 @@ ApplicationWindow {
             TextField {
                 id: seckey_input
                 text: backend ? backend.seckey : ''
+            }
+
+            CheckBox {
+                id: accurate_input
+                text: 'Use accurate mode'
+                checked: backend ? backend.accurate : false
             }
         }
     }

@@ -1,4 +1,4 @@
-from configparser import ConfigParser, NoSectionError
+from configparser import ConfigParser, NoSectionError, NoOptionError
 from pathlib import Path
 from typing import Optional
 
@@ -30,11 +30,22 @@ class Setting(metaclass=Singleton):
         self.lazy_load()
         return self.parser.sections()
 
+    def get_boolean(self, section, key):
+        self.lazy_load()
+        try:
+            return self.parser.getboolean(section, key)
+        except NoSectionError:
+            return ''
+        except NoOptionError:
+            return ''
+
     def get(self, section, key):
         self.lazy_load()
         try:
             return self.parser.get(section, key)
         except NoSectionError:
+            return ''
+        except NoOptionError:
             return ''
 
     def set(self, section, key, value: Optional[str]):

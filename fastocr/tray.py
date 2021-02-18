@@ -48,6 +48,14 @@ class SettingBackend(QObject):
 
     seckey = Property(str, getSeckey, setSeckey)
 
+    def getAccurate(self) -> bool:
+        return self.setting.get_boolean('BaiduOCR', 'USE_ACCURATE_MODE')
+
+    def setAccurate(self, checked: bool):
+        self.setting.set('BaiduOCR', 'USE_ACCURATE_MODE', '1' if checked else '0')
+
+    accurate = Property(bool, getAccurate, setAccurate)
+
 
 class AppTray(QSystemTrayIcon):
     def __init__(self, bus=None):
@@ -70,6 +78,8 @@ class AppTray(QSystemTrayIcon):
     # noinspection PyUnresolvedReferences
     def initialize(self):
         self.setIcon(QIcon.fromTheme('edit-find-symbolic'))
+        self.activated.connect(self.activate_action)
+        # Context menu
         self.setContextMenu(QMenu())
         context_menu = self.contextMenu()
         capture_action = context_menu.addAction('Capture')
@@ -78,6 +88,12 @@ class AppTray(QSystemTrayIcon):
         capture_action.triggered.connect(self.start_capture)
         setting_action.triggered.connect(self.open_setting)
         quit_action.triggered.connect(self.quit_app)
+
+    def activate_action(self, reason: QSystemTrayIcon.ActivationReason):
+        if reason == QSystemTrayIcon.DoubleClick:
+            self.open_setting()
+        elif reason == QSystemTrayIcon.Trigger:
+            self.start_capture()
 
     @qasync.asyncSlot()
     async def open_setting(self):
