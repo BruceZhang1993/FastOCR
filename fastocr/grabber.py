@@ -12,8 +12,14 @@ from fastocr.util import DesktopInfo
 
 class ScreenGrabber(QObject):
     def grab_entire_desktop(self) -> Optional[QPixmap]:
+        """
+        Grab the entire desktop screenshot to QPixmap
+        :return: QPixmap instance or None
+        :rtype: Optional[QPixmap]
+        """
         if sys.platform == 'linux':
             if DesktopInfo.is_wayland():
+                # Achive screenshot on wayland linux
                 try:
                     if DesktopInfo.desktop_environment() == DesktopInfo.GNOME:
                         return self.grab_entire_desktop_wayland_gnome()
@@ -27,6 +33,11 @@ class ScreenGrabber(QObject):
 
     @staticmethod
     def grab_entire_desktop_wayland_sway() -> Optional[QPixmap]:
+        """
+        Grab the entire desktop screenshot to QPixmap (Sway implementation)
+        :return: QPixmap instance or None
+        :rtype: Optional[QPixmap]
+        """
         bus = app_dbus.session_bus
         obj = bus.get_object('org.freedesktop.portal.Desktop', '/org/freedesktop/portal/desktop')
         reply = obj.get_dbus_method('Screenshot', 'org.freedesktop.portal.Screenshot')('', {})
@@ -38,6 +49,11 @@ class ScreenGrabber(QObject):
 
     @staticmethod
     def grab_entire_desktop_wayland_kde() -> Optional[QPixmap]:
+        """
+        Grab the entire desktop screenshot to QPixmap (KDE implementation)
+        :return: QPixmap instance or None
+        :rtype: Optional[QPixmap]
+        """
         bus = app_dbus.session_bus
         obj = bus.get_object('org.kde.KWin', '/Screenshot')
         reply = obj.get_dbus_method('screenshotFullscreen')()
@@ -49,6 +65,11 @@ class ScreenGrabber(QObject):
 
     @staticmethod
     def grab_entire_desktop_wayland_gnome() -> Optional[QPixmap]:
+        """
+        Grab the entire desktop screenshot to QPixmap (Gnome implementation)
+        :return: QPixmap instance or None
+        :rtype: Optional[QPixmap]
+        """
         bus = app_dbus.session_bus
         path = QDir.tempPath() + '/tmp_fastocr_screenshot.tmp'
         obj = bus.get_object('org.gnome.Shell', '/org/gnome/Shell/Screenshot')
@@ -61,6 +82,11 @@ class ScreenGrabber(QObject):
 
     @staticmethod
     def grab_entire_desktop_qt() -> QPixmap:
+        """
+        Grab the entire desktop screenshot to QPixmap (Qt default implementation)
+        :return: QPixmap instance or None
+        :rtype: QPixmap
+        """
         geo = QRect()
         for screen in QGuiApplication.screens():
             screen: QScreen
@@ -85,10 +111,16 @@ class CaptureWidget(QWidget):
     captured = Signal(QPixmap, bool)
 
     def __init__(self, no_copy=False):
+        """
+        CapturedWidget __init__
+        :param no_copy: set True to not update clipboard, defaults to False
+        :type no_copy: bool
+        """
         super().__init__()
         self.no_copy = no_copy
         self.painter = QPainter()
         self.setCursor(Qt.CrossCursor)
+        # Make widget stay on top & fullscreen
         self.setWindowState(Qt.WindowFullScreen)
         self.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint | Qt.Tool | Qt.BypassWindowManagerHint)
         self.screenshot = ScreenGrabber().grab_entire_desktop()
@@ -99,6 +131,12 @@ class CaptureWidget(QWidget):
         self.resize(self.screenshot.size())
 
     def keyPressEvent(self, event: QKeyEvent):
+        """
+        Keypress event
+        This allows capture widget escape to close, return or enter to capture
+        :param event: QKeyEvent instance
+        :type event: QKeyEvent
+        """
         if event.key() == Qt.Key_Escape:
             self.close()
         if event.key() == Qt.Key_Enter or event.key() == Qt.Key_Return:
@@ -116,21 +154,41 @@ class CaptureWidget(QWidget):
             self.captured.emit(cropped, self.no_copy)
 
     def mousePressEvent(self, event: QMouseEvent):
+        """
+        Mouse press event, this marks capture start
+        :param event: QMouseEvent instance
+        :type event: QMouseEvent
+        """
         self._clipping_state = 1
         self._startpos = event.pos()
 
     def mouseMoveEvent(self, event: QMouseEvent):
+        """
+        Mouse move event, this marks capture area
+        :param event: QMouseEvent instance
+        :type event: QMouseEvent
+        """
         if self._clipping_state != 1:
             return
         self._endpos = event.pos()
         self.repaint()
 
     def mouseReleaseEvent(self, event: QMouseEvent):
+        """
+        Mouse release event, this marks capture stop
+        :param event: QMouseEvent instance
+        :type event: QMouseEvent
+        """
         self._clipping_state = 2
         self._endpos = event.pos()
         self.repaint()
 
     def paintEvent(self, event: QPaintEvent):
+        """
+        Paint event, draw cropped area
+        :param event: QPaintEvent instance
+        :type event: QPaintEvent
+        """
         self.painter.begin(self)
         self.painter.drawPixmap(0, 0, self.screenshot)
         overlay = QColor(0, 0, 0, 120)

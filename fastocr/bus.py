@@ -19,13 +19,23 @@ class AppDBusObject(dbus.service.Object):
         self.session_bus: Optional[dbus.SessionBus] = None
 
     @classmethod
-    def instance(cls):
+    def instance(cls) -> 'AppDBusObject':
+        """
+        AppDBusObject single instance
+        :return: AppDBusObject instance
+        :rtype: AppDBusObject
+        """
         if cls._instance is None:
             cls._instance = cls.run()
         return cls._instance
 
     @staticmethod
-    def run():
+    def run() -> 'AppDBusObject':
+        """
+        Run DBus mainloop
+        :return: AppDBusObject instance
+        :rtype: AppDBusObject
+        """
         # noinspection PyUnresolvedReferences
         dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
         session_bus = dbus.SessionBus()
@@ -35,15 +45,31 @@ class AppDBusObject(dbus.service.Object):
         return obj
 
     @dbus.service.signal(INTERFACE, signature='s')
-    def captured(self, text):
+    def captured(self, text: str):
+        """
+        DBus signal: captured
+        Receive captured text recognized by OCR
+        :param text: captured text
+        :type text: str
+        """
         pass
 
     @dbus.service.method(INTERFACE, in_signature='db', out_signature='')
     def captureToClipboard(self, seconds: float, no_copy: bool):
+        """
+        DBus method: captureToClipboard
+        :param seconds: seconds for delayed capture
+        :type seconds: float
+        :param no_copy: set True to not update clipboard
+        :type no_copy: bool
+        """
         asyncio.gather(self.tray.run_capture(seconds + .5, no_copy))
 
     @dbus.service.method(INTERFACE, in_signature='', out_signature='')
     def quitApp(self):
+        """
+        DBus method: quitApp
+        """
         self.tray.quit_app('')
 
 
