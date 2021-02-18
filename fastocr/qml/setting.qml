@@ -1,7 +1,7 @@
-import QtQuick 2.11
-import QtQuick.Window 2.2
+import QtQuick 2.15
+import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.4
+import QtQuick.Layouts 1.15
 
 ApplicationWindow {
     id: setting
@@ -9,7 +9,11 @@ ApplicationWindow {
     width: 480
     height: 640
     title: 'FastOCR Setting'
-    flags: Qt.Window
+
+    onClosing: {
+        close.accepted = false
+        setting.visible = false
+    }
 
     footer: ToolBar {
         ButtonGroup {
