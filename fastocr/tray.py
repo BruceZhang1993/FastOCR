@@ -30,7 +30,11 @@ class SettingBackend(QObject):
     def setAppid(self, text: str):
         self.setting.set('BaiduOCR', 'APP_ID', text)
 
-    appid = Property(str, getAppid, setAppid)
+    @Slot()
+    def appidChanged(self):
+        pass
+
+    appid = Property(str, getAppid, setAppid, notify=appidChanged)
 
     def getApikey(self) -> str:
         return self.setting.get('BaiduOCR', 'API_KEY')
@@ -38,7 +42,11 @@ class SettingBackend(QObject):
     def setApikey(self, text: str):
         self.setting.set('BaiduOCR', 'API_KEY', text)
 
-    apikey = Property(str, getApikey, setApikey)
+    @Slot()
+    def apikeyChanged(self):
+        pass
+
+    apikey = Property(str, getApikey, setApikey, notify=apikeyChanged)
 
     def getSeckey(self) -> str:
         return self.setting.get('BaiduOCR', 'SECRET_KEY')
@@ -46,7 +54,11 @@ class SettingBackend(QObject):
     def setSeckey(self, text: str):
         self.setting.set('BaiduOCR', 'SECRET_KEY', text)
 
-    seckey = Property(str, getSeckey, setSeckey)
+    @Slot()
+    def seckeyChanged(self):
+        pass
+
+    seckey = Property(str, getSeckey, setSeckey, notify=seckeyChanged)
 
     def getAccurate(self) -> bool:
         return self.setting.get_boolean('BaiduOCR', 'USE_ACCURATE_MODE')
@@ -54,7 +66,11 @@ class SettingBackend(QObject):
     def setAccurate(self, checked: bool):
         self.setting.set('BaiduOCR', 'USE_ACCURATE_MODE', '1' if checked else '0')
 
-    accurate = Property(bool, getAccurate, setAccurate)
+    @Slot()
+    def accurateChanged(self):
+        pass
+
+    accurate = Property(bool, getAccurate, setAccurate, notify=accurateChanged)
 
 
 class AppTray(QSystemTrayIcon):
