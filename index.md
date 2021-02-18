@@ -1,37 +1,86 @@
-## Welcome to GitHub Pages
+# FastOCR
 
-You can use the [editor on GitHub](https://github.com/BruceZhang1993/FastOCR/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+[![GitHub top language](https://img.shields.io/github/languages/top/BruceZhang1993/FastOCR?style=flat-square)](https://github.com/BruceZhang1993/FastOCR/search?l=python)
+[![GitHub](https://img.shields.io/github/license/BruceZhang1993/FastOCR?style=flat-square)](https://github.com/BruceZhang1993/FastOCR/blob/master/LICENSE)
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+FastOCR is a desktop application for OCR API.
 
-### Markdown
+## Installation
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+### Arch Linux
 
-```markdown
-Syntax highlighted code block
+[fastocr-git @ AUR](https://aur.archlinux.org/packages/fastocr-git/)
 
-# Header 1
-## Header 2
-### Header 3
+Build from AUR or install with your favorite AUR helper.
 
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+```shell
+yay -S fastocr-git  # Using yay
+pikaur -S fastocr-git  # Using pikaur
+# ...
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+### PyPI
 
-### Jekyll Themes
+[fastocr @ PyPI](https://pypi.org/project/fastocr/)
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/BruceZhang1993/FastOCR/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+```shell
+pip install --user fastocr
+# Then copy desktop file to ~/.local/share/applications
+```
 
-### Support or Contact
+### Manually
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+Proudly use [DepHell](https://dephell.readthedocs.io/) to generate
+setup.py file.
+
+```shell
+python setup.py install
+# Then copy desktop file to ~/.local/share/applications
+```
+
+## Development
+
+Proudly use [Poetry](https://python-poetry.org/docs/) for developing.
+
+```shell
+poetry install
+```
+
+## Usage
+
+```shell
+fastocr
+```
+
+## DBus
+
+Service name: `io.github.brucezhang1993.FastOCR`
+
+Object: `/io/github/brucezhang1993/FastOCR`
+
+### Methods
+
+| Actions            | Arguments           | Description                                                 |
+|:-------------------|:--------------------|:------------------------------------------------------------|
+| captureToClipboard | {seconds} {no_copy} | Capture and OCR to system clipboard or dbus signal          |
+|                    |                     | seconds: Delay capture in seconds                           |
+|                    |                     | no_copy: If true, the result will not be saved in clipboard |
+| quitApp            | --                  | Quit app                                                    |
+
+### Signal
+
+| Signals  | Arguments | Description                            |
+|:---------|:----------|:---------------------------------------|
+| captured | {text}    | OCR result will be sent to this signal |
+|          |           | text: OCR result in plain text         |
+
+## Contributing
+
+Pull requests are welcome.
+
+For major changes, please open an issue first to discuss what you would
+like to change.
+
+## License
+
+LGPL3
