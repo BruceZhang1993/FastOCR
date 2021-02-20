@@ -138,8 +138,7 @@ class AppTray(QSystemTrayIcon):
     @qasync.asyncSlot(QPixmap, bool)
     async def start_ocr(self, pixmap: QPixmap, no_copy: bool = False):
         self.capture_widget.close()
-        loop = asyncio.get_event_loop()
-        result = await loop.run_in_executor(None, OcrService().basic_general_ocr, self.pixmap_to_bytes(pixmap))
+        result = await OcrService().basic_general_ocr(self.pixmap_to_bytes(pixmap))
         data = '\n'.join([w_.get('words', '') for w_ in result.get('words_result', [])])
         if no_copy:
             self.bus.captured(data)
