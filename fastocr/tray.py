@@ -75,7 +75,10 @@ class SettingBackend(QObject):
     accurate = Property(bool, getAccurate, setAccurate, notify=accurateChanged)
 
     def getLanguages(self) -> List[str]:
-        return json.loads(self.setting.get('BaiduOCR', 'languages'))
+        languages_str = self.setting.get('BaiduOCR', 'languages')
+        if languages_str is None:
+            return []
+        return json.loads(languages_str)
 
     def setLanguages(self, langs: List[str]):
         self.setting.set('BaiduOCR', 'languages', json.dumps(langs))
