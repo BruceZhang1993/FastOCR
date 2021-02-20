@@ -1,6 +1,4 @@
-import asyncio
 from base64 import b64encode
-from urllib.parse import urlencode, quote_plus
 
 from aiohttp import ClientSession
 
@@ -33,18 +31,17 @@ class BaiduOcr:
             data = await r.json()
             return data.get('access_token'), data.get('expires_in')
 
-    async def basic_general(self, image: bytes):
+    async def basic_general(self, image: bytes, lang = ''):
         if self.use_accurate_mode:
             api_type = '/accurate_basic'
         else:
             api_type = '/general_basic'
         data = {
             'image': b64encode(image).decode(),
-            'language_type': 'CHN_ENG'
+            'language_type': lang if lang != '' else 'CHN_ENG'
         }
         async with self.session.post(f'{self.API_BASE}{api_type}?access_token={await self.token}', data=data) as r:
             data = await r.json()
-            print(data)
             if data.get('error_code') is not None:
                 raise Exception(f"{data.get('error_code')}: {data.get('error_msg')}")
             return data
@@ -69,5 +66,5 @@ class OcrService(metaclass=Singleton):
     async def close(self):
         await self.backend.close()
 
-    async def basic_general_ocr(self, image: bytes):
-        return await self.backend.basic_general(image)
+    async def basic_general_ocr(self, image: bytes, lang=''):
+        return await self.backend.basic_general(image, lang=lang)

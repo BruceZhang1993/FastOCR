@@ -6,7 +6,7 @@ import QtQuick.Layouts 1.15
 ApplicationWindow {
     id: setting
     visible: false
-    width: 480
+    width: 860
     height: 640
     title: 'FastOCR Setting'
 
@@ -33,6 +33,15 @@ ApplicationWindow {
                     backend.apikey = apikey_input.text
                     backend.seckey = seckey_input.text
                     backend.accurate = accurate_input.checked
+
+                    // Languages
+                    var lang_checkboxes = [japanese, korean, french, spanish, germany, russian]
+                    var checked = []
+                    for (var i=0; i < lang_checkboxes.length; i++)
+                        if (lang_checkboxes[i].checked)
+                            checked.push(lang_checkboxes[i].value)
+                    backend.languages = checked
+
                     backend.save()
                     setting.visible = false
                 }
@@ -64,8 +73,7 @@ ApplicationWindow {
             anchors.topMargin: 0
             anchors.rightMargin: 0
             anchors.leftMargin: 0
-            rows: 3
-            columns: 2
+            columns: 4
 
             Label {
                 id: appid_label
@@ -75,6 +83,8 @@ ApplicationWindow {
             TextField {
                 id: appid_input
                 text: backend ? backend.appid : ''
+                Layout.columnSpan: 3
+                Layout.fillWidth: true
             }
 
             Label {
@@ -85,6 +95,8 @@ ApplicationWindow {
             TextField {
                 id: apikey_input
                 text: backend ? backend.apikey : ''
+                Layout.columnSpan: 3
+                Layout.fillWidth: true
             }
 
             Label {
@@ -95,12 +107,82 @@ ApplicationWindow {
             TextField {
                 id: seckey_input
                 text: backend ? backend.seckey : ''
+                Layout.columnSpan: 3
+                Layout.fillWidth: true
             }
 
-            CheckBox {
-                id: accurate_input
-                text: 'Use accurate mode'
-                checked: backend ? backend.accurate : false
+            Label {
+                id: lang_label
+                text: qsTr("Languages")
+            }
+
+            Flow {
+                Layout.columnSpan: 3
+                Layout.fillWidth: true
+
+                CheckBox {
+                    property string value
+
+                    id: japanese
+                    text: 'Japanese'
+                    checked: backend ? backend.languages.includes(this.value): false
+                    value: 'JAP'
+                }
+
+                CheckBox {
+                    property string value
+
+                    id: korean
+                    text: 'Korean'
+                    checked: backend ? backend.languages.includes(this.value): false
+                    value: 'KOR'
+                }
+
+                CheckBox {
+                    property string value
+
+                    id: french
+                    text: 'French'
+                    checked: backend ? backend.languages.includes(this.value): false
+                    value: 'FRE'
+                }
+
+                CheckBox {
+                    property string value
+
+                    id: spanish
+                    text: 'Spanish'
+                    checked: backend ? backend.languages.includes(this.value): false
+                    value: 'SPA'
+                }
+
+                CheckBox {
+                    property string value
+
+                    id: germany
+                    text: 'Germany'
+                    checked: backend ? backend.languages.includes(this.value): false
+                    value: 'GER'
+                }
+
+                CheckBox {
+                    property string value
+
+                    id: russian
+                    text: 'Russian'
+                    checked: backend ? backend.languages.includes(this.value): false
+                    value: 'RUS'
+                }
+            }
+
+            Row {
+                CheckBox {
+                    id: accurate_input
+                    text: 'Use accurate mode'
+                    checked: backend ? backend.accurate : false
+                    Layout.columnSpan: 4
+                    Layout.fillWidth: true
+                }
             }
         }
     }

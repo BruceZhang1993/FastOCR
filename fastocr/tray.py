@@ -1,6 +1,8 @@
 import asyncio
+import json
+from functools import partial
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List
 
 import qasync
 from PySide2.QtCore import QByteArray, QBuffer, QIODevice, QObject, Property, Slot
@@ -25,10 +27,10 @@ class SettingBackend(QObject):
         self.setting.save()
 
     def getAppid(self) -> str:
-        return self.setting.get('BaiduOCR', 'APP_ID')
+        return self.setting.get('BaiduOCR', 'app_id')
 
     def setAppid(self, text: str):
-        self.setting.set('BaiduOCR', 'APP_ID', text)
+        self.setting.set('BaiduOCR', 'app_id', text)
 
     @Slot()
     def appidChanged(self):
@@ -37,10 +39,10 @@ class SettingBackend(QObject):
     appid = Property(str, getAppid, setAppid, notify=appidChanged)
 
     def getApikey(self) -> str:
-        return self.setting.get('BaiduOCR', 'API_KEY')
+        return self.setting.get('BaiduOCR', 'api_key')
 
     def setApikey(self, text: str):
-        self.setting.set('BaiduOCR', 'API_KEY', text)
+        self.setting.set('BaiduOCR', 'api_key', text)
 
     @Slot()
     def apikeyChanged(self):
@@ -49,10 +51,10 @@ class SettingBackend(QObject):
     apikey = Property(str, getApikey, setApikey, notify=apikeyChanged)
 
     def getSeckey(self) -> str:
-        return self.setting.get('BaiduOCR', 'SECRET_KEY')
+        return self.setting.get('BaiduOCR', 'secret_key')
 
     def setSeckey(self, text: str):
-        self.setting.set('BaiduOCR', 'SECRET_KEY', text)
+        self.setting.set('BaiduOCR', 'secret_key', text)
 
     @Slot()
     def seckeyChanged(self):
@@ -61,10 +63,10 @@ class SettingBackend(QObject):
     seckey = Property(str, getSeckey, setSeckey, notify=seckeyChanged)
 
     def getAccurate(self) -> bool:
-        return self.setting.get_boolean('BaiduOCR', 'USE_ACCURATE_MODE')
+        return self.setting.get_boolean('BaiduOCR', 'use_accurate_mode')
 
     def setAccurate(self, checked: bool):
-        self.setting.set('BaiduOCR', 'USE_ACCURATE_MODE', '1' if checked else '0')
+        self.setting.set('BaiduOCR', 'use_accurate_mode', '1' if checked else '0')
 
     @Slot()
     def accurateChanged(self):
@@ -72,10 +74,23 @@ class SettingBackend(QObject):
 
     accurate = Property(bool, getAccurate, setAccurate, notify=accurateChanged)
 
+    def getLanguages(self) -> List[str]:
+        return json.loads(self.setting.get('BaiduOCR', 'languages'))
+
+    def setLanguages(self, langs: List[str]):
+        self.setting.set('BaiduOCR', 'languages', json.dumps(langs))
+
+    @Slot()
+    def languagesChanged(self):
+        pass
+
+    languages = Property(list, getLanguages, setLanguages, notify=languagesChanged)
+
 
 class AppTray(QSystemTrayIcon):
     def __init__(self, bus=None):
         super(AppTray, self).__init__()
+        self.setting = None
         self.bus: AppDBusObject = bus
         self.capture_widget: Optional[CaptureWidget] = None
         self.engine: Optional[QQmlApplicationEngine] = None
@@ -86,6 +101,7 @@ class AppTray(QSystemTrayIcon):
 
     def load_qml(self):
         self.engine = QQmlApplicationEngine()
+        self.setting = Setting()
         self.backend = SettingBackend()
         self.engine.rootContext().setContextProperty('backend', self.backend)
         self.engine.load((Path(__file__).parent / 'qml' / 'setting.qml').as_posix())
@@ -99,11 +115,25 @@ class AppTray(QSystemTrayIcon):
         self.setContextMenu(QMenu())
         context_menu = self.contextMenu()
         capture_action = context_menu.addAction('Capture')
+
+        self.language_menu = QMenu('Capture (Other Languages)')
+        context_menu.addMenu(self.language_menu)
+        self.update_menu()
+
         setting_action = context_menu.addAction('Setting')
         quit_action = context_menu.addAction('Quit')
         capture_action.triggered.connect(self.start_capture)
         setting_action.triggered.connect(self.open_setting)
         quit_action.triggered.connect(self.quit_app)
+        self.setting.register_callback(self.update_menu)
+
+    def update_menu(self):
+        self.language_menu.clear()
+        languages = json.loads(self.setting.get('BaiduOCR', 'languages'))
+        for lang in languages:
+            _ = self.language_menu.addAction(lang)
+            # noinspection PyUnresolvedReferences
+            _.triggered.connect(partial(self.start_capture_lang, lang))
 
     def activate_action(self, reason: QSystemTrayIcon.ActivationReason):
         if reason == QSystemTrayIcon.DoubleClick:
@@ -135,10 +165,10 @@ class AppTray(QSystemTrayIcon):
         assert ok
         return ba.data()
 
-    @qasync.asyncSlot(QPixmap, bool)
-    async def start_ocr(self, pixmap: QPixmap, no_copy: bool = False):
+    @qasync.asyncSlot(QPixmap)
+    async def start_ocr(self, no_copy: bool = False, lang='', pixmap: QPixmap = None):
         self.capture_widget.close()
-        result = await OcrService().basic_general_ocr(self.pixmap_to_bytes(pixmap))
+        result = await OcrService().basic_general_ocr(self.pixmap_to_bytes(pixmap), lang=lang)
         data = '\n'.join([w_.get('words', '') for w_ in result.get('words_result', [])])
         if no_copy:
             self.bus.captured(data)
@@ -149,12 +179,16 @@ class AppTray(QSystemTrayIcon):
             clipboard.setText(data)
             self.showMessage('OCR 识别成功', '已复制到系统剪切板', QIcon.fromTheme('object-select-symbolic'), 5000)
 
-    async def run_capture(self, seconds=.5, no_copy=False):
+    async def run_capture(self, seconds=.5, no_copy=False, lang=''):
         self.contextMenu().close()
         await asyncio.sleep(seconds)
-        self.capture_widget = CaptureWidget(no_copy)
-        self.capture_widget.captured.connect(self.start_ocr)
+        self.capture_widget = CaptureWidget()
+        self.capture_widget.captured.connect(partial(self.start_ocr, no_copy, lang))
         self.capture_widget.showFullScreen()
+
+    @qasync.asyncSlot(str)
+    async def start_capture_lang(self, lang):
+        await self.run_capture(.5, lang=lang)
 
     @qasync.asyncSlot()
     async def start_capture(self):

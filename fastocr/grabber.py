@@ -108,16 +108,13 @@ class ScreenGrabber(QObject):
 
 
 class CaptureWidget(QWidget):
-    captured = Signal(QPixmap, bool)
+    captured = Signal(QPixmap)
 
-    def __init__(self, no_copy=False):
+    def __init__(self):
         """
         CapturedWidget __init__
-        :param no_copy: set True to not update clipboard, defaults to False
-        :type no_copy: bool
         """
         super().__init__()
-        self.no_copy = no_copy
         self.painter = QPainter()
         self.setCursor(Qt.CrossCursor)
         # Make widget stay on top & fullscreen
@@ -151,7 +148,7 @@ class CaptureWidget(QWidget):
                 (self._endpos.y() - self._startpos.y()) * ratio,
             ))
             # noinspection PyUnresolvedReferences
-            self.captured.emit(cropped, self.no_copy)
+            self.captured.emit(cropped)
 
     def mousePressEvent(self, event: QMouseEvent):
         """

@@ -9,6 +9,7 @@ class Setting(metaclass=Singleton):
     def __init__(self):
         self.parser = ConfigParser()
         self.loaded = False
+        self._callbacks = []
 
     @staticmethod
     def get_config_file() -> Path:
@@ -61,3 +62,12 @@ class Setting(metaclass=Singleton):
         with self.get_config_file().open('w') as f:
             self.parser.write(f)
             f.flush()
+        for cb in self._callbacks:
+            try:
+                cb()
+            except:
+                raise Exception('save callback error')
+
+    def register_callback(self, callback):
+        if callback not in self._callbacks:
+            self._callbacks.append(callback)
