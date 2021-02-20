@@ -27,6 +27,6 @@ setup(
     packages=['fastocr'],
     package_dir={"": "."},
     package_data={"fastocr": ["data/*.desktop", "data/*.ini", "qml/*.qml"]},
-    install_requires=['baidu-aip==2.*,>=2.2.18', 'click==7.*,>=7.1.2', 'dbus-python==1.*,>=1.2.16', 'pyside2==5.*,>=5.15.2', 'qasync==0.*,>=0.13.0'],
+    install_requires=['aiohttp==3.*,>=3.7.3', 'click==7.*,>=7.1.2', 'dbus-python==1.*,>=1.2.16', 'pyside2==5.*,>=5.15.2', 'qasync==0.*,>=0.13.0'],
     extras_require={"dev": ["dephell==0.*,>=0.8.3"]},
 )

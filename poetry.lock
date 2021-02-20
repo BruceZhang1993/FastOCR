@@ -2,7 +2,7 @@
 name = "aiohttp"
 version = "3.7.3"
 description = "Async http client/server framework (asyncio)"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -26,7 +26,7 @@ reference = "douban"
 name = "async-timeout"
 version = "3.0.1"
 description = "Timeout context manager for asyncio programs"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.5.3"
 
@@ -39,7 +39,7 @@ reference = "douban"
 name = "attrs"
 version = "20.3.0"
 description = "Classes Without Boilerplate"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 
@@ -48,22 +48,6 @@ dev = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", 
 docs = ["furo", "sphinx", "zope.interface"]
 tests = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "zope.interface"]
 tests_no_zope = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six"]
-
-[package.source]
-type = "legacy"
-url = "https://pypi.doubanio.com/simple"
-reference = "douban"
-
-[[package]]
-name = "baidu-aip"
-version = "2.2.18.0"
-description = "Baidu AIP SDK"
-category = "main"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-requests = "*"
 
 [package.source]
 type = "legacy"
@@ -87,7 +71,7 @@ reference = "douban"
 name = "certifi"
 version = "2020.12.5"
 description = "Python package for providing Mozilla's CA Bundle."
-category = "main"
+category = "dev"
 optional = false
 python-versions = "*"
 
@@ -489,7 +473,7 @@ reference = "douban"
 name = "multidict"
 version = "5.1.0"
 description = "multidict implementation"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -589,7 +573,7 @@ reference = "douban"
 name = "requests"
 version = "2.25.1"
 description = "Python HTTP for Humans."
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
@@ -684,7 +668,7 @@ reference = "douban"
 name = "typing-extensions"
 version = "3.7.4.3"
 description = "Backported and Experimental Type Hints for Python 3.5+"
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 
@@ -697,7 +681,7 @@ reference = "douban"
 name = "urllib3"
 version = "1.26.3"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <4"
 
@@ -715,7 +699,7 @@ reference = "douban"
 name = "yarl"
 version = "1.6.3"
 description = "Yet another URL library"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.6"
 
@@ -745,7 +729,7 @@ reference = "douban"
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7,<3.10"
-content-hash = "bea3e0e744825c505c5b99c41b6fc4ce6fed811f6ab46e5263ef0e18766ddbe7"
+content-hash = "35c575accc5d40f86732616851342facedd7f705cf93538408b69dd89bcc0510"
 
 [metadata.files]
 aiohttp = [
@@ -794,9 +778,6 @@ async-timeout = [
 attrs = [
     {file = "attrs-20.3.0-py2.py3-none-any.whl", hash = "sha256:31b2eced602aa8423c2aea9c76a724617ed67cf9513173fd3a4f03e3a929c7e6"},
     {file = "attrs-20.3.0.tar.gz", hash = "sha256:832aa3cde19744e49938b91fea06d69ecb9e649c93ba974535d08ad92164f700"},
-]
-baidu-aip = [
-    {file = "baidu-aip-2.2.18.0.tar.gz", hash = "sha256:c7f03c671027dcae1ccaa60631ec5811c8e9e51e2ebb505a748a213d0f0b5b88"},
 ]
 cerberus = [
     {file = "Cerberus-1.3.2.tar.gz", hash = "sha256:302e6694f206dd85cb63f13fd5025b31ab6d38c99c50c6d769f8fa0b0f299589"},

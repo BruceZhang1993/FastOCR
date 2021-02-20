@@ -1,35 +1,73 @@
-from aip import AipOcr
+import asyncio
+from base64 import b64encode
+from urllib.parse import urlencode, quote_plus
+
+from aiohttp import ClientSession
 
 from fastocr.setting import Setting
 from fastocr.util import Singleton
 
 
-class OcrService(metaclass=Singleton):
-    APP_ID = ''
-    API_KEY = ''
-    SECRET_KEY = ''
-    USE_ACCURATE_MODE = False
+class BaiduOcr:
+    API_BASE = 'https://aip.baidubce.com/rest/2.0/ocr/v1'
+    AUTH_BASE = 'https://aip.baidubce.com/oauth/2.0/token'
 
-    def __init__(self):
-        self.read_config()
-        if self.APP_ID == '':
-            raise Exception('OCR 配置不存在')
-        self.client = AipOcr(self.APP_ID, self.API_KEY, self.SECRET_KEY)
-        self.client.setConnectionTimeoutInMillis(5000)
-        self.client.setSocketTimeoutInMillis(20000)
+    def __init__(self, setting: Setting):
+        self._token = ''
+        self.appid = setting.get('BaiduOCR', 'app_id')
+        self.apikey = setting.get('BaiduOCR', 'api_key')
+        self.seckey = setting.get('BaiduOCR', 'secret_key')
+        self.use_accurate_mode = setting.get_boolean('BaiduOCR', 'use_accurate_mode')
+        self.session = ClientSession()
 
-    def read_config(self):
-        self.setting = Setting()
-        self.APP_ID = self.setting.get('BaiduOCR', 'APP_ID')
-        self.API_KEY = self.setting.get('BaiduOCR', 'API_KEY')
-        self.SECRET_KEY = self.setting.get('BaiduOCR', 'SECRET_KEY')
-        self.USE_ACCURATE_MODE = self.setting.get_boolean('BaiduOCR', 'USE_ACCURATE_MODE')
+    @property
+    async def token(self):
+        if self._token == '':
+            token, _ = await self.get_token()
+            self._token = token
+        return self._token
 
-    def basic_general_ocr(self, image: bytes):
-        options = {
-            'language_type': 'CHN_ENG',
-        }
-        if self.USE_ACCURATE_MODE:
-            return self.client.basicAccurate(image, options)
+    async def get_token(self):
+        async with self.session.post(
+                f'{self.AUTH_BASE}?grant_type=client_credentials&client_id={self.apikey}&client_secret={self.seckey}') as r:
+            data = await r.json()
+            return data.get('access_token'), data.get('expires_in')
+
+    async def basic_general(self, image: bytes):
+        if self.use_accurate_mode:
+            api_type = '/accurate_basic'
         else:
-            return self.client.basicGeneral(image, options)
+            api_type = '/general_basic'
+        data = {
+            'image': b64encode(image).decode(),
+            'language_type': 'CHN_ENG'
+        }
+        async with self.session.post(f'{self.API_BASE}{api_type}?access_token={await self.token}', data=data) as r:
+            data = await r.json()
+            print(data)
+            if data.get('error_code') is not None:
+                raise Exception(f"{data.get('error_code')}: {data.get('error_msg')}")
+            return data
+
+    async def close(self):
+        await self.session.close()
+
+
+BACKENDS = {
+    'baidu': BaiduOcr
+}
+
+
+class OcrService(metaclass=Singleton):
+    def __init__(self, backend: str = 'baidu'):
+        backend_class = BACKENDS.get(backend)
+        if not backend_class:
+            raise Exception(f'{backend} 后端不存在')
+        self.setting = Setting()
+        self.backend = backend_class(self.setting)
+
+    async def close(self):
+        await self.backend.close()
+
+    async def basic_general_ocr(self, image: bytes):
+        return await self.backend.basic_general(image)
