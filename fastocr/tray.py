@@ -76,7 +76,7 @@ class SettingBackend(QObject):
 
     def getLanguages(self) -> List[str]:
         languages_str = self.setting.get('BaiduOCR', 'languages')
-        if languages_str is None:
+        if languages_str is None or languages_str == '':
             return []
         return json.loads(languages_str)
 
@@ -132,7 +132,11 @@ class AppTray(QSystemTrayIcon):
 
     def update_menu(self):
         self.language_menu.clear()
-        languages = json.loads(self.setting.get('BaiduOCR', 'languages'))
+        language_str = self.setting.get('BaiduOCR', 'languages')
+        if language_str is None or language_str == '':
+            languages = []
+        else:
+            languages = json.loads(language_str)
         for lang in languages:
             _ = self.language_menu.addAction(lang)
             # noinspection PyUnresolvedReferences
