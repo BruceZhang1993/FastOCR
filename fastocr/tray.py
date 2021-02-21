@@ -74,7 +74,7 @@ class AppTray(QSystemTrayIcon):
     def __init__(self, bus=None):
         super(AppTray, self).__init__()
         self.setting = None
-        self.bus: AppDBusObject = bus
+        self.bus: Optional[AppDBusObject] = bus
         self.capture_widget: Optional[CaptureWidget] = None
         self.engine: Optional[QQmlApplicationEngine] = None
         self.setting_window: Optional[QWindow] = None
@@ -158,12 +158,16 @@ class AppTray(QSystemTrayIcon):
         result = await OcrService().basic_general_ocr(self.pixmap_to_bytes(pixmap), lang=lang)
         data = '\n'.join([w_.get('words', '') for w_ in result.get('words_result', [])])
         if no_copy:
-            self.bus.captured(data)
-            self.showMessage('OCR 识别成功', '已发送 DBus 信号', QIcon.fromTheme('object-select-symbolic'), 5000)
+            if self.bus is not None:
+                self.bus.captured(data)
+                self.showMessage('OCR 识别成功', '已发送 DBus 信号', QIcon.fromTheme('object-select-symbolic'), 5000)
+            else:
+                self.showMessage('OCR 识别成功', '当前平台不支持 DBus', QIcon.fromTheme('object-select-symbolic'), 5000)
         else:
-            self.bus.captured(data)
             clipboard = qasync.QApplication.clipboard()
             clipboard.setText(data)
+            if self.bus is not None:
+                self.bus.captured(data)
             self.showMessage('OCR 识别成功', '已复制到系统剪切板', QIcon.fromTheme('object-select-symbolic'), 5000)
 
     async def run_capture(self, seconds=.5, no_copy=False, lang=''):

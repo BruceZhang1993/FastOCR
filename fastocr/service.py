@@ -6,7 +6,11 @@ from fastocr.setting import Setting
 from fastocr.util import Singleton
 
 
-class BaiduOcr:
+class BaseOcr:
+    pass
+
+
+class BaiduOcr(BaseOcr):
     API_BASE = 'https://aip.baidubce.com/rest/2.0/ocr/v1'
     AUTH_BASE = 'https://aip.baidubce.com/oauth/2.0/token'
 
@@ -31,7 +35,7 @@ class BaiduOcr:
             data = await r.json()
             return data.get('access_token'), data.get('expires_in')
 
-    async def basic_general(self, image: bytes, lang = ''):
+    async def basic_general(self, image: bytes, lang=''):
         if self.use_accurate_mode:
             api_type = '/accurate_basic'
         else:

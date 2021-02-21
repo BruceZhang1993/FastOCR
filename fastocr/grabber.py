@@ -6,8 +6,10 @@ from PySide2.QtGui import QGuiApplication, QScreen, QPixmap, QKeyEvent, Qt, QPai
     QRegion
 from PySide2.QtWidgets import QApplication, QWidget
 
-from fastocr.bus import app_dbus
 from fastocr.util import DesktopInfo
+
+if DesktopInfo.dbus_supported():
+    from fastocr.bus import app_dbus
 
 
 class ScreenGrabber(QObject):

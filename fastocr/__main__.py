@@ -8,7 +8,7 @@ from qasync import QEventLoop
 
 from fastocr.i18n import Translation
 from fastocr.tray import AppTray
-from fastocr.util import instance_already_running
+from fastocr.util import instance_already_running, DesktopInfo
 
 
 @click.group(invoke_without_command=True)
@@ -27,9 +27,13 @@ def run():
     Translation().load().install(app)
     loop = QEventLoop(app)
     asyncio.set_event_loop(loop)
-    from fastocr.bus import app_dbus
-    app_dbus.tray = AppTray(bus=app_dbus)
-    app_dbus.tray.show()
+    if DesktopInfo.dbus_supported():
+        from fastocr.bus import app_dbus
+        app_dbus.tray = AppTray(bus=app_dbus)
+        app_dbus.tray.show()
+    else:
+        tray = AppTray()
+        tray.show()
     with loop:
         sys.exit(loop.run_forever())
 

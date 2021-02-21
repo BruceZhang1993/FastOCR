@@ -28,6 +28,10 @@ class DesktopInfo:
     KDE_FULL_SESSION = os.environ.get('KDE_FULL_SESSION', '')
 
     @staticmethod
+    def dbus_supported():
+        return sys.platform not in ['win32', 'darwin', 'cygwin']
+
+    @staticmethod
     def is_wayland():
         return DesktopInfo.XDG_SESSION_TYPE == 'wayland' \
                or 'wayland' in DesktopInfo.WAYLAND_DISPLAY.lower()
