@@ -92,7 +92,9 @@ class AppTray(QSystemTrayIcon):
 
     # noinspection PyUnresolvedReferences
     def initialize(self):
-        self.setIcon(QIcon.fromTheme('edit-find-symbolic'))
+        QIcon.setFallbackSearchPaths(
+            QIcon.fallbackSearchPaths() + [(Path(__file__).parent / 'resource' / 'icon').as_posix()])
+        self.setIcon(QIcon.fromTheme('fastocr-tray'))
         self.activated.connect(self.activate_action)
         # Context menu
         self.setContextMenu(QMenu())
