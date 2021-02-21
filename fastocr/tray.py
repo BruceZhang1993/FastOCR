@@ -92,9 +92,15 @@ class AppTray(QSystemTrayIcon):
 
     # noinspection PyUnresolvedReferences
     def initialize(self):
+        palette = QApplication.palette()
+        back_color = palette.color(palette.Normal, palette.Window)
+        lightness = back_color.lightness()
         QIcon.setFallbackSearchPaths(
             QIcon.fallbackSearchPaths() + [(Path(__file__).parent / 'resource' / 'icon').as_posix()])
-        self.setIcon(QIcon.fromTheme('fastocr-tray'))
+        if lightness >= 180:
+            self.setIcon(QIcon.fromTheme('fastocr-tray-dark'))
+        else:
+            self.setIcon(QIcon.fromTheme('fastocr-tray-light'))
         self.activated.connect(self.activate_action)
         # Context menu
         self.setContextMenu(QMenu())
