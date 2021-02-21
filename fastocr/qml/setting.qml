@@ -8,7 +8,7 @@ ApplicationWindow {
     visible: false
     width: 860
     height: 640
-    title: 'FastOCR Setting'
+    title: qsTr('FastOCR Setting')
 
     onClosing: {
         close.accepted = false
@@ -27,7 +27,7 @@ ApplicationWindow {
             layoutDirection: Qt.RightToLeft
 
             Button {
-                text: 'Save'
+                text: qsTr('Save')
                 onClicked: {
                     backend.appid = appid_input.text
                     backend.apikey = apikey_input.text
@@ -48,7 +48,7 @@ ApplicationWindow {
             }
 
             Button {
-                text: 'Close'
+                text: qsTr('Close')
                 onClicked: setting.visible = false
             }
         }
@@ -124,7 +124,7 @@ ApplicationWindow {
                     property string value
 
                     id: japanese
-                    text: 'Japanese'
+                    text: qsTr('Japanese')
                     checked: backend ? backend.languages.includes(this.value): false
                     value: 'JAP'
                 }
@@ -133,7 +133,7 @@ ApplicationWindow {
                     property string value
 
                     id: korean
-                    text: 'Korean'
+                    text: qsTr('Korean')
                     checked: backend ? backend.languages.includes(this.value): false
                     value: 'KOR'
                 }
@@ -142,7 +142,7 @@ ApplicationWindow {
                     property string value
 
                     id: french
-                    text: 'French'
+                    text: qsTr('French')
                     checked: backend ? backend.languages.includes(this.value): false
                     value: 'FRE'
                 }
@@ -151,7 +151,7 @@ ApplicationWindow {
                     property string value
 
                     id: spanish
-                    text: 'Spanish'
+                    text: qsTr('Spanish')
                     checked: backend ? backend.languages.includes(this.value): false
                     value: 'SPA'
                 }
@@ -160,7 +160,7 @@ ApplicationWindow {
                     property string value
 
                     id: germany
-                    text: 'Germany'
+                    text: qsTr('Germany')
                     checked: backend ? backend.languages.includes(this.value): false
                     value: 'GER'
                 }
@@ -169,7 +169,7 @@ ApplicationWindow {
                     property string value
 
                     id: russian
-                    text: 'Russian'
+                    text: qsTr('Russian')
                     checked: backend ? backend.languages.includes(this.value): false
                     value: 'RUS'
                 }
@@ -178,7 +178,7 @@ ApplicationWindow {
             Row {
                 CheckBox {
                     id: accurate_input
-                    text: 'Use accurate mode'
+                    text: qsTr('Use accurate mode')
                     checked: backend ? backend.accurate : false
                     Layout.columnSpan: 4
                     Layout.fillWidth: true

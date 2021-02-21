@@ -6,6 +6,7 @@ import click
 from PySide2.QtWidgets import QApplication
 from qasync import QEventLoop
 
+from fastocr.i18n import Translation
 from fastocr.tray import AppTray
 from fastocr.util import instance_already_running
 
@@ -23,6 +24,7 @@ def run():
         print('Only one instance allowed')
         sys.exit(1)
     app = QApplication(sys.argv)
+    Translation().load().install(app)
     loop = QEventLoop(app)
     asyncio.set_event_loop(loop)
     from fastocr.bus import app_dbus

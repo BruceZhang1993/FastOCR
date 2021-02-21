@@ -1,0 +1,21 @@
+import locale
+
+from PySide2.QtCore import QTranslator
+
+from fastocr.util import Singleton
+
+
+class Translation(metaclass=Singleton):
+    def __init__(self):
+        self.translator = QTranslator()
+
+    def load(self, name: str = None):
+        if name is None:
+            name = locale.getdefaultlocale()[0]
+            if name is not None:
+                name = name.lower()
+        self.translator.load(f'i18n/{name}')
+        return self
+
+    def install(self, app):
+        app.installTranslator(self.translator)

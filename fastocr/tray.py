@@ -32,11 +32,7 @@ class SettingBackend(QObject):
     def setAppid(self, text: str):
         self.setting.set('BaiduOCR', 'app_id', text)
 
-    @Slot()
-    def appidChanged(self):
-        pass
-
-    appid = Property(str, getAppid, setAppid, notify=appidChanged)
+    appid = Property(str, getAppid, setAppid)
 
     def getApikey(self) -> str:
         return self.setting.get('BaiduOCR', 'api_key')
@@ -44,11 +40,7 @@ class SettingBackend(QObject):
     def setApikey(self, text: str):
         self.setting.set('BaiduOCR', 'api_key', text)
 
-    @Slot()
-    def apikeyChanged(self):
-        pass
-
-    apikey = Property(str, getApikey, setApikey, notify=apikeyChanged)
+    apikey = Property(str, getApikey, setApikey)
 
     def getSeckey(self) -> str:
         return self.setting.get('BaiduOCR', 'secret_key')
@@ -56,11 +48,7 @@ class SettingBackend(QObject):
     def setSeckey(self, text: str):
         self.setting.set('BaiduOCR', 'secret_key', text)
 
-    @Slot()
-    def seckeyChanged(self):
-        pass
-
-    seckey = Property(str, getSeckey, setSeckey, notify=seckeyChanged)
+    seckey = Property(str, getSeckey, setSeckey)
 
     def getAccurate(self) -> bool:
         return self.setting.get_boolean('BaiduOCR', 'use_accurate_mode')
@@ -68,11 +56,7 @@ class SettingBackend(QObject):
     def setAccurate(self, checked: bool):
         self.setting.set('BaiduOCR', 'use_accurate_mode', '1' if checked else '0')
 
-    @Slot()
-    def accurateChanged(self):
-        pass
-
-    accurate = Property(bool, getAccurate, setAccurate, notify=accurateChanged)
+    accurate = Property(bool, getAccurate, setAccurate)
 
     def getLanguages(self) -> List[str]:
         languages_str = self.setting.get('BaiduOCR', 'languages')
@@ -83,11 +67,7 @@ class SettingBackend(QObject):
     def setLanguages(self, langs: List[str]):
         self.setting.set('BaiduOCR', 'languages', json.dumps(langs))
 
-    @Slot()
-    def languagesChanged(self):
-        pass
-
-    languages = Property(list, getLanguages, setLanguages, notify=languagesChanged)
+    languages = Property(list, getLanguages, setLanguages)
 
 
 class AppTray(QSystemTrayIcon):
@@ -117,14 +97,14 @@ class AppTray(QSystemTrayIcon):
         # Context menu
         self.setContextMenu(QMenu())
         context_menu = self.contextMenu()
-        capture_action = context_menu.addAction('Capture')
+        capture_action = context_menu.addAction(self.tr('Capture'))
 
-        self.language_menu = QMenu('Capture (Other Languages)')
+        self.language_menu = QMenu(self.tr('Capture (Other Languages)'))
         context_menu.addMenu(self.language_menu)
         self.update_menu()
 
-        setting_action = context_menu.addAction('Setting')
-        quit_action = context_menu.addAction('Quit')
+        setting_action = context_menu.addAction(self.tr('Setting'))
+        quit_action = context_menu.addAction(self.tr('Quit'))
         capture_action.triggered.connect(self.start_capture)
         setting_action.triggered.connect(self.open_setting)
         quit_action.triggered.connect(self.quit_app)
