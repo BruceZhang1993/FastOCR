@@ -1,4 +1,5 @@
 import locale
+from pathlib import Path
 
 from PySide2.QtCore import QTranslator
 
@@ -14,7 +15,9 @@ class Translation(metaclass=Singleton):
             name = locale.getdefaultlocale()[0]
             if name is not None:
                 name = name.lower()
-        self.translator.load(f'i18n/{name}')
+        trans = Path(__file__).parent / 'i18n' / f'{name}.qm'
+        if trans.exists():
+            self.translator.load(trans.as_posix())
         return self
 
     def install(self, app):
