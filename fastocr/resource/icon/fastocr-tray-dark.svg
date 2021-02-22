@@ -5,8 +5,6 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    t="1613877978998"
    class="icon"
    viewBox="0 0 1024 1024"
@@ -14,9 +12,7 @@
    p-id="6090"
    width="128"
    height="128"
-   id="svg10"
-   sodipodi:docname="fastocr-tray.svg"
-   inkscape:version="1.0.2 (e86c870879, 2021-01-15)">
+   id="svg10">
   <metadata
      id="metadata14">
     <rdf:RDF>
@@ -25,30 +21,10 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
-  <sodipodi:namedview
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1"
-     objecttolerance="10"
-     gridtolerance="10"
-     guidetolerance="10"
-     inkscape:pageopacity="0"
-     inkscape:pageshadow="2"
-     inkscape:window-width="1920"
-     inkscape:window-height="1080"
-     id="namedview12"
-     showgrid="false"
-     inkscape:zoom="3.5234375"
-     inkscape:cx="48.137821"
-     inkscape:cy="59.669506"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg10"
-     inkscape:document-rotation="0" />
   <defs
      id="defs4">
     <style
@@ -60,13 +36,11 @@
      fill="#2c2c2c"
      p-id="6091"
      id="path6"
-     inkscape:label="path6"
      style="stroke-width:0.837627" />
   <path
      d="m 450.13703,619.66598 c -76.58071,0 -138.88177,-62.31969 -138.88177,-138.90039 0,-76.618 62.30106,-138.91906 138.88177,-138.91906 76.59936,0 138.90041,62.30106 138.90041,138.91906 0,76.5807 -62.30105,138.88177 -138.88176,138.88177 z m 273.5132,114.46095 c 5.40614,4.39949 11.89349,6.50601 18.34357,6.50601 a 29.230418,29.230418 0 0 0 18.36222,-51.97347 L 622.18265,577.14394 a 195.92581,195.92581 0 0 0 25.33427,-96.37835 c 0,-108.8684 -88.54879,-197.39853 -197.37989,-197.39853 -108.83111,0 -197.36125,88.54877 -197.36125,197.39853 0,108.81246 88.54879,197.36123 197.36125,197.36123 52.77508,0 100.70326,-20.95342 136.16006,-54.80702 l 137.35314,110.82578 z"
      fill="#2c2c2c"
      p-id="6092"
      id="path8"
-     inkscape:label="path8"
      style="stroke-width:0.837627" />
 </svg>
