@@ -15,7 +15,7 @@ include = ["fastocr/qml/*.qml", "fastocr/data/FastOCR.desktop", "fastocr/data/co
 python = ">=3.7,<3.10"
 qasync = "^0.13.0"
 PySide2 = "*"
-dbus-python = "^1.2.16"
+dbus-python = "*"
 click = "^7.1.2"
 aiohttp = "^3.7.3"
 

@@ -729,7 +729,7 @@ reference = "douban"
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7,<3.10"
-content-hash = "8ac923f642a0dcf21e886301a5493530dcd923cde8a891b8424d2a48f41bc3d5"
+content-hash = "a73c1f13f4704280ee6d3b5bf613139ec7193771165d255ece51cb639875954c"
 
 [metadata.files]
 aiohttp = [
