@@ -128,6 +128,8 @@ class AppTray(QSystemTrayIcon):
         for lang in languages:
             _ = self.language_menu.addAction(lang)
             # noinspection PyUnresolvedReferences
+            _.triggered.disconnect()
+            # noinspection PyUnresolvedReferences
             _.triggered.connect(partial(self.start_capture_lang, lang))
 
     def activate_action(self, reason: QSystemTrayIcon.ActivationReason):
