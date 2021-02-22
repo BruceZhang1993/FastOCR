@@ -715,7 +715,7 @@ reference = "douban"
 
 [[package]]
 name = "yaspin"
-version = "1.3.0"
+version = "1.4.0"
 description = "Yet Another Terminal Spinner"
 category = "dev"
 optional = false
@@ -729,7 +729,7 @@ reference = "douban"
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7,<3.10"
-content-hash = "35c575accc5d40f86732616851342facedd7f705cf93538408b69dd89bcc0510"
+content-hash = "8ac923f642a0dcf21e886301a5493530dcd923cde8a891b8424d2a48f41bc3d5"
 
 [metadata.files]
 aiohttp = [
@@ -1099,6 +1099,6 @@ yarl = [
     {file = "yarl-1.6.3.tar.gz", hash = "sha256:8a9066529240171b68893d60dca86a763eae2139dd42f42106b03cf4b426bf10"},
 ]
 yaspin = [
-    {file = "yaspin-1.3.0-py2.py3-none-any.whl", hash = "sha256:3b84b4c506271b638e6b09b9cb3ffe9a5c2aef0bb19ce9128cdd9be936c8d8ba"},
-    {file = "yaspin-1.3.0.tar.gz", hash = "sha256:cc37d35cc7f796dada6c37430b49e471ffa05d0686e6f8de36f83978b732df54"},
+    {file = "yaspin-1.4.0-py2.py3-none-any.whl", hash = "sha256:faefab3e7c29d8de5be0561105aaaf41eaa9824932151d7b4c94cb0c46a70926"},
+    {file = "yaspin-1.4.0.tar.gz", hash = "sha256:681654848e5cd463e4c1f896ff03165979773a34789cc787276d9d8d0151ae1d"},
 ]
