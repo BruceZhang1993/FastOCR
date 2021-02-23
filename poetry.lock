@@ -111,7 +111,7 @@ name = "dbus-python"
 version = "1.2.16"
 description = "Python bindings for libdbus"
 category = "main"
-optional = false
+optional = true
 python-versions = "*"
 
 [package.source]
@@ -726,10 +726,13 @@ type = "legacy"
 url = "https://pypi.doubanio.com/simple"
 reference = "douban"
 
+[extras]
+dbus = ["dbus-python"]
+
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7,<3.10"
-content-hash = "a73c1f13f4704280ee6d3b5bf613139ec7193771165d255ece51cb639875954c"
+content-hash = "96ec8c3fa907d0e9b8bf5e730caf817437dfe0faf333ea9aa9e1fd8057068435"
 
 [metadata.files]
 aiohttp = [

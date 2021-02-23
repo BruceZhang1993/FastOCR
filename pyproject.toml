@@ -15,12 +15,15 @@ include = ["fastocr/qml/*.qml", "fastocr/data/FastOCR.desktop", "fastocr/data/co
 python = ">=3.7,<3.10"
 qasync = "^0.13.0"
 PySide2 = "*"
-dbus-python = "*"
 click = "^7.1.2"
 aiohttp = "^3.7.3"
+dbus-python = { version = "*", optional = true }
 
 [tool.poetry.dev-dependencies]
 dephell = "^0.8.3"
+
+[tool.poetry.extras]
+dbus = ["dbus-python"]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
