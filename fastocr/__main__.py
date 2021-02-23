@@ -63,5 +63,52 @@ def generate(formation):
             print(f.read())
 
 
+@main.command()
+def diagnose():
+    # Application
+    print('== Application ==')
+    print(f'Version: {__version__}')
+    print(f'File: {__file__}')
+    print(f'Running: {instance_already_running()}')
+    print()
+    # Environment
+    print('== Environment ==')
+    import platform, PySide2.QtCore
+    _version = sys.version.replace('\n', ' ')
+    print(f'System: {platform.system()} {platform.version()}')
+    print(f'Info: {" ".join(platform.uname())}')
+    print(f'Python: {_version}')
+    print(f'Platform: {sys.platform}')
+    # noinspection PyUnresolvedReferences
+    print(f'PySide2 Qt: {PySide2.QtCore.__version__}')
+    print(f'Running Qt: {PySide2.QtCore.qVersion()}')
+    print(f'DBus: {DesktopInfo.dbus_supported()}')
+    if sys.platform not in ['win32', 'darwin', 'cygwin']:
+        print(f'Desktop: {DesktopInfo.desktop_environment()}')
+        print(f'Wayland: {DesktopInfo.is_wayland()}')
+    print()
+
+    # Dependency
+    packages = ['PySide2', 'shiboken2', 'aiohttp']
+    if sys.platform not in ['win32', 'darwin', 'cygwin']:
+        packages.append('dbus')
+    for p in packages:
+        print_package_info(p)
+
+
+def print_package_info(package_name):
+    try:
+        print(f'== {package_name} ==')
+        package = __import__(package_name)
+        print(f'Name: {package.__name__}')
+        print(f'Version: {package.__version__}')
+        print(f'Package: {package.__package__}')
+        print(f'File: {package.__file__}')
+        print(f'Path: {package.__path__}')
+        print()
+    except Exception as e:
+        print(e)
+
+
 if __name__ == '__main__':
     main()

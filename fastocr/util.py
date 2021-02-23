@@ -40,9 +40,9 @@ class DesktopInfo:
     def desktop_environment():
         ret = DesktopInfo.OTHER
         if 'gnome' in DesktopInfo.XDG_CURRENT_DESKTOP.lower() \
-                or DesktopInfo.GNOME_DESKTOP_SESSION_ID == '':
+                or DesktopInfo.GNOME_DESKTOP_SESSION_ID != '':
             ret = DesktopInfo.GNOME
-        elif DesktopInfo.KDE_FULL_SESSION == '' \
+        elif DesktopInfo.KDE_FULL_SESSION != '' \
                 or DesktopInfo.DESKTOP_SESSION.lower() == 'kde-plasma':
             ret = DesktopInfo.KDE
         elif 'sway' in DesktopInfo.XDG_CURRENT_DESKTOP.lower():
