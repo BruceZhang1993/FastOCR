@@ -79,6 +79,7 @@ class AppTray(QSystemTrayIcon):
         self.engine: Optional[QQmlApplicationEngine] = None
         self.setting_window: Optional[QWindow] = None
         self.backend: Optional[SettingBackend] = None
+        self.language_actions = dict()
         self.load_qml()
         self.initialize()
 
@@ -95,12 +96,13 @@ class AppTray(QSystemTrayIcon):
         palette = QApplication.palette()
         back_color = palette.color(palette.Normal, palette.Window)
         lightness = back_color.lightness()
-        QIcon.setFallbackSearchPaths(
-            QIcon.fallbackSearchPaths() + [(Path(__file__).parent / 'resource' / 'icon').as_posix()])
         if lightness >= 180:
-            self.setIcon(QIcon.fromTheme('fastocr-tray-dark'))
+            QIcon.setFallbackSearchPaths(
+                QIcon.fallbackSearchPaths() + [(Path(__file__).parent / 'resource' / 'icon' / 'dark').as_posix()])
         else:
-            self.setIcon(QIcon.fromTheme('fastocr-tray-light'))
+            QIcon.setFallbackSearchPaths(
+                QIcon.fallbackSearchPaths() + [(Path(__file__).parent / 'resource' / 'icon' / 'light').as_posix()])
+        self.setIcon(QIcon.fromTheme('fastocr-tray'))
         self.activated.connect(self.activate_action)
         # Context menu
         self.setContextMenu(QMenu())
@@ -120,17 +122,16 @@ class AppTray(QSystemTrayIcon):
 
     def update_menu(self):
         self.language_menu.clear()
+        self.language_actions.clear()
         language_str = self.setting.get('BaiduOCR', 'languages')
         if language_str is None or language_str == '':
             languages = []
         else:
             languages = json.loads(language_str)
         for lang in languages:
-            _ = self.language_menu.addAction(lang)
+            self.language_actions[lang] = self.language_menu.addAction(lang)
             # noinspection PyUnresolvedReferences
-            _.triggered.disconnect()
-            # noinspection PyUnresolvedReferences
-            _.triggered.connect(partial(self.start_capture_lang, lang))
+            self.language_actions[lang].triggered.connect(partial(self.start_capture_lang, lang))
 
     def activate_action(self, reason: QSystemTrayIcon.ActivationReason):
         if reason == QSystemTrayIcon.DoubleClick:
