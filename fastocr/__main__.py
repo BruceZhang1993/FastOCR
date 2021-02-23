@@ -32,7 +32,7 @@ def main(ctx):
 
 @main.command()
 def run():
-    if instance_already_running():
+    if sys.platform not in ['win32', 'darwin', 'cygwin'] and instance_already_running():
         print('Only one instance allowed')
         sys.exit(1)
     app = QApplication(sys.argv)

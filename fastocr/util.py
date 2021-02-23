@@ -1,5 +1,4 @@
 import asyncio
-import fcntl
 import os
 import sys
 
@@ -79,6 +78,7 @@ def instance_already_running(label="default"):
     Detect if an an instance with the label is already running, globally
     at the operating system level.
     """
+    import fcntl
     lock_file_pointer = os.open(f"/tmp/fastocr_{label}.lock", os.O_WRONLY | os.O_CREAT)
 
     try:
