@@ -100,12 +100,12 @@ class AppTray(QSystemTrayIcon):
         back_color = palette.color(palette.Normal, palette.Window)
         lightness = back_color.lightness()
         if lightness >= 180:
-            QIcon.setFallbackSearchPaths(
-                QIcon.fallbackSearchPaths() + [(Path(__file__).parent / 'resource' / 'icon' / 'dark').as_posix()])
+            path = Path(__file__).parent / 'resource' / 'icon' / 'dark'
         else:
-            QIcon.setFallbackSearchPaths(
-                QIcon.fallbackSearchPaths() + [(Path(__file__).parent / 'resource' / 'icon' / 'light').as_posix()])
-        self.setIcon(QIcon.fromTheme('fastocr-tray'))
+            path = Path(__file__).parent / 'resource' / 'icon' / 'light'
+        QIcon.setFallbackSearchPaths(
+            QIcon.fallbackSearchPaths() + [path.as_posix()])
+        self.setIcon(QIcon.fromTheme('fastocr-tray', QIcon((path / 'fastocr-tray.png').as_posix())))
         self.activated.connect(self.activate_action)
         # Context menu
         self.setContextMenu(QMenu())
