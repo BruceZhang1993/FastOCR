@@ -10,10 +10,13 @@ from PySide2.QtGui import QPixmap, QIcon, QWindow
 from PySide2.QtQml import QQmlApplicationEngine
 from PySide2.QtWidgets import QSystemTrayIcon, QMenu, QApplication
 
-from fastocr.bus import AppDBusObject
 from fastocr.grabber import CaptureWidget
 from fastocr.service import OcrService
 from fastocr.setting import Setting
+from fastocr.util import DesktopInfo
+
+if DesktopInfo.dbus_supported():
+    from fastocr.bus import AppDBusObject
 
 
 # noinspection PyPep8Naming
@@ -74,7 +77,7 @@ class AppTray(QSystemTrayIcon):
     def __init__(self, bus=None):
         super(AppTray, self).__init__()
         self.setting = None
-        self.bus: Optional[AppDBusObject] = bus
+        self.bus: Optional['AppDBusObject'] = bus
         self.capture_widget: Optional[CaptureWidget] = None
         self.engine: Optional[QQmlApplicationEngine] = None
         self.setting_window: Optional[QWindow] = None
