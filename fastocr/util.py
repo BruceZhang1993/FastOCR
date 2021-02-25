@@ -48,6 +48,43 @@ class DesktopInfo:
             ret = DesktopInfo.SWAY
         return ret
 
+    @staticmethod
+    async def is_dark_mode():
+        if sys.platform == 'darwin':
+            # macOS darkmode
+            out, _, __ = await run_command('defaults', 'read', '-g', 'AppleInterfaceStyle', allow_fail=True)
+            if out.strip().lower() == 'dark':
+                return True
+            else:
+                return False
+        elif sys.platform == 'win32':
+            # Windows 10 darkmode
+            try:
+                import winreg
+                registry = winreg.ConnectRegistry(None, winreg.HKEY_CURRENT_USER)
+                regpath = r'SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize'
+                try:
+                    regkey = winreg.OpenKey(registry, regpath)
+                except:
+                    return False
+                for i in range(1024):
+                    try:
+                        value_name, value, _ = winreg.EnumValue(regkey, i)
+                        if value_name == 'AppsUseLightTheme':
+                            return value == 0
+                    except OSError:
+                        break
+                return False
+            except:
+                return False
+        else:
+            # Qt darkmode
+            from PySide2.QtWidgets import QApplication
+            palette = QApplication.palette()
+            back_color = palette.color(palette.Normal, palette.Window)
+            lightness = back_color.lightness()
+            return lightness <= 160
+
 
 async def check_exists(command):
     _, __, returncode = await run_command('which', command, allow_fail=True)

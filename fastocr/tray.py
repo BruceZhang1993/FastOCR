@@ -96,10 +96,9 @@ class AppTray(QSystemTrayIcon):
 
     # noinspection PyUnresolvedReferences
     def initialize(self):
-        palette = QApplication.palette()
-        back_color = palette.color(palette.Normal, palette.Window)
-        lightness = back_color.lightness()
-        if lightness >= 180:
+        loop = asyncio.get_event_loop()
+        is_dark = loop.run_until_complete(DesktopInfo.is_dark_mode())
+        if not is_dark:
             path = Path(__file__).parent / 'resource' / 'icon' / 'dark'
         else:
             path = Path(__file__).parent / 'resource' / 'icon' / 'light'
