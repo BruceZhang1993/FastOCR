@@ -58,7 +58,6 @@ class BaiduOcr(BaseOcr):
 
 class YoudaoOcr(BaseOcr):
     API_BASE = 'https://openapi.youdao.com/ocrapi'
-    CURTIME = str(int(time))
     SALT = str(uuid1)
 
     def __init__(self, setting: Setting):
@@ -70,7 +69,7 @@ class YoudaoOcr(BaseOcr):
     @property
     def sign(self):
         if self._sign == '':
-            sign, _ = self.get_sign()
+            sign, _ = self.get_sign(image, curtime)
             self._sign = sign
         return self._sign
 
@@ -82,12 +81,13 @@ class YoudaoOcr(BaseOcr):
         else:
             return q if q_size <= 20 else q[0:10] + str(q_size) + q[q_size - 10:q_size]
 
-    def get_sign(self, image: bytes):
-        sign_str = f'{self.app_id}{self.truncate(image)}{self.SALT}{self.CURTIME}{self.seckey}'
+    def get_sign(self, image: bytes, timestamp: str):
+        sign_str = f'{self.app_id}{self.truncate(image)}{self.SALT}{timestamp}{self.seckey}'
         sign_hash = sha256().update(sign_str)
         return sha256().hexdigest
 
     async def basic_general(self, image: bytes, lang=''):
+        curtime = str(time())
         data = {
             'img': b64encode(image).decode(),
             'langType': lang if lang != '' else 'auto',
@@ -98,7 +98,7 @@ class YoudaoOcr(BaseOcr):
             'sign': self.sign,
             'docType': 'json',
             'signType': 'v3',
-            'curtime': self.CURTIME
+            'curtime': curtime
         }
         async with self.session.post(f'{self.API_BASE}', data=data) as r:
             data = await r.json()
