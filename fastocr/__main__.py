@@ -69,7 +69,8 @@ def diagnose():
     print('== Application ==')
     print(f'Version: {__version__}')
     print(f'File: {__file__}')
-    print(f'Running: {instance_already_running()}')
+    if sys.platform not in ['win32', 'darwin', 'cgywin']:
+        print(f'Running: {instance_already_running()}')
     print()
     # Environment
     print('== Environment ==')
