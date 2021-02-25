@@ -82,8 +82,8 @@ class YoudaoOcr(BaseOcr):
         else:
             return q if q_size <= 20 else q[0:10] + str(q_size) + q[q_size - 10:q_size]
 
-    def get_sign(self):
-        sign_str = f'{self.app_id}{self.truncate()}{self.SALT}{self.CURTIME}{self.seckey}'
+    def get_sign(self, image: bytes):
+        sign_str = f'{self.app_id}{self.truncate(image)}{self.SALT}{self.CURTIME}{self.seckey}'
         sign_hash = sha256().update(sign_str)
         return sha256().hexdigest
 
