@@ -57,7 +57,7 @@ class BaiduOcr(BaseOcr):
 
 class YoudaoOcr(BaseOcr):
     API_BASE = 'https://openapi.youdao.com/ocrapi'
-    SALT = str(uuid1)
+    SALT = str(uuid1())
 
     def __init__(self, setting: Setting):
         self.appid = setting.get('YoudaoOCR', 'app_id')  # appKey in Youdao docs
@@ -74,11 +74,12 @@ class YoudaoOcr(BaseOcr):
 
     def get_sign(self, image: bytes, timestamp: str):
         sign_str = f'{self.appid}{self.truncate(image)}{self.SALT}{timestamp}{self.seckey}'
-        sha256().update(sign_str.encode())
-        return sha256().hexdigest()
+        hasher = sha256()
+        hasher.update(sign_str.encode())
+        return hasher.hexdigest()
 
     async def basic_general(self, image: bytes, lang='') -> List[str]:
-        curtime = str(time())
+        curtime = str(int(time()))
         data = {
             'img': b64encode(image).decode(),
             'langType': lang if lang != '' else 'auto',
@@ -93,10 +94,13 @@ class YoudaoOcr(BaseOcr):
         }
         async with self.session.post(f'{self.API_BASE}', data=data) as r:
             data = await r.json()
-            if data.get('errorCode') is not None:
-                raise Exception(f"{data.get('errorCode')}")
-            print(data)
-            return []
+            if int(data.get('errorCode')) != 0:
+                raise Exception(f"YoudaoOCR Error: {data.get('errorCode')}")
+            rs = data.get('Result', {}).get('regions', [])
+            result = []
+            for r_ in rs:
+                result += [l_.get('text') for l_ in r_.get('lines', [])]
+            return result
 
     async def close(self):
         await self.session.close()
