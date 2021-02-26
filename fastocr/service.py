@@ -1,6 +1,7 @@
 from base64 import b64encode
 from hashlib import sha256
 from time import time
+from typing import List
 from uuid import uuid1
 
 from aiohttp import ClientSession
@@ -35,7 +36,7 @@ class BaiduOcr(BaseOcr):
             data = await r.json()
             return data.get('access_token'), data.get('expires_in')
 
-    async def basic_general(self, image: bytes, lang=''):
+    async def basic_general(self, image: bytes, lang='') -> List[str]:
         if self.use_accurate_mode:
             api_type = '/accurate_basic'
         else:
@@ -48,7 +49,7 @@ class BaiduOcr(BaseOcr):
             data = await r.json()
             if data.get('error_code') is not None:
                 raise Exception(f"{data.get('error_code')}: {data.get('error_msg')}")
-            return data
+            return [w_.get('words', '') for w_ in data.get('words_result', [])]
 
     async def close(self):
         await self.session.close()
@@ -76,7 +77,7 @@ class YoudaoOcr(BaseOcr):
         sha256().update(sign_str)
         return sha256().hexdigest
 
-    async def basic_general(self, image: bytes, lang=''):
+    async def basic_general(self, image: bytes, lang='') -> List[str]:
         curtime = str(time())
         data = {
             'img': b64encode(image).decode(),
@@ -94,7 +95,8 @@ class YoudaoOcr(BaseOcr):
             data = await r.json()
             if data.get('errorCode') is not None:
                 raise Exception(f"{data.get('errorCode')}")
-            return data
+            print(data)
+            return []
 
     async def close(self):
         await self.session.close()
@@ -117,5 +119,5 @@ class OcrService(metaclass=Singleton):
     async def close(self):
         await self.backend.close()
 
-    async def basic_general_ocr(self, image: bytes, lang=''):
+    async def basic_general_ocr(self, image: bytes, lang='') -> List[str]:
         return await self.backend.basic_general(image, lang=lang)

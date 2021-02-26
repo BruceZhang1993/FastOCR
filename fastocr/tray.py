@@ -72,6 +72,33 @@ class SettingBackend(QObject):
 
     languages = Property(list, getLanguages, setLanguages)
 
+    def getYdAppid(self) -> str:
+        return self.setting.get('YoudaoOCR', 'app_id')
+
+    def setYdAppid(self, text: str):
+        self.setting.set('YoudaoOCR', 'app_id', text)
+
+    yd_appid = Property(str, getYdAppid, setYdAppid)
+
+    def getYdSeckey(self) -> str:
+        return self.setting.get('YoudaoOCR', 'secret_key')
+
+    def setYdSeckey(self, text: str):
+        self.setting.set('YoudaoOCR', 'secret_key', text)
+
+    yd_seckey = Property(str, getYdSeckey, setYdSeckey)
+
+    def getDefaultBackend(self) -> str:
+        res = self.setting.get('General', 'default_backend')
+        if res == '':
+            return 'baidu'
+        return res
+
+    def setDefaultBackend(self, backend):
+        self.setting.set('General', 'default_backend', backend)
+
+    default_backend = Property(str, getDefaultBackend, setDefaultBackend)
+
 
 class AppTray(QSystemTrayIcon):
     def __init__(self, bus=None):
@@ -169,7 +196,7 @@ class AppTray(QSystemTrayIcon):
     async def start_ocr(self, no_copy: bool = False, lang='', pixmap: QPixmap = None):
         self.capture_widget.close()
         result = await OcrService().basic_general_ocr(self.pixmap_to_bytes(pixmap), lang=lang)
-        data = '\n'.join([w_.get('words', '') for w_ in result.get('words_result', [])])
+        data = '\n'.join(result)
         if no_copy:
             if self.bus is not None:
                 self.bus.captured(data)
