@@ -70,7 +70,7 @@ class DesktopInfo:
                 for i in range(1024):
                     try:
                         value_name, value, _ = winreg.EnumValue(regkey, i)
-                        if value_name == 'AppsUseLightTheme':
+                        if value_name == 'SystemUsesLightTheme':
                             return value == 0
                     except OSError:
                         break

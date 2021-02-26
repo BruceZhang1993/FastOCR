@@ -1,16 +1,13 @@
 from base64 import b64encode
 from hashlib import sha256
-from uuid import uuid1
 from time import time
+from uuid import uuid1
 
 from aiohttp import ClientSession
 
+from fastocr.base import BaseOcr
 from fastocr.setting import Setting
 from fastocr.util import Singleton
-
-
-class BaseOcr:
-    pass
 
 
 class BaiduOcr(BaseOcr):
@@ -56,22 +53,15 @@ class BaiduOcr(BaseOcr):
     async def close(self):
         await self.session.close()
 
+
 class YoudaoOcr(BaseOcr):
     API_BASE = 'https://openapi.youdao.com/ocrapi'
     SALT = str(uuid1)
 
     def __init__(self, setting: Setting):
-        self._sign = ''
-        self.appid = setting.get('YoudaoOCR', 'app_id') # appKey in Youdao docs
-        self.seckey = setting.get('YoudaoOCR', 'secret_key') # appSecret in Youdao docs
+        self.appid = setting.get('YoudaoOCR', 'app_id')  # appKey in Youdao docs
+        self.seckey = setting.get('YoudaoOCR', 'secret_key')  # appSecret in Youdao docs
         self.session = ClientSession()
-
-    @property
-    def sign(self):
-        if self._sign == '':
-            sign, _ = self.get_sign(image, curtime)
-            self._sign = sign
-        return self._sign
 
     def truncate(self, image: bytes):
         q = b64encode(image).decode()
@@ -82,8 +72,8 @@ class YoudaoOcr(BaseOcr):
             return q if q_size <= 20 else q[0:10] + str(q_size) + q[q_size - 10:q_size]
 
     def get_sign(self, image: bytes, timestamp: str):
-        sign_str = f'{self.app_id}{self.truncate(image)}{self.SALT}{timestamp}{self.seckey}'
-        sign_hash = sha256().update(sign_str)
+        sign_str = f'{self.appid}{self.truncate(image)}{self.SALT}{timestamp}{self.seckey}'
+        sha256().update(sign_str)
         return sha256().hexdigest
 
     async def basic_general(self, image: bytes, lang=''):
@@ -95,7 +85,7 @@ class YoudaoOcr(BaseOcr):
             'imageType': '1',
             'appKey': self.appid,
             'salt': self.SALT,
-            'sign': self.sign,
+            'sign': self.get_sign(image, curtime),
             'docType': 'json',
             'signType': 'v3',
             'curtime': curtime
@@ -108,6 +98,7 @@ class YoudaoOcr(BaseOcr):
 
     async def close(self):
         await self.session.close()
+
 
 BACKENDS = {
     'baidu': BaiduOcr,
