@@ -195,7 +195,10 @@ class AppTray(QSystemTrayIcon):
     @qasync.asyncSlot(QPixmap)
     async def start_ocr(self, no_copy: bool = False, lang='', pixmap: QPixmap = None):
         self.capture_widget.close()
-        result = await OcrService().basic_general_ocr(self.pixmap_to_bytes(pixmap), lang=lang)
+        default = self.setting.get('General', 'default_backend')
+        if default == '':
+            default = 'baidu'
+        result = await OcrService(default).basic_general_ocr(self.pixmap_to_bytes(pixmap), lang=lang)
         data = '\n'.join(result)
         if no_copy:
             if self.bus is not None:
