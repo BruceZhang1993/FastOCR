@@ -74,8 +74,8 @@ class YoudaoOcr(BaseOcr):
 
     def get_sign(self, image: bytes, timestamp: str):
         sign_str = f'{self.appid}{self.truncate(image)}{self.SALT}{timestamp}{self.seckey}'
-        sha256().update(sign_str)
-        return sha256().hexdigest
+        sha256().update(sign_str.encode())
+        return sha256().hexdigest()
 
     async def basic_general(self, image: bytes, lang='') -> List[str]:
         curtime = str(time())
