@@ -36,9 +36,9 @@ class Setting(metaclass=Singleton):
         try:
             return self.parser.getboolean(section, key)
         except NoSectionError:
-            return ''
+            return False
         except NoOptionError:
-            return ''
+            return False
 
     def get(self, section, key):
         self.lazy_load()
