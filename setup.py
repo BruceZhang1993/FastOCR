@@ -27,6 +27,6 @@ setup(
     packages=['fastocr'],
     package_dir={"": "."},
     package_data={"fastocr": ["data/*.desktop", "data/*.ini", "data/*.pro", "i18n/*.qm", "i18n/*.ts", "qml/*.qml", "resource/icon/dark/*.png", "resource/icon/light/*.png"]},
-    install_requires=['aiohttp==3.*,>=3.7.3', 'click==7.*,>=7.1.2', 'pyside2', 'qasync==0.*,>=0.13.0'],
+    install_requires=['aiohttp', 'click', 'pyqt5', 'qasync'],
     extras_require={"dbus": ["dbus-python"], "dev": ["dephell==0.*,>=0.8.3"]},
 )

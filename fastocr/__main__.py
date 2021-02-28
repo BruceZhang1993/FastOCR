@@ -4,7 +4,7 @@ from pathlib import Path
 
 import click
 import pkg_resources
-from PySide2.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication
 from qasync import QEventLoop
 
 from fastocr import __appname__
@@ -74,15 +74,15 @@ def diagnose():
     print()
     # Environment
     print('== Environment ==')
-    import platform, PySide2.QtCore
+    import platform, PyQt5.QtCore
     _version = sys.version.replace('\n', ' ')
     print(f'System: {platform.system()} {platform.version()}')
     print(f'Info: {" ".join(platform.uname())}')
     print(f'Python: {_version}')
     print(f'Platform: {sys.platform}')
     # noinspection PyUnresolvedReferences
-    print(f'PySide2 Qt: {PySide2.QtCore.__version__}')
-    print(f'Running Qt: {PySide2.QtCore.qVersion()}')
+    print(f'PySide2 Qt: {PyQt5.QtCore.__version__}')
+    print(f'Running Qt: {PyQt5.QtCore.qVersion()}')
     print(f'DBus: {DesktopInfo.dbus_supported()}')
     if sys.platform not in ['win32', 'darwin', 'cygwin']:
         print(f'Desktop: {DesktopInfo.desktop_environment()}')
@@ -90,7 +90,7 @@ def diagnose():
     print()
 
     # Dependency
-    packages = ['PySide2', 'shiboken2', 'aiohttp']
+    packages = ['PyQt5', 'aiohttp']
     if sys.platform not in ['win32', 'darwin', 'cygwin']:
         packages.append('dbus')
     for p in packages:

@@ -5,10 +5,11 @@ from pathlib import Path
 from typing import Optional, List
 
 import qasync
-from PySide2.QtCore import QByteArray, QBuffer, QIODevice, QObject, Property, Slot
-from PySide2.QtGui import QPixmap, QIcon, QWindow
-from PySide2.QtQml import QQmlApplicationEngine
-from PySide2.QtWidgets import QSystemTrayIcon, QMenu, QApplication
+from PyQt5.QtCore import QByteArray, QBuffer, QIODevice, QObject, pyqtSlot, pyqtProperty
+from PyQt5.QtGui import QPixmap, QIcon
+from PyQt5.QtQml import QQmlApplicationEngine
+from PyQt5.QtQuick import QQuickWindow
+from PyQt5.QtWidgets import QSystemTrayIcon, QMenu, QApplication
 
 from fastocr.grabber import CaptureWidget
 from fastocr.service import OcrService
@@ -25,7 +26,7 @@ class SettingBackend(QObject):
         super(SettingBackend, self).__init__(parent)
         self.setting = Setting()
 
-    @Slot()
+    @pyqtSlot()
     def save(self):
         self.setting.save()
 
@@ -35,7 +36,7 @@ class SettingBackend(QObject):
     def setAppid(self, text: str):
         self.setting.set('BaiduOCR', 'app_id', text)
 
-    appid = Property(str, getAppid, setAppid)
+    appid = pyqtProperty(str, getAppid, setAppid)
 
     def getApikey(self) -> str:
         return self.setting.get('BaiduOCR', 'api_key')
@@ -43,7 +44,7 @@ class SettingBackend(QObject):
     def setApikey(self, text: str):
         self.setting.set('BaiduOCR', 'api_key', text)
 
-    apikey = Property(str, getApikey, setApikey)
+    apikey = pyqtProperty(str, getApikey, setApikey)
 
     def getSeckey(self) -> str:
         return self.setting.get('BaiduOCR', 'secret_key')
@@ -51,7 +52,7 @@ class SettingBackend(QObject):
     def setSeckey(self, text: str):
         self.setting.set('BaiduOCR', 'secret_key', text)
 
-    seckey = Property(str, getSeckey, setSeckey)
+    seckey = pyqtProperty(str, getSeckey, setSeckey)
 
     def getAccurate(self) -> bool:
         return self.setting.get_boolean('BaiduOCR', 'use_accurate_mode')
@@ -59,7 +60,7 @@ class SettingBackend(QObject):
     def setAccurate(self, checked: bool):
         self.setting.set('BaiduOCR', 'use_accurate_mode', '1' if checked else '0')
 
-    accurate = Property(bool, getAccurate, setAccurate)
+    accurate = pyqtProperty(bool, getAccurate, setAccurate)
 
     def getLanguages(self) -> List[str]:
         languages_str = self.setting.get('BaiduOCR', 'languages')
@@ -70,7 +71,7 @@ class SettingBackend(QObject):
     def setLanguages(self, langs: List[str]):
         self.setting.set('BaiduOCR', 'languages', json.dumps(langs))
 
-    languages = Property(list, getLanguages, setLanguages)
+    languages = pyqtProperty(list, getLanguages, setLanguages)
 
     def getYdAppid(self) -> str:
         return self.setting.get('YoudaoOCR', 'app_id')
@@ -78,7 +79,7 @@ class SettingBackend(QObject):
     def setYdAppid(self, text: str):
         self.setting.set('YoudaoOCR', 'app_id', text)
 
-    yd_appid = Property(str, getYdAppid, setYdAppid)
+    yd_appid = pyqtProperty(str, getYdAppid, setYdAppid)
 
     def getYdSeckey(self) -> str:
         return self.setting.get('YoudaoOCR', 'secret_key')
@@ -86,7 +87,7 @@ class SettingBackend(QObject):
     def setYdSeckey(self, text: str):
         self.setting.set('YoudaoOCR', 'secret_key', text)
 
-    yd_seckey = Property(str, getYdSeckey, setYdSeckey)
+    yd_seckey = pyqtProperty(str, getYdSeckey, setYdSeckey)
 
     def getDefaultBackend(self) -> str:
         res = self.setting.get('General', 'default_backend')
@@ -97,7 +98,7 @@ class SettingBackend(QObject):
     def setDefaultBackend(self, backend):
         self.setting.set('General', 'default_backend', backend)
 
-    default_backend = Property(str, getDefaultBackend, setDefaultBackend)
+    default_backend = pyqtProperty(str, getDefaultBackend, setDefaultBackend)
 
 
 class AppTray(QSystemTrayIcon):
@@ -107,7 +108,7 @@ class AppTray(QSystemTrayIcon):
         self.bus: Optional['AppDBusObject'] = bus
         self.capture_widget: Optional[CaptureWidget] = None
         self.engine: Optional[QQmlApplicationEngine] = None
-        self.setting_window: Optional[QWindow] = None
+        self.setting_window: Optional[QQuickWindow] = None
         self.backend: Optional[SettingBackend] = None
         self.language_actions = dict()
         self.load_qml()

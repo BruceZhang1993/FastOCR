@@ -14,11 +14,12 @@ include = ["fastocr/qml/*.qml", "fastocr/data/FastOCR.desktop", "fastocr/data/co
 
 [tool.poetry.dependencies]
 python = ">=3.7,<3.10"
-qasync = "^0.13.0"
-PySide2 = "*"
-click = "^7.1.2"
-aiohttp = "^3.7.3"
+qasync = "*"
+click = "*"
+aiohttp = "*"
 dbus-python = { version = "*", optional = true }
+pyqt5 = "*"
+pyqt5-sip = "*"
 
 [tool.poetry.dev-dependencies]
 dephell = "^0.8.3"

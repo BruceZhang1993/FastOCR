@@ -1,10 +1,10 @@
 import sys
 from typing import Optional
 
-from PySide2.QtCore import QObject, QRect, QPoint, Signal, QDir
-from PySide2.QtGui import QGuiApplication, QScreen, QPixmap, QKeyEvent, Qt, QPaintEvent, QPainter, QColor, QMouseEvent, \
+from PyQt5.QtCore import QObject, QRect, QPoint, QDir, pyqtSignal, Qt
+from PyQt5.QtGui import QGuiApplication, QScreen, QPixmap, QKeyEvent, QPaintEvent, QPainter, QColor, QMouseEvent, \
     QRegion
-from PySide2.QtWidgets import QApplication, QWidget
+from PyQt5.QtWidgets import QApplication, QWidget
 
 from fastocr.util import DesktopInfo
 
@@ -110,7 +110,7 @@ class ScreenGrabber(QObject):
 
 
 class CaptureWidget(QWidget):
-    captured = Signal(QPixmap)
+    captured = pyqtSignal(QPixmap)
 
     def __init__(self):
         """
@@ -118,10 +118,12 @@ class CaptureWidget(QWidget):
         """
         super().__init__()
         self.painter = QPainter()
-        self.setCursor(Qt.CrossCursor)
+        self.setCursor(Qt.CursorShape.CrossCursor)
         # Make widget stay on top & fullscreen
-        self.setWindowState(Qt.WindowFullScreen)
-        self.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint | Qt.Tool | Qt.BypassWindowManagerHint)
+        self.setWindowState(Qt.WindowState.WindowFullScreen)
+        self.setWindowFlags(
+            Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint | Qt.Tool |
+            Qt.BypassWindowManagerHint)
         self.screenshot = ScreenGrabber().grab_entire_desktop()
         self._clipping_state = 0
         self._startpos: Optional[QPoint] = None
@@ -136,18 +138,18 @@ class CaptureWidget(QWidget):
         :param event: QKeyEvent instance
         :type event: QKeyEvent
         """
-        if event.key() == Qt.Key_Escape:
+        if event.key() == Qt.Key.Key_Escape:
             self.close()
-        if event.key() == Qt.Key_Enter or event.key() == Qt.Key_Return:
+        if event.key() == Qt.Key.Key_Return or event.key() == Qt.Key.Key_Enter:
             if self._startpos is None or self._endpos is None:
                 return
             screen = QApplication.screenAt(self._startpos)
             ratio = screen.devicePixelRatio()
             cropped = self.screenshot.copy(QRect(
-                self._startpos.x() * ratio,
-                self._startpos.y() * ratio,
-                (self._endpos.x() - self._startpos.x()) * ratio,
-                (self._endpos.y() - self._startpos.y()) * ratio,
+                int(self._startpos.x() * ratio),
+                int(self._startpos.y() * ratio),
+                int((self._endpos.x() - self._startpos.x()) * ratio),
+                int((self._endpos.y() - self._startpos.y()) * ratio),
             ))
             # noinspection PyUnresolvedReferences
             self.captured.emit(cropped)
@@ -202,5 +204,5 @@ class CaptureWidget(QWidget):
             ))
         self.painter.setClipRegion(grey)
         self.painter.drawRect(0, 0, self.rect().width(), self.rect().height())
-        self.painter.setClipRegion(self.rect())
+        self.painter.setClipRegion(QRegion(self.rect()))
         self.painter.end()

@@ -79,7 +79,7 @@ class DesktopInfo:
                 return False
         else:
             # Qt darkmode
-            from PySide2.QtWidgets import QApplication
+            from PyQt5.QtWidgets import QApplication
             palette = QApplication.palette()
             back_color = palette.color(palette.Normal, palette.Window)
             lightness = back_color.lightness()
