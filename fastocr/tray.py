@@ -130,8 +130,6 @@ class AppTray(QSystemTrayIcon):
             path = Path(__file__).parent / 'resource' / 'icon' / 'dark'
         else:
             path = Path(__file__).parent / 'resource' / 'icon' / 'light'
-        QIcon.setFallbackSearchPaths(
-            QIcon.fallbackSearchPaths() + [path.as_posix()])
         self.setIcon(QIcon.fromTheme('fastocr-tray', QIcon((path / 'fastocr-tray.png').as_posix())))
         self.activated.connect(self.activate_action)
         # Context menu
@@ -221,8 +219,8 @@ class AppTray(QSystemTrayIcon):
         self.capture_widget.captured.connect(partial(self.start_ocr, no_copy, lang))
         self.capture_widget.showFullScreen()
 
-    @qasync.asyncSlot(str)
-    async def start_capture_lang(self, lang):
+    @qasync.asyncSlot()
+    async def start_capture_lang(self, lang, _):
         await self.run_capture(.5, lang=lang)
 
     @qasync.asyncSlot()
