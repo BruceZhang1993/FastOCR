@@ -130,7 +130,7 @@ class AppTray(QSystemTrayIcon):
             path = Path(__file__).parent / 'resource' / 'icon' / 'dark'
         else:
             path = Path(__file__).parent / 'resource' / 'icon' / 'light'
-        self.setIcon(QIcon.fromTheme('fastocr-tray', QIcon((path / 'fastocr-tray.png').as_posix())))
+        self.setIcon(QIcon.fromTheme('fastocr-tray', QIcon((path / 'fastocr-tray.svg').as_posix())))
         self.activated.connect(self.activate_action)
         # Context menu
         self.setContextMenu(QMenu())

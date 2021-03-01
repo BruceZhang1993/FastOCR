@@ -9,8 +9,7 @@ repository = "https://github.com/BruceZhang1993/FastOCR"
 documentation = "https://github.com/BruceZhang1993/FastOCR"
 keywords = ["ocr"]
 include = ["fastocr/qml/*.qml", "fastocr/data/FastOCR.desktop", "fastocr/data/config.example.ini",
-    "fastocr/data/i18n.pro", "fastocr/i18n/*.qm", "fastocr/resource/icon/light/*.png",
-    "fastocr/resource/icon/dark/*.png"]
+    "fastocr/data/i18n.pro", "fastocr/i18n/*.qm", "fastocr/resource/icon/*/*.svg"]
 
 [tool.poetry.dependencies]
 python = ">=3.7,<3.10"

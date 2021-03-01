@@ -62,6 +62,7 @@ class Setting(metaclass=Singleton):
         with self.get_config_file().open('w') as f:
             self.parser.write(f)
             f.flush()
+        self.reload()
         for cb in self._callbacks:
             try:
                 cb()
