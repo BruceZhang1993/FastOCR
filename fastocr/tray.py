@@ -124,6 +124,7 @@ class AppTray(QSystemTrayIcon):
 
     # noinspection PyUnresolvedReferences
     def initialize(self):
+        self.setToolTip('FastOCR')
         loop = asyncio.get_event_loop()
         is_dark = loop.run_until_complete(DesktopInfo.is_dark_mode())
         if not is_dark:
@@ -152,6 +153,10 @@ class AppTray(QSystemTrayIcon):
         self.setting.register_callback(self.update_menu)
 
     def update_menu(self):
+        default_backend = self.setting.get('General', 'default_backend')
+        if default_backend == '':
+            default_backend = 'baidu'
+        self.setToolTip(f'FastOCR ({default_backend})')
         self.language_menu.clear()
         self.language_actions.clear()
         language_str = self.setting.get('BaiduOCR', 'languages')
