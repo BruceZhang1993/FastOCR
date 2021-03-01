@@ -1,5 +1,7 @@
 import asyncio
+import signal
 import sys
+from functools import partial
 from pathlib import Path
 
 import click
@@ -35,10 +37,18 @@ def run():
     if sys.platform not in ['win32', 'darwin', 'cygwin'] and instance_already_running():
         print('Only one instance allowed')
         sys.exit(1)
+
+    def quit_application(code):
+        QApplication.quit()
+        sys.exit(code)
+
     app = QApplication(sys.argv)
     Translation().load().install(app)
     loop = QEventLoop(app)
     asyncio.set_event_loop(loop)
+    loop = asyncio.get_event_loop()
+    for s in [signal.SIGINT, signal.SIGTERM]:
+        loop.add_signal_handler(s, partial(quit_application, s))
     if DesktopInfo.dbus_supported():
         from fastocr.bus import app_dbus
         app_dbus.tray = AppTray(bus=app_dbus)
