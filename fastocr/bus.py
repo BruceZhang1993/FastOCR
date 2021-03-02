@@ -2,7 +2,10 @@ import asyncio
 from typing import Optional
 
 import dbus
-import dbus.mainloop.glib
+try:
+    import dbus.mainloop.pyqt5
+except:
+    import dbus.mainloop.glib
 import dbus.service
 
 import fastocr.tray
@@ -37,7 +40,10 @@ class AppDBusObject(dbus.service.Object):
         :rtype: AppDBusObject
         """
         # noinspection PyUnresolvedReferences
-        dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
+        try:
+            dbus.mainloop.pyqt5.DBusQtMainLoop(set_as_default=True)
+        except:
+            dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
         session_bus = dbus.SessionBus()
         bus_name = dbus.service.BusName(AppDBusObject.INTERFACE, session_bus)
         obj = AppDBusObject(session_bus, '/' + AppDBusObject.INTERFACE.replace('.', '/'), bus_name)
