@@ -1,6 +1,7 @@
+import json
 from configparser import ConfigParser, NoSectionError, NoOptionError
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List
 
 from fastocr.util import Singleton
 
@@ -75,3 +76,55 @@ class Setting(metaclass=Singleton):
     def register_callback(self, callback):
         if callback not in self._callbacks:
             self._callbacks.append(callback)
+
+    @property
+    def baidu_appid(self) -> str:
+        return self.get('BaiduOCR', 'app_id')
+
+    @baidu_appid.setter
+    def baidu_appid(self, value: str):
+        self.set('BaiduOCR', 'app_id', value)
+
+    @property
+    def baidu_apikey(self) -> str:
+        return self.get('BaiduOCR', 'api_key')
+
+    @baidu_apikey.setter
+    def baidu_apikey(self, value: str):
+        self.set('BaiduOCR', 'api_key', value)
+
+    @property
+    def baidu_seckey(self) -> str:
+        return self.get('BaiduOCR', 'secret_key')
+
+    @baidu_seckey.setter
+    def baidu_seckey(self, value: str):
+        self.set('BaiduOCR', 'secret_key', value)
+
+    @property
+    def baidu_accurate(self) -> bool:
+        return self.get_boolean('BaiduOCR', 'use_accurate_mode')
+
+    @baidu_accurate.setter
+    def baidu_accurate(self, value: bool):
+        self.set_boolean('BaiduOCR', 'use_accurate_mode', value)
+
+    @property
+    def baidu_languages(self) -> List[str]:
+        languages_str = self.get('BaiduOCR', 'languages')
+        if languages_str is None or languages_str == '':
+            return []
+        return json.loads(languages_str)
+
+    @baidu_languages.setter
+    def baidu_languages(self, value: List[str]):
+        self.set('BaiduOCR', 'languages', json.dumps(value))
+
+    @property
+    def general_icon_theme(self) -> str:
+        r = self.get('General', 'icon_theme')
+        return r if r != '' else 'auto'
+
+    @general_icon_theme.setter
+    def general_icon_theme(self, value):
+        self.set('General', 'icon_theme', value)

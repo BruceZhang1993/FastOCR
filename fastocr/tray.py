@@ -1,5 +1,4 @@
 import asyncio
-import json
 from functools import partial
 from pathlib import Path
 from typing import Optional, List
@@ -34,46 +33,43 @@ class SettingBackend(QObject):
 
     @pyqtProperty(str, constant=True)
     def appid(self) -> str:
-        return self.setting.get('BaiduOCR', 'app_id')
+        return self.setting.baidu_appid
 
     @appid.setter
     def appid(self, text: str):
-        self.setting.set('BaiduOCR', 'app_id', text)
+        self.setting.baidu_appid = text
 
     @pyqtProperty(str, constant=True)
     def apikey(self) -> str:
-        return self.setting.get('BaiduOCR', 'api_key')
+        return self.setting.baidu_apikey
 
     @apikey.setter
     def apikey(self, text: str):
-        self.setting.set('BaiduOCR', 'api_key', text)
+        self.setting.baidu_apikey = text
 
     @pyqtProperty(str, constant=True)
     def seckey(self) -> str:
-        return self.setting.get('BaiduOCR', 'secret_key')
+        return self.setting.baidu_seckey
 
     @seckey.setter
     def seckey(self, text: str):
-        self.setting.set('BaiduOCR', 'secret_key', text)
+        self.setting.baidu_seckey = text
 
     @pyqtProperty(bool, constant=True)
     def accurate(self) -> bool:
-        return self.setting.get_boolean('BaiduOCR', 'use_accurate_mode')
+        return self.setting.baidu_accurate
 
     @accurate.setter
     def accurate(self, checked: bool):
-        self.setting.set_boolean('BaiduOCR', 'use_accurate_mode', checked)
+        self.setting.baidu_accurate = checked
 
     @pyqtProperty(list, constant=True)
     def languages(self) -> List[str]:
-        languages_str = self.setting.get('BaiduOCR', 'languages')
-        if languages_str is None or languages_str == '':
-            return []
-        return json.loads(languages_str)
+        return self.setting.baidu_languages
 
     @languages.setter
     def languages(self, langs: List[str]):
-        self.setting.set('BaiduOCR', 'languages', json.dumps(langs))
+        self.setting.baidu_languages = langs
 
     @pyqtProperty(str, constant=True)
     def yd_appid(self) -> str:
@@ -104,14 +100,11 @@ class SettingBackend(QObject):
 
     @pyqtProperty(str, constant=True)
     def icon_theme(self) -> str:
-        res = self.setting.get('General', 'icon_theme')
-        if res == '':
-            return 'auto'
-        return res
+        return self.setting.general_icon_theme
 
     @icon_theme.setter
     def icon_theme(self, value):
-        self.setting.set('General', 'icon_theme', value)
+        self.setting.general_icon_theme = value
 
 
 class AppTray(QSystemTrayIcon):
@@ -160,7 +153,7 @@ class AppTray(QSystemTrayIcon):
         self.setting.register_callback(self.update_menu)
 
     def update_icon(self):
-        icon_theme = self.setting.get('General', 'icon_theme')
+        icon_theme = self.setting.general_icon_theme
         if icon_theme in ['', 'auto']:
             is_dark = self._loop.run_until_complete(DesktopInfo.is_dark_mode())
             if not is_dark:
@@ -179,12 +172,7 @@ class AppTray(QSystemTrayIcon):
         self.setToolTip(f'FastOCR ({default_backend})')
         self.language_menu.clear()
         self.language_actions.clear()
-        language_str = self.setting.get('BaiduOCR', 'languages')
-        if language_str is None or language_str == '':
-            languages = []
-        else:
-            languages = json.loads(language_str)
-        for lang in languages:
+        for lang in self.setting.baidu_languages:
             self.language_actions[lang] = self.language_menu.addAction(lang)
             # noinspection PyUnresolvedReferences
             self.language_actions[lang].triggered.connect(partial(self.start_capture_lang, lang))

@@ -18,10 +18,10 @@ class BaiduOcr(BaseOcr):
     AUTH_BASE = 'https://aip.baidubce.com/oauth/2.0/token'
 
     def __init__(self, setting: Setting):
-        self.appid = setting.get('BaiduOCR', 'app_id')
-        self.apikey = setting.get('BaiduOCR', 'api_key')
-        self.seckey = setting.get('BaiduOCR', 'secret_key')
-        self.use_accurate_mode = setting.get_boolean('BaiduOCR', 'use_accurate_mode')
+        self.appid = setting.baidu_appid
+        self.apikey = setting.baidu_apikey
+        self.seckey = setting.baidu_seckey
+        self.use_accurate_mode = setting.baidu_accurate
         self.session = ClientSession()
 
     @property
