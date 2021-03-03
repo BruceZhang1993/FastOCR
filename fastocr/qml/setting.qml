@@ -64,223 +64,230 @@ ApplicationWindow {
         }
     }
 
-    ColumnLayout {
+    ScrollView
+    {
         anchors.fill: parent
-        spacing: 2
-        GroupBox {
-            title: qsTr("Default backend")
-            Layout.fillWidth: true
-            Layout.alignment: Qt.AlignTop
+        clip: true
 
-            Flow {
-                id: select_flow
-                anchors.fill: parent
+        Column {
+            anchors.fill: parent
+            padding: 4
+            bottomPadding: 10
+            spacing: 4
 
-                RadioButton {
-                    property string value
-
-                    id: baidu_select
-                    value: 'baidu'
-                    checked: backend ? backend.default_backend == value : false
-                    text: qsTr("BaiduOCR")
-                }
-
-                RadioButton {
-                    property string value
-
-                    id: youdao_select
-                    value: 'youdao'
-                    checked: backend ? backend.default_backend == value : false
-                    text: qsTr("YoudaoOCR")
-                }
-            }
-        }
-
-        GroupBox {
-            title: qsTr("Icon theme")
-            Layout.fillWidth: true
-            Layout.alignment: Qt.AlignTop
-
-            Flow {
-                ComboBox {
-                    id: icon_theme_select
-                    textRole: 'text'
-                    valueRole: 'value'
-                    Component.onCompleted: currentIndex = indexOfValue(backend ? backend.icon_theme : 'auto')
-                    model: [
-                        { value: 'auto', text: qsTr('Auto Select') },
-                        { value: 'light', text: qsTr("Light") },
-                        { value: 'dark', text: qsTr("Dark") }
-                    ]
-                }
-            }
-        }
-
-        GroupBox {
-            id: group1
-            Layout.fillWidth: true
-            Layout.alignment: Qt.AlignTop
-            title: qsTr("BaiduOCR")
-
-            GridLayout {
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.top: parent.top
-                anchors.topMargin: 0
-                anchors.rightMargin: 0
-                anchors.leftMargin: 0
-                columns: 4
-
-                Label {
-                    id: appid_label
-                    text: qsTr("APP_ID")
-                }
-
-                TextField {
-                    id: appid_input
-                    text: backend ? backend.appid : ''
-                    Layout.columnSpan: 3
-                    Layout.fillWidth: true
-                }
-
-                Label {
-                    id: apikey_label
-                    text: qsTr("API_KEY")
-                }
-
-                TextField {
-                    id: apikey_input
-                    text: backend ? backend.apikey : ''
-                    Layout.columnSpan: 3
-                    Layout.fillWidth: true
-                }
-
-                Label {
-                    id: seckey_label
-                    text: qsTr("SECRET_KEY")
-                }
-
-                TextField {
-                    id: seckey_input
-                    text: backend ? backend.seckey : ''
-                    Layout.columnSpan: 3
-                    Layout.fillWidth: true
-                }
-
-                Label {
-                    id: lang_label
-                    text: qsTr("Languages")
-                }
+            GroupBox {
+                title: qsTr("Default backend")
 
                 Flow {
-                    id: language_flow
-                    Layout.columnSpan: 3
-                    Layout.fillWidth: true
+                    id: select_flow
+                    anchors.fill: parent
 
-                    CheckBox {
+                    RadioButton {
                         property string value
 
-                        id: japanese
-                        text: qsTr('Japanese')
-                        checked: backend ? backend.languages.includes(this.value): false
-                        value: 'JAP'
+                        id: baidu_select
+                        value: 'baidu'
+                        checked: backend ? backend.default_backend == value : false
+                        text: qsTr("BaiduOCR")
                     }
 
-                    CheckBox {
+                    RadioButton {
                         property string value
 
-                        id: korean
-                        text: qsTr('Korean')
-                        checked: backend ? backend.languages.includes(this.value): false
-                        value: 'KOR'
-                    }
-
-                    CheckBox {
-                        property string value
-
-                        id: french
-                        text: qsTr('French')
-                        checked: backend ? backend.languages.includes(this.value): false
-                        value: 'FRE'
-                    }
-
-                    CheckBox {
-                        property string value
-
-                        id: spanish
-                        text: qsTr('Spanish')
-                        checked: backend ? backend.languages.includes(this.value): false
-                        value: 'SPA'
-                    }
-
-                    CheckBox {
-                        property string value
-
-                        id: germany
-                        text: qsTr('Germany')
-                        checked: backend ? backend.languages.includes(this.value): false
-                        value: 'GER'
-                    }
-
-                    CheckBox {
-                        property string value
-
-                        id: russian
-                        text: qsTr('Russian')
-                        checked: backend ? backend.languages.includes(this.value): false
-                        value: 'RUS'
-                    }
-                }
-
-                Row {
-                    CheckBox {
-                        id: accurate_input
-                        text: qsTr('Use accurate mode')
-                        checked: backend ? backend.accurate : false
-                        Layout.columnSpan: 4
-                        Layout.fillWidth: true
+                        id: youdao_select
+                        value: 'youdao'
+                        checked: backend ? backend.default_backend == value : false
+                        text: qsTr("YoudaoOCR")
                     }
                 }
             }
-        }
 
-        GroupBox {
-            id: group2
-            Layout.fillWidth: true
-            Layout.alignment: Qt.AlignTop
-            title: qsTr("YoudaoOCR")
+            GroupBox {
+                title: qsTr("Icon theme")
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignTop
 
-            GridLayout {
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.top: parent.top
-                anchors.topMargin: 0
-                anchors.rightMargin: 0
-                anchors.leftMargin: 0
-                columns: 4
-
-                Label {
-                    id: yd_appid_label
-                    text: qsTr("APP_ID")
+                Flow {
+                    ComboBox {
+                        id: icon_theme_select
+                        textRole: 'text'
+                        valueRole: 'value'
+                        Component.onCompleted: currentIndex = indexOfValue(backend ? backend.icon_theme : 'auto')
+                        model: [
+                            { value: 'auto', text: qsTr('Auto Select') },
+                            { value: 'light', text: qsTr("Light") },
+                            { value: 'dark', text: qsTr("Dark") }
+                        ]
+                    }
                 }
+            }
 
-                TextField {
-                    id: yd_appid_input
-                    text: backend ? backend.yd_appid : ''
-                    Layout.columnSpan: 3
-                    Layout.fillWidth: true
+            GroupBox {
+                id: group1
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignTop
+                title: qsTr("BaiduOCR")
+
+                GridLayout {
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    anchors.topMargin: 0
+                    anchors.rightMargin: 0
+                    anchors.leftMargin: 0
+                    columns: 4
+
+                    Label {
+                        id: appid_label
+                        text: qsTr("APP_ID")
+                    }
+
+                    TextField {
+                        id: appid_input
+                        text: backend ? backend.appid : ''
+                        Layout.columnSpan: 3
+                        Layout.fillWidth: true
+                    }
+
+                    Label {
+                        id: apikey_label
+                        text: qsTr("API_KEY")
+                    }
+
+                    TextField {
+                        id: apikey_input
+                        text: backend ? backend.apikey : ''
+                        Layout.columnSpan: 3
+                        Layout.fillWidth: true
+                    }
+
+                    Label {
+                        id: seckey_label
+                        text: qsTr("SECRET_KEY")
+                    }
+
+                    TextField {
+                        id: seckey_input
+                        text: backend ? backend.seckey : ''
+                        Layout.columnSpan: 3
+                        Layout.fillWidth: true
+                    }
+
+                    Label {
+                        id: lang_label
+                        text: qsTr("Languages")
+                    }
+
+                    Flow {
+                        id: language_flow
+                        Layout.columnSpan: 3
+                        Layout.fillWidth: true
+
+                        CheckBox {
+                            property string value
+
+                            id: japanese
+                            text: qsTr('Japanese')
+                            checked: backend ? backend.languages.includes(this.value): false
+                            value: 'JAP'
+                        }
+
+                        CheckBox {
+                            property string value
+
+                            id: korean
+                            text: qsTr('Korean')
+                            checked: backend ? backend.languages.includes(this.value): false
+                            value: 'KOR'
+                        }
+
+                        CheckBox {
+                            property string value
+
+                            id: french
+                            text: qsTr('French')
+                            checked: backend ? backend.languages.includes(this.value): false
+                            value: 'FRE'
+                        }
+
+                        CheckBox {
+                            property string value
+
+                            id: spanish
+                            text: qsTr('Spanish')
+                            checked: backend ? backend.languages.includes(this.value): false
+                            value: 'SPA'
+                        }
+
+                        CheckBox {
+                            property string value
+
+                            id: germany
+                            text: qsTr('Germany')
+                            checked: backend ? backend.languages.includes(this.value): false
+                            value: 'GER'
+                        }
+
+                        CheckBox {
+                            property string value
+
+                            id: russian
+                            text: qsTr('Russian')
+                            checked: backend ? backend.languages.includes(this.value): false
+                            value: 'RUS'
+                        }
+                    }
+
+                    Row {
+                        CheckBox {
+                            id: accurate_input
+                            text: qsTr('Use accurate mode')
+                            checked: backend ? backend.accurate : false
+                            Layout.columnSpan: 4
+                            Layout.fillWidth: true
+                        }
+                    }
                 }
+            }
 
-                Label {
-                    id: yd_seckey_label
-                    text: qsTr("SEC_KEY")
-                }
+            GroupBox {
+                id: group2
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignTop
+                title: qsTr("YoudaoOCR")
 
-                TextField {
-                    id: yd_seckey_input
-                    text: backend ? backend.yd_seckey : ''
-                    Layout.columnSpan: 3
-                    Layout.fillWidth: true
+                GridLayout {
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    anchors.topMargin: 0
+                    anchors.rightMargin: 0
+                    anchors.leftMargin: 0
+                    columns: 4
+
+                    Label {
+                        id: yd_appid_label
+                        text: qsTr("APP_ID")
+                    }
+
+                    TextField {
+                        id: yd_appid_input
+                        text: backend ? backend.yd_appid : ''
+                        Layout.columnSpan: 3
+                        Layout.fillWidth: true
+                    }
+
+                    Label {
+                        id: yd_seckey_label
+                        text: qsTr("SEC_KEY")
+                    }
+
+                    TextField {
+                        id: yd_seckey_input
+                        text: backend ? backend.yd_seckey : ''
+                        Layout.columnSpan: 3
+                        Layout.fillWidth: true
+                    }
                 }
             }
         }
