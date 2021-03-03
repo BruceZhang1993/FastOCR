@@ -1,5 +1,7 @@
+import json
 from base64 import b64encode
 from hashlib import sha256
+from pathlib import Path
 from time import time
 from typing import List
 from uuid import uuid1
@@ -11,11 +13,11 @@ from fastocr.setting import Setting
 
 
 class BaiduOcr(BaseOcr):
+    TOKEN_FILE = Path.home() / '.cache' / 'fastocr' / 'baidu_token_data.json'
     API_BASE = 'https://aip.baidubce.com/rest/2.0/ocr/v1'
     AUTH_BASE = 'https://aip.baidubce.com/oauth/2.0/token'
 
     def __init__(self, setting: Setting):
-        self._token = ''
         self.appid = setting.get('BaiduOCR', 'app_id')
         self.apikey = setting.get('BaiduOCR', 'api_key')
         self.seckey = setting.get('BaiduOCR', 'secret_key')
@@ -24,10 +26,22 @@ class BaiduOcr(BaseOcr):
 
     @property
     async def token(self):
-        if self._token == '':
-            token, _ = await self.get_token()
-            self._token = token
-        return self._token
+        if self.TOKEN_FILE.exists():
+            with self.TOKEN_FILE.open('r') as f:
+                token_data = json.load(f)
+            expires_in = token_data.get('expires_in', 0)
+            timestamp = token_data.get('timestamp', 0)
+            if time() < timestamp + expires_in:
+                return token_data.get('token', '')
+        token, expires_in = await self.get_token()
+        timestamp = int(time())
+        with self.TOKEN_FILE.open('w') as f:
+            json.dump({
+                'token': token,
+                'expires_in': expires_in,
+                'timestamp': timestamp
+            }, f)
+        return token
 
     async def get_token(self):
         async with self.session.post(
