@@ -67,16 +67,17 @@ ApplicationWindow {
     ScrollView
     {
         anchors.fill: parent
+        width: setting.width
         clip: true
 
-        Column {
+        ColumnLayout {
             anchors.fill: parent
-            padding: 4
-            bottomPadding: 10
-            spacing: 4
+            spacing: 2
 
             GroupBox {
                 title: qsTr("Default backend")
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignTop
 
                 Flow {
                     id: select_flow
