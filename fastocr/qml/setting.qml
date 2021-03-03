@@ -68,7 +68,7 @@ ApplicationWindow {
         anchors.fill: parent
         spacing: 2
         GroupBox {
-            title: qsTr("General")
+            title: qsTr("Default backend")
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignTop
 
@@ -94,6 +94,12 @@ ApplicationWindow {
                     text: qsTr("YoudaoOCR")
                 }
             }
+        }
+
+        GroupBox {
+            title: qsTr("Icon theme")
+            Layout.fillWidth: true
+            Layout.alignment: Qt.AlignTop
 
             Flow {
                 ComboBox {
