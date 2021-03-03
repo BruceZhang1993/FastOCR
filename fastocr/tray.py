@@ -21,7 +21,7 @@ if DesktopInfo.dbus_supported():
     from fastocr.bus import AppDBusObject
 
 
-# noinspection PyPep8Naming
+# noinspection PyPep8Naming,PyPropertyDefinition
 class SettingBackend(QObject):
     def __init__(self, parent=None):
         super(SettingBackend, self).__init__(parent)
@@ -32,75 +32,86 @@ class SettingBackend(QObject):
         self.setting.save()
         self.setting.reload()
 
-    def getAppid(self) -> str:
+    @pyqtProperty(str, constant=True)
+    def appid(self) -> str:
         return self.setting.get('BaiduOCR', 'app_id')
 
-    def setAppid(self, text: str):
+    @appid.setter
+    def appid(self, text: str):
         self.setting.set('BaiduOCR', 'app_id', text)
 
-    appid = pyqtProperty(str, getAppid, setAppid, constant=True)
-
-    def getApikey(self) -> str:
+    @pyqtProperty(str, constant=True)
+    def apikey(self) -> str:
         return self.setting.get('BaiduOCR', 'api_key')
 
-    def setApikey(self, text: str):
+    @apikey.setter
+    def apikey(self, text: str):
         self.setting.set('BaiduOCR', 'api_key', text)
 
-    apikey = pyqtProperty(str, getApikey, setApikey, constant=True)
-
-    def getSeckey(self) -> str:
+    @pyqtProperty(str, constant=True)
+    def seckey(self) -> str:
         return self.setting.get('BaiduOCR', 'secret_key')
 
-    def setSeckey(self, text: str):
+    @seckey.setter
+    def seckey(self, text: str):
         self.setting.set('BaiduOCR', 'secret_key', text)
 
-    seckey = pyqtProperty(str, getSeckey, setSeckey, constant=True)
-
-    def getAccurate(self) -> bool:
+    @pyqtProperty(bool, constant=True)
+    def accurate(self) -> bool:
         return self.setting.get_boolean('BaiduOCR', 'use_accurate_mode')
 
-    def setAccurate(self, checked: bool):
-        self.setting.set('BaiduOCR', 'use_accurate_mode', '1' if checked else '0')
+    @accurate.setter
+    def accurate(self, checked: bool):
+        self.setting.set_boolean('BaiduOCR', 'use_accurate_mode', checked)
 
-    accurate = pyqtProperty(bool, getAccurate, setAccurate, constant=True)
-
-    def getLanguages(self) -> List[str]:
+    @pyqtProperty(list, constant=True)
+    def languages(self) -> List[str]:
         languages_str = self.setting.get('BaiduOCR', 'languages')
         if languages_str is None or languages_str == '':
             return []
         return json.loads(languages_str)
 
-    def setLanguages(self, langs: List[str]):
+    @languages.setter
+    def languages(self, langs: List[str]):
         self.setting.set('BaiduOCR', 'languages', json.dumps(langs))
 
-    languages = pyqtProperty(list, getLanguages, setLanguages, constant=True)
-
-    def getYdAppid(self) -> str:
+    @pyqtProperty(str, constant=True)
+    def yd_appid(self) -> str:
         return self.setting.get('YoudaoOCR', 'app_id')
 
-    def setYdAppid(self, text: str):
+    @yd_appid.setter
+    def yd_appid(self, text: str):
         self.setting.set('YoudaoOCR', 'app_id', text)
 
-    yd_appid = pyqtProperty(str, getYdAppid, setYdAppid, constant=True)
-
-    def getYdSeckey(self) -> str:
+    @pyqtProperty(str, constant=True)
+    def yd_seckey(self) -> str:
         return self.setting.get('YoudaoOCR', 'secret_key')
 
-    def setYdSeckey(self, text: str):
+    @yd_seckey.setter
+    def yd_seckey(self, text: str):
         self.setting.set('YoudaoOCR', 'secret_key', text)
 
-    yd_seckey = pyqtProperty(str, getYdSeckey, setYdSeckey, constant=True)
-
-    def getDefaultBackend(self) -> str:
+    @pyqtProperty(str, constant=True)
+    def default_backend(self) -> str:
         res = self.setting.get('General', 'default_backend')
         if res == '':
             return 'baidu'
         return res
 
-    def setDefaultBackend(self, backend):
+    @default_backend.setter
+    def default_backend(self, backend):
         self.setting.set('General', 'default_backend', backend)
 
-    default_backend = pyqtProperty(str, getDefaultBackend, setDefaultBackend, constant=True)
+    @pyqtProperty(str, constant=True)
+    def icon_theme(self) -> str:
+        res = self.setting.get('General', 'icon_theme')
+        if res == '':
+            return 'auto'
+        return res
+
+    @icon_theme.setter
+    def icon_theme(self, value):
+        self.setting.set('General', 'icon_theme', value)
 
 
 class AppTray(QSystemTrayIcon):
@@ -132,11 +143,15 @@ class AppTray(QSystemTrayIcon):
             QApplication.quit()
         self.setToolTip('FastOCR')
         loop = asyncio.get_event_loop()
-        is_dark = loop.run_until_complete(DesktopInfo.is_dark_mode())
-        if not is_dark:
-            path = Path(__file__).parent / 'resource' / 'icon' / 'dark'
+        icon_theme = self.setting.get('General', 'icon_theme')
+        if icon_theme in ['', 'auto']:
+            is_dark = loop.run_until_complete(DesktopInfo.is_dark_mode())
+            if not is_dark:
+                path = Path(__file__).parent / 'resource' / 'icon' / 'dark'
+            else:
+                path = Path(__file__).parent / 'resource' / 'icon' / 'light'
         else:
-            path = Path(__file__).parent / 'resource' / 'icon' / 'light'
+            path = Path(__file__).parent / 'resource' / 'icon' / icon_theme
         if DesktopInfo.desktop_environment() == DesktopInfo.KDE:
             self.setIcon(QIcon.fromTheme('fastocr-tray', QIcon((path / 'fastocr-tray.png').as_posix())))
         else:

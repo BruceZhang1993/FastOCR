@@ -40,6 +40,10 @@ class Setting(metaclass=Singleton):
         except NoOptionError:
             return False
 
+    def set_boolean(self, section, key, value: bool):
+        self.lazy_load()
+        return self.set(section, key, '1' if value else '0')
+
     def get(self, section, key):
         self.lazy_load()
         try:

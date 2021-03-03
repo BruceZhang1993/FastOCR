@@ -46,6 +46,7 @@ ApplicationWindow {
                     backend.languages = checked
 
                     // General
+                    backend.icon_theme = icon_theme_select.currentValue
                     var radios = select_flow.children
                     for (var i=0; i < radios.length; i++)
                         if (radios[i].checked)
@@ -67,7 +68,7 @@ ApplicationWindow {
         anchors.fill: parent
         spacing: 2
         GroupBox {
-            title: qsTr("Default backend")
+            title: qsTr("General")
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignTop
 
@@ -91,6 +92,20 @@ ApplicationWindow {
                     value: 'youdao'
                     checked: backend ? backend.default_backend == value : false
                     text: qsTr("YoudaoOCR")
+                }
+            }
+
+            Flow {
+                ComboBox {
+                    id: icon_theme_select
+                    textRole: 'text'
+                    valueRole: 'value'
+                    Component.onCompleted: currentIndex = indexOfValue(backend ? backend.icon_theme : 'auto')
+                    model: [
+                        { value: 'auto', text: qsTr('Auto Select') },
+                        { value: 'light', text: qsTr("Light") },
+                        { value: 'dark', text: qsTr("Dark") }
+                    ]
                 }
             }
         }
