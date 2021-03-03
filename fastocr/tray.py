@@ -124,6 +124,10 @@ class AppTray(QSystemTrayIcon):
 
     # noinspection PyUnresolvedReferences
     def initialize(self):
+        if not DesktopInfo.tray_supported():
+            self.showMessage('错误信息', '当前环境不支持系统托盘显示，应用将正常退出', QIcon.fromTheme('dialog-error-symbolic'), 5000)
+            print('当前环境不支持系统托盘显示，应用将正常退出')
+            QApplication.quit()
         self.setToolTip('FastOCR')
         loop = asyncio.get_event_loop()
         is_dark = loop.run_until_complete(DesktopInfo.is_dark_mode())
@@ -205,8 +209,12 @@ class AppTray(QSystemTrayIcon):
         default = self.setting.get('General', 'default_backend')
         if default == '':
             default = 'baidu'
-        result = await OcrService(default).basic_general_ocr(self.pixmap_to_bytes(pixmap), lang=lang)
-        data = '\n'.join(result)
+        try:
+            result = await OcrService(default).basic_general_ocr(self.pixmap_to_bytes(pixmap), lang=lang)
+            data = '\n'.join(result)
+        except Exception as err:
+            self.showMessage('OCR 识别异常', str(err), QIcon.fromTheme('dialog-error-symbolic'), 5000)
+            return
         if no_copy:
             if self.bus is not None:
                 self.bus.captured(data)

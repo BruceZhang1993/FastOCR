@@ -27,6 +27,14 @@ class DesktopInfo:
     KDE_FULL_SESSION = os.environ.get('KDE_FULL_SESSION', '')
 
     @staticmethod
+    def tray_supported():
+        try:
+            from PyQt5.QtWidgets import QSystemTrayIcon
+            return QSystemTrayIcon.isSystemTrayAvailable()
+        except:
+            return False
+
+    @staticmethod
     def dbus_supported():
         return sys.platform not in ['win32', 'darwin', 'cygwin']
 
