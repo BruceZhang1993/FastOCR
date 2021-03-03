@@ -88,8 +88,9 @@ class DesktopInfo:
         else:
             # Qt darkmode
             from PyQt5.QtWidgets import QApplication
+            from PyQt5.QtGui import QPalette
             palette = QApplication.palette()
-            back_color = palette.color(palette.Normal, palette.Window)
+            back_color = palette.color(QPalette.ColorGroup.Normal, QPalette.ColorRole.Background)
             lightness = back_color.lightness()
             return lightness <= 160
 

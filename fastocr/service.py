@@ -8,7 +8,6 @@ from aiohttp import ClientSession
 
 from fastocr.base import BaseOcr
 from fastocr.setting import Setting
-from fastocr.util import Singleton
 
 
 class BaiduOcr(BaseOcr):
@@ -34,6 +33,8 @@ class BaiduOcr(BaseOcr):
         async with self.session.post(
                 f'{self.AUTH_BASE}?grant_type=client_credentials&client_id={self.apikey}&client_secret={self.seckey}') as r:
             data = await r.json()
+            if data.get('error_code') is not None:
+                raise Exception(f"{data.get('error_code')}: {data.get('error_msg')}")
             return data.get('access_token'), data.get('expires_in')
 
     async def basic_general(self, image: bytes, lang='') -> List[str]:
@@ -112,12 +113,13 @@ BACKENDS = {
 }
 
 
-class OcrService(metaclass=Singleton):
+class OcrService:
     def __init__(self, backend: str = 'baidu'):
         backend_class = BACKENDS.get(backend)
         if not backend_class:
             raise Exception(f'{backend} 后端不存在')
         self.setting = Setting()
+        self.setting.reload()
         self.backend = backend_class(self.setting)
 
     async def close(self):

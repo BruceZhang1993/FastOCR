@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Optional, List
 
 import qasync
+# noinspection PyUnresolvedReferences
 from PyQt5.QtCore import QByteArray, QBuffer, QIODevice, QObject, pyqtSlot, pyqtProperty
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtQml import QQmlApplicationEngine
@@ -29,6 +30,7 @@ class SettingBackend(QObject):
     @pyqtSlot()
     def save(self):
         self.setting.save()
+        self.setting.reload()
 
     def getAppid(self) -> str:
         return self.setting.get('BaiduOCR', 'app_id')
@@ -36,7 +38,7 @@ class SettingBackend(QObject):
     def setAppid(self, text: str):
         self.setting.set('BaiduOCR', 'app_id', text)
 
-    appid = pyqtProperty(str, getAppid, setAppid)
+    appid = pyqtProperty(str, getAppid, setAppid, constant=True)
 
     def getApikey(self) -> str:
         return self.setting.get('BaiduOCR', 'api_key')
@@ -44,7 +46,7 @@ class SettingBackend(QObject):
     def setApikey(self, text: str):
         self.setting.set('BaiduOCR', 'api_key', text)
 
-    apikey = pyqtProperty(str, getApikey, setApikey)
+    apikey = pyqtProperty(str, getApikey, setApikey, constant=True)
 
     def getSeckey(self) -> str:
         return self.setting.get('BaiduOCR', 'secret_key')
@@ -52,7 +54,7 @@ class SettingBackend(QObject):
     def setSeckey(self, text: str):
         self.setting.set('BaiduOCR', 'secret_key', text)
 
-    seckey = pyqtProperty(str, getSeckey, setSeckey)
+    seckey = pyqtProperty(str, getSeckey, setSeckey, constant=True)
 
     def getAccurate(self) -> bool:
         return self.setting.get_boolean('BaiduOCR', 'use_accurate_mode')
@@ -60,7 +62,7 @@ class SettingBackend(QObject):
     def setAccurate(self, checked: bool):
         self.setting.set('BaiduOCR', 'use_accurate_mode', '1' if checked else '0')
 
-    accurate = pyqtProperty(bool, getAccurate, setAccurate)
+    accurate = pyqtProperty(bool, getAccurate, setAccurate, constant=True)
 
     def getLanguages(self) -> List[str]:
         languages_str = self.setting.get('BaiduOCR', 'languages')
@@ -71,7 +73,7 @@ class SettingBackend(QObject):
     def setLanguages(self, langs: List[str]):
         self.setting.set('BaiduOCR', 'languages', json.dumps(langs))
 
-    languages = pyqtProperty(list, getLanguages, setLanguages)
+    languages = pyqtProperty(list, getLanguages, setLanguages, constant=True)
 
     def getYdAppid(self) -> str:
         return self.setting.get('YoudaoOCR', 'app_id')
@@ -79,7 +81,7 @@ class SettingBackend(QObject):
     def setYdAppid(self, text: str):
         self.setting.set('YoudaoOCR', 'app_id', text)
 
-    yd_appid = pyqtProperty(str, getYdAppid, setYdAppid)
+    yd_appid = pyqtProperty(str, getYdAppid, setYdAppid, constant=True)
 
     def getYdSeckey(self) -> str:
         return self.setting.get('YoudaoOCR', 'secret_key')
@@ -87,7 +89,7 @@ class SettingBackend(QObject):
     def setYdSeckey(self, text: str):
         self.setting.set('YoudaoOCR', 'secret_key', text)
 
-    yd_seckey = pyqtProperty(str, getYdSeckey, setYdSeckey)
+    yd_seckey = pyqtProperty(str, getYdSeckey, setYdSeckey, constant=True)
 
     def getDefaultBackend(self) -> str:
         res = self.setting.get('General', 'default_backend')
@@ -98,7 +100,7 @@ class SettingBackend(QObject):
     def setDefaultBackend(self, backend):
         self.setting.set('General', 'default_backend', backend)
 
-    default_backend = pyqtProperty(str, getDefaultBackend, setDefaultBackend)
+    default_backend = pyqtProperty(str, getDefaultBackend, setDefaultBackend, constant=True)
 
 
 class AppTray(QSystemTrayIcon):
@@ -206,12 +208,17 @@ class AppTray(QSystemTrayIcon):
     @qasync.asyncSlot(QPixmap)
     async def start_ocr(self, no_copy: bool = False, lang='', pixmap: QPixmap = None):
         self.capture_widget.close()
+        self.setting.reload()
         default = self.setting.get('General', 'default_backend')
         if default == '':
             default = 'baidu'
         try:
-            result = await OcrService(default).basic_general_ocr(self.pixmap_to_bytes(pixmap), lang=lang)
+            service = OcrService(default)
+            # result = await service.basic_general_ocr(self.pixmap_to_bytes(pixmap), lang=lang)
+            result = []
+            await service.close()
             data = '\n'.join(result)
+            del service
         except Exception as err:
             self.showMessage('OCR 识别异常', str(err), QIcon.fromTheme('dialog-error-symbolic'), 5000)
             return
