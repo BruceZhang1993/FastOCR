@@ -214,8 +214,7 @@ class AppTray(QSystemTrayIcon):
             default = 'baidu'
         try:
             service = OcrService(default)
-            # result = await service.basic_general_ocr(self.pixmap_to_bytes(pixmap), lang=lang)
-            result = []
+            result = await service.basic_general_ocr(self.pixmap_to_bytes(pixmap), lang=lang)
             await service.close()
             data = '\n'.join(result)
             del service
