@@ -124,6 +124,7 @@ class AppTray(QSystemTrayIcon):
         self.setting_window: Optional[QQuickWindow] = None
         self.backend: Optional[SettingBackend] = None
         self.language_actions = dict()
+        self._loop = asyncio.get_event_loop()
         self.load_qml()
         self.initialize()
 
@@ -142,20 +143,6 @@ class AppTray(QSystemTrayIcon):
             print('当前环境不支持系统托盘显示，应用将正常退出')
             QApplication.quit()
         self.setToolTip('FastOCR')
-        loop = asyncio.get_event_loop()
-        icon_theme = self.setting.get('General', 'icon_theme')
-        if icon_theme in ['', 'auto']:
-            is_dark = loop.run_until_complete(DesktopInfo.is_dark_mode())
-            if not is_dark:
-                path = Path(__file__).parent / 'resource' / 'icon' / 'dark'
-            else:
-                path = Path(__file__).parent / 'resource' / 'icon' / 'light'
-        else:
-            path = Path(__file__).parent / 'resource' / 'icon' / icon_theme
-        if DesktopInfo.desktop_environment() == DesktopInfo.KDE:
-            self.setIcon(QIcon.fromTheme('fastocr-tray', QIcon((path / 'fastocr-tray.png').as_posix())))
-        else:
-            self.setIcon(QIcon.fromTheme('fastocr-tray', QIcon((path / 'fastocr-tray.svg').as_posix())))
         self.activated.connect(self.activate_action)
         # Context menu
         self.setContextMenu(QMenu())
@@ -165,7 +152,6 @@ class AppTray(QSystemTrayIcon):
         self.language_menu = QMenu(self.tr('Capture (Other Languages)'))
         context_menu.addMenu(self.language_menu)
         self.update_menu()
-
         setting_action = context_menu.addAction(self.tr('Setting'))
         quit_action = context_menu.addAction(self.tr('Quit'))
         capture_action.triggered.connect(self.start_capture)
@@ -173,7 +159,20 @@ class AppTray(QSystemTrayIcon):
         quit_action.triggered.connect(self.quit_app)
         self.setting.register_callback(self.update_menu)
 
+    def update_icon(self):
+        icon_theme = self.setting.get('General', 'icon_theme')
+        if icon_theme in ['', 'auto']:
+            is_dark = self._loop.run_until_complete(DesktopInfo.is_dark_mode())
+            if not is_dark:
+                path = Path(__file__).parent / 'resource' / 'icon' / 'dark'
+            else:
+                path = Path(__file__).parent / 'resource' / 'icon' / 'light'
+        else:
+            path = Path(__file__).parent / 'resource' / 'icon' / icon_theme
+        self.setIcon(QIcon.fromTheme('fastocr-tray', QIcon((path / 'fastocr-tray.png').as_posix())))
+
     def update_menu(self):
+        self.update_icon()
         default_backend = self.setting.get('General', 'default_backend')
         if default_backend == '':
             default_backend = 'baidu'
