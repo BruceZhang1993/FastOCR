@@ -736,8 +736,8 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [package.source]
 type = "legacy"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-reference = "tuna"
+url = "https://pypi.doubanio.com/simple"
+reference = "douban"
 
 [extras]
 dbus = ["dbus-python"]

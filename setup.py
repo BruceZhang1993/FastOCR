@@ -15,7 +15,7 @@ readme = ''
 setup(
     long_description=readme,
     name='fastocr',
-    version='0.1.3',
+    version='0.1.4',
     description='FastOCR is a desktop application for OCR API.',
     python_requires='<3.10,>=3.7',
     project_urls={"documentation": "https://github.com/BruceZhang1993/FastOCR", "homepage": "https://github.com/BruceZhang1993/FastOCR", "repository": "https://github.com/BruceZhang1993/FastOCR"},
