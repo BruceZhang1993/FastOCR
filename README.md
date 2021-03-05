@@ -25,6 +25,17 @@ pikaur -S fastocr-git  # Using pikaur
 # ...
 ```
 
+### Nix/NixOS
+ 
+Use [NixOS CN flakes](https://github.com/nixos-cn/flakes) or [berberman flakes](https://github.com/berberman/flakes)
+
+Run FastOCR
+
+```shell
+nix run github:berberman/flakes#fastocr
+```
+
+
 ### PyPI
 
 [fastocr @ PyPI](https://pypi.org/project/fastocr/)
