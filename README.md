@@ -5,6 +5,12 @@
 
 FastOCR is a desktop application for OCR API.
 
+## Supported OCR API
+
+- 百度 AI 文字识别服务
+- 有道文字识别服务
+- 旷视 Face++ 文字识别服务 (Experimental)
+
 ## Installation
 
 ### Arch Linux
