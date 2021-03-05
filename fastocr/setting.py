@@ -121,6 +121,22 @@ class Setting(metaclass=Singleton):
         self.set('BaiduOCR', 'languages', json.dumps(value))
 
     @property
+    def face_apikey(self) -> str:
+        return self.get('FaceOCR', 'face_apikey')
+
+    @face_apikey.setter
+    def face_apikey(self, value: str):
+        self.set('FaceOCR', 'face_apikey', value)
+
+    @property
+    def face_apisec(self) -> str:
+        return self.get('FaceOCR', 'face_apisec')
+
+    @face_apisec.setter
+    def face_apisec(self, value: str):
+        self.set('FaceOCR', 'face_apisec', value)
+
+    @property
     def general_icon_theme(self) -> str:
         r = self.get('General', 'icon_theme')
         return r if r != '' else 'auto'

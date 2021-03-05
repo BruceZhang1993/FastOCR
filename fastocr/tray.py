@@ -88,6 +88,22 @@ class SettingBackend(QObject):
         self.setting.set('YoudaoOCR', 'secret_key', text)
 
     @pyqtProperty(str, constant=True)
+    def face_apikey(self) -> str:
+        return self.setting.face_apikey
+
+    @face_apikey.setter
+    def face_apikey(self, value: str):
+        self.setting.face_apikey = value
+
+    @pyqtProperty(str, constant=True)
+    def face_apisec(self) -> str:
+        return self.setting.face_apisec
+
+    @face_apisec.setter
+    def face_apisec(self, value: str):
+        self.setting.face_apisec = value
+
+    @pyqtProperty(str, constant=True)
     def default_backend(self) -> str:
         res = self.setting.get('General', 'default_backend')
         if res == '':

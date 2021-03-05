@@ -37,6 +37,9 @@ ApplicationWindow {
                     backend.yd_appid = yd_appid_input.text
                     backend.yd_seckey = yd_seckey_input.text
 
+                    backend.face_apikey = face_apikey_input.text
+                    backend.face_apisec = face_apisec_input.text
+
                     // Languages
                     var lang_checkboxes = language_flow.children
                     var checked = []
@@ -99,6 +102,15 @@ ApplicationWindow {
                         value: 'youdao'
                         checked: backend ? backend.default_backend == value : false
                         text: qsTr("YoudaoOCR")
+                    }
+
+                    RadioButton {
+                        property string value
+
+                        id: face_select
+                        value: 'face'
+                        checked: backend ? backend.default_backend == value : false
+                        text: qsTr("Face++OCR")
                     }
                 }
             }
@@ -286,6 +298,47 @@ ApplicationWindow {
                     TextField {
                         id: yd_seckey_input
                         text: backend ? backend.yd_seckey : ''
+                        Layout.columnSpan: 3
+                        Layout.fillWidth: true
+                    }
+                }
+            }
+
+            GroupBox {
+                id: group3
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignTop
+                title: qsTr("Face++OCR")
+
+                GridLayout {
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    anchors.topMargin: 0
+                    anchors.rightMargin: 0
+                    anchors.leftMargin: 0
+                    columns: 4
+
+                    Label {
+                        id: face_apikey_label
+                        text: qsTr("API_KEY")
+                    }
+
+                    TextField {
+                        id: face_apikey_input
+                        text: backend ? backend.face_apikey : ''
+                        Layout.columnSpan: 3
+                        Layout.fillWidth: true
+                    }
+
+                    Label {
+                        id: face_apisec_label
+                        text: qsTr("API_SEC")
+                    }
+
+                    TextField {
+                        id: face_apisec_input
+                        text: backend ? backend.face_apisec : ''
                         Layout.columnSpan: 3
                         Layout.fillWidth: true
                     }

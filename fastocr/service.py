@@ -121,9 +121,35 @@ class YoudaoOcr(BaseOcr):
         await self.session.close()
 
 
+class FaceOcr(BaseOcr):
+    API_BASE = 'https://api-cn.faceplusplus.com'
+
+    def __init__(self, setting: Setting):
+        self.apikey = setting.face_apikey
+        self.apisec = setting.face_apisec
+        self.session = ClientSession()
+
+    async def basic_general(self, image: bytes, lang='') -> List[str]:
+        data = {
+            'api_key': self.apikey,
+            'api_secret': self.apisec,
+            'image_base64': b64encode(image).decode()
+        }
+        async with self.session.post(f'{self.API_BASE}/imagepp/v1/recognizetext', data=data) as r:
+            res = await r.json()
+            if res.get('error_message'):
+                raise Exception(res.get('error_message', ''))
+            result = filter(lambda x: x.get('type') == 'textline', res.get('result', []))
+            return [r.get('value', '') for r in result]
+
+    async def close(self):
+        await self.session.close()
+
+
 BACKENDS = {
     'baidu': BaiduOcr,
-    'youdao': YoudaoOcr
+    'youdao': YoudaoOcr,
+    'face': FaceOcr,
 }
 
 
