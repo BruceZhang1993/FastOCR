@@ -2,8 +2,15 @@
 
 [![GitHub top language](https://img.shields.io/github/languages/top/BruceZhang1993/FastOCR?style=flat-square)](https://github.com/BruceZhang1993/FastOCR/search?l=python)
 [![GitHub](https://img.shields.io/github/license/BruceZhang1993/FastOCR?style=flat-square)](https://github.com/BruceZhang1993/FastOCR/blob/master/LICENSE)
+[![GitHub version](https://img.shields.io/github/v/tag/BruceZhang1993/FastOCR?label=Version&style=flat-square)](https://github.com/BruceZhang1993/FastOCR/releases)
 
 FastOCR is a desktop application for OCR API.
+
+## Supported OCR API
+
+- 百度 AI 文字识别服务
+- 有道文字识别服务
+- 旷视 Face++ 文字识别服务 (Experimental)
 
 ## Installation
 
@@ -18,6 +25,17 @@ yay -S fastocr-git  # Using yay
 pikaur -S fastocr-git  # Using pikaur
 # ...
 ```
+
+### Nix/NixOS
+ 
+Use [NixOS CN flakes](https://github.com/nixos-cn/flakes) or [berberman flakes](https://github.com/berberman/flakes)
+
+Run FastOCR
+
+```shell
+nix run github:berberman/flakes#fastocr
+```
+
 
 ### PyPI
 
