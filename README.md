@@ -35,13 +35,15 @@ FastOCR is a desktop application for OCR API.
 
 ### Arch Linux
 
-[fastocr-git @ AUR](https://aur.archlinux.org/packages/fastocr-git/)
+Stable version: https://aur.archlinux.org/packages/fastocr
+
+Git version: https://aur.archlinux.org/packages/fastocr-git
 
 Build from AUR or install with your favorite AUR helper.
 
 ```shell
-yay -S fastocr-git  # Using yay
-pikaur -S fastocr-git  # Using pikaur
+yay -S fastocr  # Using yay
+pikaur -S fastocr  # Using pikaur
 # ...
 ```
 
