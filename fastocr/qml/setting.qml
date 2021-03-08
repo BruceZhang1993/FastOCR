@@ -27,7 +27,9 @@ ApplicationWindow {
             layoutDirection: Qt.RightToLeft
 
             Button {
+                id: save_button
                 text: qsTr('Save')
+                enabled: true
                 onClicked: {
                     backend.appid = appid_input.text
                     backend.apikey = apikey_input.text
@@ -57,6 +59,41 @@ ApplicationWindow {
 
                     backend.save()
                     setting.visible = false
+                }
+            }
+
+            Button {
+                id: apply_button
+                text: qsTr('Apply')
+                enabled: true
+                onClicked: {
+                    backend.appid = appid_input.text
+                    backend.apikey = apikey_input.text
+                    backend.seckey = seckey_input.text
+                    backend.accurate = accurate_input.checked
+
+                    backend.yd_appid = yd_appid_input.text
+                    backend.yd_seckey = yd_seckey_input.text
+
+                    backend.face_apikey = face_apikey_input.text
+                    backend.face_apisec = face_apisec_input.text
+
+                    // Languages
+                    var lang_checkboxes = language_flow.children
+                    var checked = []
+                    for (var i=0; i < lang_checkboxes.length; i++)
+                        if (lang_checkboxes[i].checked)
+                            checked.push(lang_checkboxes[i].value)
+                    backend.languages = checked
+
+                    // General
+                    backend.icon_theme = icon_theme_select.currentValue
+                    var radios = select_flow.children
+                    for (var i=0; i < radios.length; i++)
+                        if (radios[i].checked)
+                            backend.default_backend = radios[i].value
+
+                    backend.save()
                 }
             }
 
