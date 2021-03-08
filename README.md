@@ -8,9 +8,28 @@ FastOCR is a desktop application for OCR API.
 
 ## Supported OCR API
 
-- 百度 AI 文字识别服务
-- 有道文字识别服务
-- 旷视 Face++ 文字识别服务 (Experimental)
+- 百度 AI 文字识别服务  https://ai.baidu.com/tech/ocr
+- 有道文字识别服务  https://ai.youdao.com/product-ocr-print.s
+- 旷视 Face++ 文字识别服务 (Experimental)  https://www.faceplusplus.com.cn/general-text-recognition/
+
+### Features
+
+- 通用文字识别
+- 多语言支持 / Baidu
+- 高精度接口支持 / Baidu
+
+## Supported environment
+
+- Linux X11
+- Windows
+- macOS
+- Linux Wayland (Experimental)
+
+### Supported wayland environment
+
+- Gnome Wayland
+- KDE Wayland
+- Sway
 
 ## Installation
 
