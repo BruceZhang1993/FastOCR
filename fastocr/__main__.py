@@ -33,7 +33,8 @@ def main(ctx):
 
 
 @main.command()
-def run():
+@click.option('--show-config', '-C', is_flag=True)
+def run(show_config: bool):
     if sys.platform not in ['win32', 'darwin', 'cygwin'] and instance_already_running():
         print('Only one instance allowed')
         sys.exit(1)
@@ -53,9 +54,13 @@ def run():
         from fastocr.bus import app_dbus
         app_dbus.tray = AppTray(bus=app_dbus)
         app_dbus.tray.show()
+        if show_config:
+            app_dbus.tray.open_setting()
     else:
         tray = AppTray()
         tray.show()
+        if show_config:
+            tray.open_setting()
     with loop:
         sys.exit(loop.run_forever())
 
