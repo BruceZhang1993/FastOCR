@@ -6,7 +6,7 @@ from typing import Optional, List
 import qasync
 # noinspection PyUnresolvedReferences
 from PyQt5.QtCore import QByteArray, QBuffer, QIODevice, QObject, pyqtSlot, pyqtProperty
-from PyQt5.QtGui import QPixmap, QIcon
+from PyQt5.QtGui import QPixmap, QIcon, QImage
 from PyQt5.QtQml import QQmlApplicationEngine
 from PyQt5.QtQuick import QQuickWindow
 from PyQt5.QtWidgets import QSystemTrayIcon, QMenu, QApplication
@@ -216,10 +216,12 @@ class AppTray(QSystemTrayIcon):
 
     @staticmethod
     def pixmap_to_bytes(pixmap: QPixmap) -> bytes:
+        image = pixmap.toImage()
+        grayed = image.convertToFormat(QImage.Format.Format_Grayscale8)
         ba = QByteArray()
         bf = QBuffer(ba)
         bf.open(QIODevice.WriteOnly)
-        ok = pixmap.save(bf, 'PNG')
+        ok = grayed.save(bf, 'PNG')
         assert ok
         return ba.data()
 
