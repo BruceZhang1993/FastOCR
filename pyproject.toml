@@ -18,11 +18,11 @@ qasync = "*"
 click = "*"
 aiohttp = "*"
 dbus-python = { version = "*", optional = true }
-pyqt5 = "*"
-pyqt5-sip = "*"
+PyQt5 = "*"
+PyQt5-sip = "*"
 
 [tool.poetry.dev-dependencies]
-dephell = "^0.8.3"
+dephell = "*"
 
 [tool.poetry.extras]
 dbus = ["dbus-python"]

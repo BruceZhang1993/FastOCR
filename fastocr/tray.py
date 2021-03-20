@@ -208,6 +208,7 @@ class AppTray(QSystemTrayIcon):
             setting_file.touch()
         # await open_in_default(setting_file.as_posix())
         self.setting_window.show()
+        self.setting_window.requestActivate()
 
     def quit_app(self, _):
         self.setting_window.close()
@@ -225,6 +226,21 @@ class AppTray(QSystemTrayIcon):
         assert ok
         return ba.data()
 
+    @staticmethod
+    def image_resize(pixmap: QPixmap, min_size, max_size) -> QPixmap:
+        from_width, from_height = pixmap.width(), pixmap.height()
+        if max(from_width, from_height) > max_size:
+            if from_height > from_width:
+                pixmap = pixmap.scaledToHeight(max_size)
+            else:
+                pixmap = pixmap.scaledToWidth(max_size)
+        if min(from_height, from_width) < min_size:
+            if from_height > from_width:
+                pixmap = pixmap.scaledToWidth(min_size)
+            else:
+                pixmap = pixmap.scaledToHeight(min_size)
+        return pixmap
+
     @qasync.asyncSlot(QPixmap)
     async def start_ocr(self, no_copy: bool = False, lang='', pixmap: QPixmap = None):
         self.capture_widget.close()
@@ -234,6 +250,9 @@ class AppTray(QSystemTrayIcon):
             default = 'baidu'
         try:
             service = OcrService(default)
+            min_size, max_size = service.image_scaling()
+            if min_size > 0 or max_size > 0:
+                pixmap = self.image_resize(pixmap, min_size, max_size)
             result = await service.basic_general_ocr(self.pixmap_to_bytes(pixmap), lang=lang)
             await service.close()
             data = '\n'.join(result)

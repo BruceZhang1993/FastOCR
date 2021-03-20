@@ -3,7 +3,7 @@ from base64 import b64encode
 from hashlib import sha256
 from pathlib import Path
 from time import time
-from typing import List
+from typing import List, Optional
 from uuid import uuid1
 
 from aiohttp import ClientSession
@@ -123,6 +123,8 @@ class YoudaoOcr(BaseOcr):
 
 class FaceOcr(BaseOcr):
     API_BASE = 'https://api-cn.faceplusplus.com'
+    MIN_SIZE = 48
+    MAX_SIZE = 800
 
     def __init__(self, setting: Setting):
         self.apikey = setting.face_apikey
@@ -161,6 +163,15 @@ class OcrService:
         self.setting = Setting()
         self.setting.reload()
         self.backend = backend_class(self.setting)
+
+    def image_scaling(self) -> tuple:
+        min_size = 0
+        max_size = 0
+        if hasattr(self.backend, 'MIN_SIZE'):
+            min_size = getattr(self.backend, 'MIN_SIZE')
+        if hasattr(self.backend, 'MAX_SIZE'):
+            max_size = getattr(self.backend, 'MAX_SIZE')
+        return min_size, max_size
 
     async def close(self):
         await self.backend.close()
