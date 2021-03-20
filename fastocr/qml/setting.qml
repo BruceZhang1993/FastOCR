@@ -130,6 +130,7 @@ ApplicationWindow {
                     Flow {
                         id: select_flow
                         anchors.fill: parent
+                        spacing: 2
 
                         RadioButton {
                             property string value
@@ -240,6 +241,7 @@ ApplicationWindow {
                             id: language_flow
                             Layout.columnSpan: 3
                             Layout.fillWidth: true
+                            spacing: 2
 
                             CheckBox {
                                 property string value
