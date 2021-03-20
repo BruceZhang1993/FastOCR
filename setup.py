@@ -24,7 +24,7 @@ if os.path.exists(readme_path):
 setup(
     long_description=readme,
     name='fastocr',
-    version='0.1.4',
+    version='0.2.0',
     description='FastOCR is a desktop application for OCR API.',
     python_requires='<3.10,>=3.7',
     project_urls={"documentation": "https://github.com/BruceZhang1993/FastOCR", "homepage": "https://github.com/BruceZhang1993/FastOCR", "repository": "https://github.com/BruceZhang1993/FastOCR"},
@@ -37,5 +37,5 @@ setup(
     package_dir={"": "."},
     package_data={"fastocr": ["data/*.desktop", "data/*.ini", "data/*.pro", "i18n/*.qm", "i18n/*.ts", "qml/*.qml", "resource/icon/dark/*.png", "resource/icon/dark/*.svg", "resource/icon/light/*.png", "resource/icon/light/*.svg"]},
     install_requires=['aiohttp', 'click', 'pyqt5', 'pyqt5-sip', 'qasync'],
-    extras_require={"dbus": ["dbus-python"], "dev": ["dephell==0.*,>=0.8.3"]},
+    extras_require={"dbus": ["dbus-python"], "dev": ["dephell"]},
 )
