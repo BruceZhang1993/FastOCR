@@ -122,6 +122,14 @@ class SettingBackend(QObject):
     def icon_theme(self, value):
         self.setting.general_icon_theme = value
 
+    @pyqtProperty(int, constant=True)
+    def mode(self) -> int:
+        return self.setting.general_mode
+
+    @mode.setter
+    def mode(self, value: int):
+        self.setting.general_mode = value
+
 
 class AppTray(QSystemTrayIcon):
     def __init__(self, bus=None):
@@ -133,6 +141,7 @@ class AppTray(QSystemTrayIcon):
         self.setting_window: Optional[QQuickWindow] = None
         self.backend: Optional[SettingBackend] = None
         self.language_actions = dict()
+        self.saved_data = None
         self._loop = asyncio.get_event_loop()
         self.load_qml()
         self.initialize()
@@ -167,6 +176,13 @@ class AppTray(QSystemTrayIcon):
         setting_action.triggered.connect(self.open_setting)
         quit_action.triggered.connect(self.quit_app)
         self.setting.register_callback(self.update_menu)
+        self.messageClicked.connect(self.message_clicked)
+
+    def message_clicked(self):
+        if self.saved_data is not None:
+            clipboard = qasync.QApplication.clipboard()
+            clipboard.setText(self.saved_data)
+            self.saved_data = None
 
     def update_icon(self):
         icon_theme = self.setting.general_icon_theme
@@ -267,11 +283,16 @@ class AppTray(QSystemTrayIcon):
             else:
                 self.showMessage('OCR 识别成功', '当前平台不支持 DBus', QIcon.fromTheme('object-select-symbolic'), 5000)
         else:
-            clipboard = qasync.QApplication.clipboard()
-            clipboard.setText(data)
             if self.bus is not None:
                 self.bus.captured(data)
-            self.showMessage('OCR 识别成功', '已复制到系统剪切板', QIcon.fromTheme('object-select-symbolic'), 5000)
+            mode = self.setting.general_mode
+            if mode == 1:
+                self.saved_data = data
+                self.showMessage('OCR 识别成功', '点击复制到系统剪切板', QIcon.fromTheme('object-select-symbolic'), 8000)
+            else:
+                clipboard = qasync.QApplication.clipboard()
+                clipboard.setText(data)
+                self.showMessage('OCR 识别成功', '已复制到系统剪切板', QIcon.fromTheme('object-select-symbolic'), 5000)
 
     async def run_capture(self, seconds=.5, no_copy=False, lang=''):
         self.contextMenu().close()

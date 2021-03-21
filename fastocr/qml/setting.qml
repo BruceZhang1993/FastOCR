@@ -182,6 +182,25 @@ ApplicationWindow {
                 }
 
                 GroupBox {
+                    title: qsTr("Working mode")
+                    Layout.fillWidth: true
+                    Layout.alignment: Qt.AlignTop
+
+                    Flow {
+                        ComboBox {
+                            id: working_mode_select
+                            textRole: 'text'
+                            valueRole: 'value'
+                            Component.onCompleted: currentIndex = indexOfValue(backend ? backend.mode : 0)
+                            model: [
+                                { value: 0, text: qsTr('Copy to clipboard') },
+                                { value: 1, text: qsTr("Show notification only") }
+                            ]
+                        }
+                    }
+                }
+
+                GroupBox {
                     id: group1
                     Layout.fillWidth: true
                     Layout.alignment: Qt.AlignTop

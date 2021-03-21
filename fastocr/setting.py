@@ -144,3 +144,20 @@ class Setting(metaclass=Singleton):
     @general_icon_theme.setter
     def general_icon_theme(self, value):
         self.set('General', 'icon_theme', value)
+
+    @property
+    def general_mode(self) -> int:
+        """
+        mode
+        0: Copy to clipboard and send notification (Default)
+        1: Send notification which can be clicked to copy to clipboard
+        2: Open a new dialog with results (With more actions) [WIP]
+        3: Do not send notification or clipboard (Send dbus signal for Linux)
+        :return: mode int value
+        :rtype: int
+        """
+        return int(self.get('General', 'mode'))
+
+    @general_mode.setter
+    def general_mode(self, mode: int):
+        self.set('General', 'mode', str(mode))
