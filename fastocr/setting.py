@@ -156,7 +156,8 @@ class Setting(metaclass=Singleton):
         :return: mode int value
         :rtype: int
         """
-        return int(self.get('General', 'mode'))
+        v = self.get('General', 'mode')
+        return int(v) if v != '' else 0
 
     @general_mode.setter
     def general_mode(self, mode: int):
