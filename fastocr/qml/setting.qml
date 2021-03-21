@@ -52,6 +52,7 @@ ApplicationWindow {
 
                     // General
                     backend.icon_theme = icon_theme_select.currentValue
+                    backend.mode = working_mode_select.currentValue
                     var radios = select_flow.children
                     for (var i=0; i < radios.length; i++)
                         if (radios[i].checked)
@@ -88,6 +89,7 @@ ApplicationWindow {
 
                     // General
                     backend.icon_theme = icon_theme_select.currentValue
+                    backend.mode = working_mode_select.currentValue
                     var radios = select_flow.children
                     for (var i=0; i < radios.length; i++)
                         if (radios[i].checked)
