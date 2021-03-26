@@ -6,8 +6,6 @@ from time import time
 from typing import List
 from uuid import uuid1
 
-from aiohttp import ClientSession
-
 from fastocr.base import BaseOcr
 from fastocr.setting import Setting
 
@@ -52,10 +50,7 @@ class BaiduOcr(BaseOcr):
             return data.get('access_token'), data.get('expires_in')
 
     async def basic_general(self, image: bytes, lang='') -> List[str]:
-        if self.use_accurate_mode:
-            api_type = '/accurate_basic'
-        else:
-            api_type = '/general_basic'
+        api_type = '/accurate_basic' if self.use_accurate_mode else '/general_basic'
         data = {
             'image': b64encode(image).decode(),
             'language_type': lang if lang != '' else 'CHN_ENG'
@@ -79,7 +74,8 @@ class YoudaoOcr(BaseOcr):
         self.appid = setting.get('YoudaoOCR', 'app_id')  # appKey in Youdao docs
         self.seckey = setting.get('YoudaoOCR', 'secret_key')  # appSecret in Youdao docs
 
-    def truncate(self, image: bytes):
+    @staticmethod
+    def truncate(image: bytes):
         q = b64encode(image).decode()
         q_size = len(q)
         if q is None:

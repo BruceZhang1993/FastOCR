@@ -15,10 +15,10 @@ class BaseOcr(metaclass=ABCMeta):
         self.logger = AppLogger()
 
     async def on_request_start(self, _, __, params: TraceRequestStartParams):
-        self.logger.debug(f'Requesting: [{params.method.upper()} {params.url}]')
+        self.logger.debug(f'Requesting: [{params.method.upper().ljust(6, " ")}] {params.url}]')
 
     async def on_request_end(self, _, __, params: TraceRequestEndParams):
-        self.logger.debug(f'Requested: [{params.method.upper()}] {params.url} Response: {await params.response.read()}')
+        self.logger.debug(f'Requested: [{params.method.upper().ljust(6, " ")}] {params.url} Response: {await params.response.read()}')
 
     @abstractmethod
     async def basic_general(self, image: bytes, lang: str = '') -> List[str]:

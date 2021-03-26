@@ -2,7 +2,7 @@ import sys
 from typing import Optional
 
 from PyQt5.QtCore import QObject, QRect, QPoint, QDir, pyqtSignal, Qt
-from PyQt5.QtGui import QGuiApplication, QScreen, QPixmap, QKeyEvent, QPaintEvent, QPainter, QColor, QMouseEvent, \
+from PyQt5.QtGui import QGuiApplication, QPixmap, QKeyEvent, QPaintEvent, QPainter, QColor, QMouseEvent, \
     QRegion
 from PyQt5.QtWidgets import QApplication, QWidget
 
@@ -21,7 +21,7 @@ class ScreenGrabber(QObject):
         """
         if sys.platform == 'linux':
             if DesktopInfo.is_wayland():
-                # Achive screenshot on wayland linux
+                # Implements screenshot on wayland linux
                 try:
                     if DesktopInfo.desktop_environment() == DesktopInfo.GNOME:
                         return self.grab_entire_desktop_wayland_gnome()
@@ -91,7 +91,6 @@ class ScreenGrabber(QObject):
         """
         geo = QRect()
         for screen in QGuiApplication.screens():
-            screen: QScreen
             src_rect = screen.geometry()
             src_rect.moveTo(int(src_rect.x() / screen.devicePixelRatio()),
                             int(src_rect.y() / screen.devicePixelRatio()))

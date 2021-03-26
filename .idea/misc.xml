@@ -13,7 +13,7 @@
     <option name="autoFetch" value="false" />
     <option name="autoFetchOnBranchSwitch" value="false" />
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_12" project-jdk-name="Poetry (FastOCR)" project-jdk-type="Python SDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_12" project-jdk-name="Poetry (FastOCR) (2)" project-jdk-type="Python SDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>
