@@ -11,6 +11,7 @@ from qasync import QEventLoop
 
 from fastocr import __appname__
 from fastocr.i18n import Translation
+from fastocr.log import AppLogger
 from fastocr.tray import AppTray
 from fastocr.util import instance_already_running, DesktopInfo
 
@@ -36,7 +37,7 @@ def main(ctx):
 @click.option('--show-config', '-C', is_flag=True)
 def run(show_config: bool):
     if sys.platform not in ['win32', 'darwin', 'cygwin'] and instance_already_running():
-        print('Only one instance allowed')
+        AppLogger().info('only one instance running allowed')
         sys.exit(1)
 
     def quit_application(code):
@@ -123,7 +124,7 @@ def print_package_info(package_name):
         print(f'Path: {package.__path__}')
         print()
     except Exception as e:
-        print(e)
+        AppLogger().exception(e)
 
 
 if __name__ == '__main__':

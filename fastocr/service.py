@@ -3,7 +3,7 @@ from base64 import b64encode
 from hashlib import sha256
 from pathlib import Path
 from time import time
-from typing import List, Optional
+from typing import List
 from uuid import uuid1
 
 from aiohttp import ClientSession
@@ -18,11 +18,11 @@ class BaiduOcr(BaseOcr):
     AUTH_BASE = 'https://aip.baidubce.com/oauth/2.0/token'
 
     def __init__(self, setting: Setting):
+        super().__init__()
         self.appid = setting.baidu_appid
         self.apikey = setting.baidu_apikey
         self.seckey = setting.baidu_seckey
         self.use_accurate_mode = setting.baidu_accurate
-        self.session = ClientSession()
 
     @property
     async def token(self):
@@ -75,9 +75,9 @@ class YoudaoOcr(BaseOcr):
     SALT = str(uuid1())
 
     def __init__(self, setting: Setting):
+        super().__init__()
         self.appid = setting.get('YoudaoOCR', 'app_id')  # appKey in Youdao docs
         self.seckey = setting.get('YoudaoOCR', 'secret_key')  # appSecret in Youdao docs
-        self.session = ClientSession()
 
     def truncate(self, image: bytes):
         q = b64encode(image).decode()
@@ -127,9 +127,9 @@ class FaceOcr(BaseOcr):
     MAX_SIZE = 800
 
     def __init__(self, setting: Setting):
+        super().__init__()
         self.apikey = setting.face_apikey
         self.apisec = setting.face_apisec
-        self.session = ClientSession()
 
     async def basic_general(self, image: bytes, lang='') -> List[str]:
         data = {

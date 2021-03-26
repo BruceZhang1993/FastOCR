@@ -1,0 +1,77 @@
+from typing import Dict
+
+from fastocr.util import Singleton
+from pathlib import Path
+import logging
+
+DEFAULT_NAME = 'default'
+
+LOGGING_CONFIG = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'file_formatter': {
+            'format': '[%(levelname)8s] %(asctime)s %(message)s | %(filename)s:%(lineno)d'
+        },
+        'simple_formatter': {
+            'format': '[%(levelname)8s] %(message)s'
+        }
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple_formatter',
+            'level': 'INFO'
+        },
+        'file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'formatter': 'file_formatter',
+            'level': 'DEBUG',
+            'filename': (Path.home() / '.cache' / 'fastocr' / 'runtime_log.log').as_posix(),
+            'maxBytes': 102400,
+            'backupCount': 5
+        }
+    },
+    'loggers': {
+        'default': {
+            'handlers': ['console', 'file']
+        }
+    }
+}
+
+
+class AppLogger(metaclass=Singleton):
+    """
+    AppLogger a simple wrapper for logging
+    """
+    def __init__(self):
+        self.loggers: Dict[str, logging.Logger] = {}
+
+    def get_logger(self, name=DEFAULT_NAME) -> logging.Logger:
+        if name not in self.loggers:
+            self.loggers[name] = logging.getLogger(name)
+        return self.loggers[name]
+
+    def critical(self, msg, *args, logger_name=DEFAULT_NAME, **kwargs):
+        self.get_logger(logger_name).critical(msg, *args, **kwargs)
+
+    def exception(self, msg, *args, logger_name=DEFAULT_NAME, exc_info=True, **kwargs):
+        self.get_logger(logger_name).exception(msg, *args, exc_info=exc_info, **kwargs)
+
+    def log(self, level, msg, *args, logger_name=DEFAULT_NAME, **kwargs):
+        self.get_logger(logger_name).log(level, msg, *args, **kwargs)
+
+    def error(self, msg, *args, logger_name=DEFAULT_NAME, **kwargs):
+        self.get_logger(logger_name).error(msg, *args, **kwargs)
+
+    def warning(self, msg, *args, logger_name=DEFAULT_NAME, **kwargs):
+        self.get_logger(logger_name).warning(msg, *args, **kwargs)
+
+    def info(self, msg, *args, logger_name=DEFAULT_NAME, **kwargs):
+        self.get_logger(logger_name).info(msg, *args, **kwargs)
+
+    def debug(self, msg, *args, logger_name=DEFAULT_NAME, **kwargs):
+        self.get_logger(logger_name).debug(msg, *args, **kwargs)
+
+    warn = warning
+    fatal = critical
