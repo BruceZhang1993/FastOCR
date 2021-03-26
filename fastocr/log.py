@@ -35,6 +35,7 @@ LOGGING_CONFIG = {
     },
     'loggers': {
         'default': {
+            'level': 'DEBUG',
             'handlers': ['console', 'file']
         }
     }
