@@ -3,6 +3,7 @@ from typing import Dict
 from fastocr.util import Singleton
 from pathlib import Path
 import logging
+import logging.config
 
 DEFAULT_NAME = 'default'
 
@@ -45,6 +46,7 @@ class AppLogger(metaclass=Singleton):
     AppLogger a simple wrapper for logging
     """
     def __init__(self):
+        logging.config.dictConfig(LOGGING_CONFIG)
         self.loggers: Dict[str, logging.Logger] = {}
 
     def get_logger(self, name=DEFAULT_NAME) -> logging.Logger:
