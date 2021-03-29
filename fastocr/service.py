@@ -33,12 +33,13 @@ class BaiduOcr(BaseOcr):
                 return token_data.get('token', '')
         token, expires_in = await self.get_token()
         timestamp = int(time())
-        with self.TOKEN_FILE.open('w') as f:
-            json.dump({
-                'token': token,
-                'expires_in': expires_in,
-                'timestamp': timestamp
-            }, f)
+        if expires_in:
+            with self.TOKEN_FILE.open('w') as f:
+                json.dump({
+                    'token': token,
+                    'expires_in': expires_in,
+                    'timestamp': timestamp
+                }, f)
         return token
 
     async def get_token(self):
