@@ -5,19 +5,19 @@
     <name>AppTray</name>
     <message>
         <source>Capture</source>
-        <translation type="vanished">捕获</translation>
+        <translation>捕获</translation>
     </message>
     <message>
         <source>Capture (Other Languages)</source>
-        <translation type="vanished">捕获（其他语言）</translation>
+        <translation>捕获（其他语言）</translation>
     </message>
     <message>
         <source>Setting</source>
-        <translation type="vanished">设置</translation>
+        <translation>设置</translation>
     </message>
     <message>
         <source>Quit</source>
-        <translation type="vanished">退出</translation>
+        <translation>退出</translation>
     </message>
 </context>
 <context>
