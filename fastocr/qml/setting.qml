@@ -103,6 +103,13 @@ ApplicationWindow {
                 text: qsTr('Close')
                 onClicked: setting.visible = false
             }
+
+            Button {
+                text: qsTr('Open in editor')
+                onClicked: {
+                    backend.open_setting_file()
+                }
+            }
         }
     }
 

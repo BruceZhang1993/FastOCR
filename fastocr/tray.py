@@ -11,10 +11,11 @@ from PyQt5.QtQml import QQmlApplicationEngine
 from PyQt5.QtQuick import QQuickWindow
 from PyQt5.QtWidgets import QSystemTrayIcon, QMenu, QApplication
 
+from fastocr.consts import APP_SETTING_FILE
 from fastocr.grabber import CaptureWidget
 from fastocr.service import OcrService, BaiduOcr
 from fastocr.setting import Setting
-from fastocr.util import DesktopInfo
+from fastocr.util import DesktopInfo, open_in_default
 
 if DesktopInfo.dbus_supported():
     from fastocr.bus import AppDBusObject
@@ -30,6 +31,10 @@ class SettingBackend(QObject):
     def save(self):
         self.setting.save()
         self.setting.reload()
+
+    @pyqtSlot()
+    def open_setting_file(self):
+        asyncio.run(open_in_default(APP_SETTING_FILE.as_posix()))
 
     @pyqtProperty(str, constant=True)
     def appid(self) -> str:
