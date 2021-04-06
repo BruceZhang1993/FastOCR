@@ -69,19 +69,10 @@ class DesktopInfo:
             # Windows 10 darkmode
             try:
                 import winreg
-                registry = winreg.ConnectRegistry(None, winreg.HKEY_CURRENT_USER)
-                regpath = r'SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize'
-                try:
-                    regkey = winreg.OpenKey(registry, regpath)
-                except:
-                    return False
-                for i in range(1024):
-                    try:
-                        value_name, value, _ = winreg.EnumValue(regkey, i)
-                        if value_name == 'SystemUsesLightTheme':
-                            return value == 0
-                    except OSError:
-                        break
+                value = get_registry_value(winreg.HKEY_CURRENT_USER, r'SOFTWARE\Microsoft\Windows\CurrentVersion\Themes'
+                                                                     r'\Personalize', 'SystemUsesLightTheme')
+                if value is not None:
+                    return value == 0
                 return False
             except:
                 return False
@@ -93,6 +84,26 @@ class DesktopInfo:
             back_color = palette.color(QPalette.ColorGroup.Normal, QPalette.ColorRole.Background)
             lightness = back_color.lightness()
             return lightness <= 160
+
+
+def get_registry_value(registry: int, regpath: str, name: str):
+    try:
+        import winreg
+        registry = winreg.ConnectRegistry(None, registry)
+        try:
+            regkey = winreg.OpenKey(registry, regpath)
+        except:
+            return None
+        for i in range(1024):
+            try:
+                value_name, value, _ = winreg.EnumValue(regkey, i)
+                if value_name == name:
+                    return value
+            except OSError:
+                break
+        return None
+    except:
+        return None
 
 
 async def check_exists(command):
