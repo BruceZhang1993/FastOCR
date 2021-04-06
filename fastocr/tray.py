@@ -12,7 +12,7 @@ from PyQt5.QtQuick import QQuickWindow
 from PyQt5.QtWidgets import QSystemTrayIcon, QMenu, QApplication
 
 from fastocr.grabber import CaptureWidget
-from fastocr.service import OcrService
+from fastocr.service import OcrService, BaiduOcr
 from fastocr.setting import Setting
 from fastocr.util import DesktopInfo
 
@@ -176,6 +176,7 @@ class AppTray(QSystemTrayIcon):
         setting_action.triggered.connect(self.open_setting)
         quit_action.triggered.connect(self.quit_app)
         self.setting.register_callback(self.update_menu)
+        self.setting.register_callback(self.update_token)
         self.messageClicked.connect(self.message_clicked)
 
     def message_clicked(self):
@@ -195,6 +196,13 @@ class AppTray(QSystemTrayIcon):
         else:
             path = Path(__file__).parent / 'resource' / 'icon' / icon_theme
         self.setIcon(QIcon.fromTheme('fastocr-tray', QIcon((path / 'fastocr-tray.png').as_posix())))
+
+    def update_token(self):
+        default_backend = self.setting.get('General', 'default_backend')
+        if default_backend == '':
+            default_backend = 'baidu'
+        if default_backend == 'baidu':
+            BaiduOcr.TOKEN_FILE.unlink(missing_ok=True)
 
     def update_menu(self):
         self.update_icon()
