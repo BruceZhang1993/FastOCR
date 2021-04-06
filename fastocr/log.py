@@ -1,7 +1,7 @@
 from typing import Dict
 
+from fastocr.consts import APP_CACHE_DIR
 from fastocr.util import Singleton
-from pathlib import Path
 import logging
 import logging.config
 
@@ -28,7 +28,7 @@ LOGGING_CONFIG = {
             'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'file_formatter',
             'level': 'DEBUG',
-            'filename': (Path.home() / '.cache' / 'fastocr' / 'runtime_log.log').as_posix(),
+            'filename': (APP_CACHE_DIR / 'runtime_log.log').as_posix(),
             'maxBytes': 102400,
             'backupCount': 5
         }

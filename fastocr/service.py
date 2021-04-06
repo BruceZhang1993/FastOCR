@@ -1,17 +1,17 @@
 import json
 from base64 import b64encode
 from hashlib import sha256
-from pathlib import Path
 from time import time
 from typing import List
 from uuid import uuid1
 
 from fastocr.base import BaseOcr
+from fastocr.consts import APP_CACHE_DIR
 from fastocr.setting import Setting
 
 
 class BaiduOcr(BaseOcr):
-    TOKEN_FILE = Path.home() / '.cache' / 'fastocr' / 'baidu_token_data.json'
+    TOKEN_FILE = APP_CACHE_DIR / 'baidu_token_data.json'
     API_BASE = 'https://aip.baidubce.com/rest/2.0/ocr/v1'
     AUTH_BASE = 'https://aip.baidubce.com/oauth/2.0/token'
 

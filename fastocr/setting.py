@@ -3,6 +3,7 @@ from configparser import ConfigParser, NoSectionError, NoOptionError
 from pathlib import Path
 from typing import Optional, List
 
+from fastocr.consts import APP_SETTING_FILE
 from fastocr.util import Singleton
 
 
@@ -14,11 +15,10 @@ class Setting(metaclass=Singleton):
 
     @staticmethod
     def get_config_file() -> Path:
-        file = Path.home() / '.config' / 'FastOCR' / 'config.ini'
-        if not file.exists():
-            file.parent.mkdir(parents=True, exist_ok=True)
-            file.touch()
-        return file
+        if not APP_SETTING_FILE.exists():
+            APP_SETTING_FILE.parent.mkdir(parents=True, exist_ok=True)
+            APP_SETTING_FILE.touch()
+        return APP_SETTING_FILE
 
     def reload(self):
         self.parser.read(self.get_config_file())
