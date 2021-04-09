@@ -383,7 +383,7 @@ reference = "douban"
 
 [[package]]
 name = "docutils"
-version = "0.16"
+version = "0.17"
 description = "Docutils -- Python Documentation Utilities"
 category = "dev"
 optional = false
@@ -571,7 +571,7 @@ reference = "douban"
 
 [[package]]
 name = "qasync"
-version = "0.14.0"
+version = "0.15.0"
 description = "Implementation of the PEP 3156 Event-Loop with Qt."
 category = "main"
 optional = false
@@ -607,11 +607,11 @@ reference = "douban"
 
 [[package]]
 name = "ruamel.yaml"
-version = "0.16.13"
+version = "0.17.2"
 description = "ruamel.yaml is a YAML parser/emitter that supports roundtrip preservation of comments, seq/map flow style, and map key order"
 category = "dev"
 optional = false
-python-versions = "*"
+python-versions = ">=3"
 
 [package.dependencies]
 "ruamel.yaml.clib" = {version = ">=0.1.2", markers = "platform_python_implementation == \"CPython\" and python_version < \"3.10\""}
@@ -715,7 +715,7 @@ reference = "douban"
 
 [[package]]
 name = "yaspin"
-version = "1.4.1"
+version = "1.5.0"
 description = "Yet Another Terminal Spinner"
 category = "dev"
 optional = false
@@ -727,12 +727,12 @@ url = "https://pypi.doubanio.com/simple"
 reference = "douban"
 
 [extras]
-dbus = ["dbus-python"]
+linux = ["dbus-python"]
 
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7,<3.10"
-content-hash = "d31fd7a24c667fd59e768a5a687ceea53108ce4239fac92e689f048091db7067"
+content-hash = "ba8f09046e2d977e2e56de15fa8ce32b5b8a090da750c579f47f9abb998b4e2d"
 
 [metadata.files]
 aiohttp = [
@@ -857,8 +857,8 @@ dephell-versioning = [
     {file = "dephell_versioning-0.1.2.tar.gz", hash = "sha256:9ba7636704af7bd64af5a64ab8efb482c8b0bf4868699722f5e2647763edf8e5"},
 ]
 docutils = [
-    {file = "docutils-0.16-py2.py3-none-any.whl", hash = "sha256:0c5b78adfbf7762415433f5515cd5c9e762339e23369dbe8000d84a4bf4ab3af"},
-    {file = "docutils-0.16.tar.gz", hash = "sha256:c2de3a60e9e7d07be26b7f2b00ca0309c207e06c100f9cc2a94931fc75a478fc"},
+    {file = "docutils-0.17-py2.py3-none-any.whl", hash = "sha256:a71042bb7207c03d5647f280427f14bfbd1a65c9eb84f4b341d85fafb6bb4bdf"},
+    {file = "docutils-0.17.tar.gz", hash = "sha256:e2ffeea817964356ba4470efba7c2f42b6b0de0b04e66378507e3e2504bbff4c"},
 ]
 idna = [
     {file = "idna-2.10-py2.py3-none-any.whl", hash = "sha256:b97d804b1e9b523befed77c48dacec60e6dcb0b5391d57af6a65a312a90648c0"},
@@ -1015,16 +1015,16 @@ pyqt5-sip = [
     {file = "PyQt5_sip-12.8.1.tar.gz", hash = "sha256:30e944db9abee9cc757aea16906d4198129558533eb7fadbe48c5da2bd18e0bd"},
 ]
 qasync = [
-    {file = "qasync-0.14.0-py3-none-any.whl", hash = "sha256:a3699e3b745228965577e97f0410d7146c0a38b9d3c9a07fe7ab39c4171716ac"},
-    {file = "qasync-0.14.0.tar.gz", hash = "sha256:345e6e86f140cee16c66f14731e4d72d790a6194c1801e18ad8c3b394c0a6a06"},
+    {file = "qasync-0.15.0-py3-none-any.whl", hash = "sha256:00ac2e3a042875087ce09819d2a439bc438facaeaf6af8ab490a18ab5aa69833"},
+    {file = "qasync-0.15.0.tar.gz", hash = "sha256:cae92940a71d94ac9fbb83342a5bf21d357387504d6054bf5033e6fec79b7fd6"},
 ]
 requests = [
     {file = "requests-2.25.1-py2.py3-none-any.whl", hash = "sha256:c210084e36a42ae6b9219e00e48287def368a26d03a048ddad7bfee44f75871e"},
     {file = "requests-2.25.1.tar.gz", hash = "sha256:27973dd4a904a4f13b263a19c866c13b92a39ed1c964655f025f3f8d3d75b804"},
 ]
 "ruamel.yaml" = [
-    {file = "ruamel.yaml-0.16.13-py2.py3-none-any.whl", hash = "sha256:64b06e7873eb8e1125525ecef7345447d786368cadca92a7cd9b59eae62e95a3"},
-    {file = "ruamel.yaml-0.16.13.tar.gz", hash = "sha256:bb48c514222702878759a05af96f4b7ecdba9b33cd4efcf25c86b882cef3a942"},
+    {file = "ruamel.yaml-0.17.2-py3-none-any.whl", hash = "sha256:0850def9ebca23b3a8c64c4b4115ebb6b364a10d49f89d289a26ee965e1e7d9d"},
+    {file = "ruamel.yaml-0.17.2.tar.gz", hash = "sha256:8f1e15421668b9edf30ed02899f5f81aff9808a4271935776f61a99a569a13da"},
 ]
 "ruamel.yaml.clib" = [
     {file = "ruamel.yaml.clib-0.2.2-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:28116f204103cb3a108dfd37668f20abe6e3cafd0d3fd40dba126c732457b3cc"},
@@ -1116,6 +1116,6 @@ yarl = [
     {file = "yarl-1.6.3.tar.gz", hash = "sha256:8a9066529240171b68893d60dca86a763eae2139dd42f42106b03cf4b426bf10"},
 ]
 yaspin = [
-    {file = "yaspin-1.4.1-py2.py3-none-any.whl", hash = "sha256:5b98d7620b8d9b7c74106fa1200c76b261664951a212fc443154c3b6823888a4"},
-    {file = "yaspin-1.4.1.tar.gz", hash = "sha256:53f398eeeff430d9b686ce2f104f6b0fa0e2d165bafc7b7e4aa4432ec8d23582"},
+    {file = "yaspin-1.5.0-py2.py3-none-any.whl", hash = "sha256:10348ecc3b9c1f5a0c83390e0b892b62d3f3dae300d0c74e01ce72f8b032406c"},
+    {file = "yaspin-1.5.0.tar.gz", hash = "sha256:d8fc9bc1c8be225877ea6e2e08fec96c2b52e233525a5c40b92d373f015439c6"},
 ]

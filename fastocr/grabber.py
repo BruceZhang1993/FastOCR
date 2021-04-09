@@ -139,7 +139,7 @@ class CaptureWidget(QWidget):
         """
         if event.key() == Qt.Key.Key_Escape:
             self.close()
-        if event.key() == Qt.Key.Key_Return or event.key() == Qt.Key.Key_Enter:
+        if event.key() in [Qt.Key.Key_Return, Qt.Key.Key_Enter]:
             if self._startpos is None or self._endpos is None:
                 return
             screen = QApplication.screenAt(self._startpos)

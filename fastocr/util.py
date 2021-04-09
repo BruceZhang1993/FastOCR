@@ -57,10 +57,11 @@ class DesktopInfo:
         return ret
 
     @staticmethod
-    async def is_dark_mode():
+    def is_dark_mode():
         if sys.platform == 'darwin':
             # macOS darkmode
-            out, _, __ = await run_command('defaults', 'read', '-g', 'AppleInterfaceStyle', allow_fail=True)
+            loop = asyncio.get_event_loop()
+            out, _, __ = loop.run_until_complete(run_command('defaults', 'read', '-g', 'AppleInterfaceStyle', allow_fail=True))
             if out.strip().lower() == 'dark':
                 return True
             else:

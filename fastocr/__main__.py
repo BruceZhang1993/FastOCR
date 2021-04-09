@@ -6,13 +6,9 @@ from pathlib import Path
 
 import click
 import pkg_resources
-from PyQt5.QtWidgets import QApplication
-from qasync import QEventLoop
 
 from fastocr import __appname__
-from fastocr.i18n import Translation
 from fastocr.log import AppLogger
-from fastocr.tray import AppTray
 from fastocr.util import instance_already_running, DesktopInfo
 
 __version__ = pkg_resources.get_distribution('fastocr').version
@@ -36,6 +32,11 @@ def main(ctx):
 @main.command()
 @click.option('--show-config', '-C', is_flag=True)
 def run(show_config: bool):
+    from PyQt5.QtWidgets import QApplication
+    from qasync import QEventLoop
+    from fastocr.i18n import Translation
+    from fastocr.tray import AppTray
+
     if sys.platform not in ['win32', 'darwin', 'cygwin'] and instance_already_running():
         AppLogger().info('only one instance running allowed')
         sys.exit(1)
@@ -90,16 +91,22 @@ def diagnose():
     print()
     # Environment
     print('== Environment ==')
-    import platform, PyQt5.QtCore
+    import platform
     _version = sys.version.replace('\n', ' ')
     print(f'System: {platform.system()} {platform.version()}')
     print(f'Info: {" ".join(platform.uname())}')
     print(f'Python: {_version}')
     print(f'Platform: {sys.platform}')
     # noinspection PyUnresolvedReferences
-    print(f'PySide2 Qt: {PyQt5.QtCore.__version__}')
-    print(f'Running Qt: {PyQt5.QtCore.qVersion()}')
-    print(f'DBus: {DesktopInfo.dbus_supported()}')
+    try:
+        import PyQt5.QtCore
+        print(f'Running Qt: {PyQt5.QtCore.qVersion()}')
+    except ImportError as e:
+        print(f'Running Qt: {e}')
+    try:
+        print(f'DBus: {DesktopInfo.dbus_supported()}')
+    except ModuleNotFoundError as e:
+        print(f'DBus: {e}')
     if sys.platform not in ['win32', 'darwin', 'cygwin']:
         print(f'Desktop: {DesktopInfo.desktop_environment()}')
         print(f'Wayland: {DesktopInfo.is_wayland()}')
@@ -118,13 +125,14 @@ def print_package_info(package_name):
         print(f'== {package_name} ==')
         package = __import__(package_name)
         print(f'Name: {package.__name__}')
-        print(f'Version: {package.__version__}')
+        if hasattr(package, '__version__'):
+            print(f'Version: {package.__version__}')
         print(f'Package: {package.__package__}')
         print(f'File: {package.__file__}')
         print(f'Path: {package.__path__}')
         print()
     except Exception as e:
-        AppLogger().exception(e)
+        print(e)
 
 
 if __name__ == '__main__':

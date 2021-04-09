@@ -23,18 +23,22 @@ if DesktopInfo.dbus_supported():
 
 # noinspection PyPep8Naming,PyPropertyDefinition
 class SettingBackend(QObject):
-    def __init__(self, parent=None):
+    def __init__(self, tray=None, parent=None):
         super(SettingBackend, self).__init__(parent)
         self.setting = Setting()
+        self.tray: Optional[AppTray] = tray
 
     @pyqtSlot()
     def save(self):
         self.setting.save()
         self.setting.reload()
+        if self.tray is not None:
+            self.tray.update_menu()
+            self.tray.update_token()
 
     @pyqtSlot()
     def open_setting_file(self):
-        asyncio.run(open_in_default(APP_SETTING_FILE.as_posix()))
+        asyncio.gather(open_in_default(APP_SETTING_FILE.as_posix()))
 
     @pyqtProperty(str, constant=True)
     def appid(self) -> str:
@@ -147,16 +151,15 @@ class AppTray(QSystemTrayIcon):
         self.backend: Optional[SettingBackend] = None
         self.language_actions = dict()
         self.saved_data = None
-        self._loop = asyncio.get_event_loop()
         self.load_qml()
         self.initialize()
 
     def load_qml(self):
         self.engine = QQmlApplicationEngine()
         self.setting = Setting()
-        self.backend = SettingBackend()
+        self.backend = SettingBackend(tray=self)
         self.engine.rootContext().setContextProperty('backend', self.backend)
-        self.engine.load((Path(__file__).parent / 'qml' / 'setting.qml').as_posix())
+        self.engine.load((Path(__file__).parent / 'qml' / 'main.qml').as_posix())
         self.setting_window = self.engine.rootObjects()[0]
 
     # noinspection PyUnresolvedReferences
@@ -180,8 +183,8 @@ class AppTray(QSystemTrayIcon):
         capture_action.triggered.connect(self.start_capture)
         setting_action.triggered.connect(self.open_setting)
         quit_action.triggered.connect(self.quit_app)
-        self.setting.register_callback(self.update_menu)
-        self.setting.register_callback(self.update_token)
+        # self.setting.register_callback(self.update_menu)
+        # self.setting.register_callback(self.update_token)
         self.messageClicked.connect(self.message_clicked)
 
     def message_clicked(self):
@@ -193,7 +196,7 @@ class AppTray(QSystemTrayIcon):
     def update_icon(self):
         icon_theme = self.setting.general_icon_theme
         if icon_theme in ['', 'auto']:
-            is_dark = self._loop.run_until_complete(DesktopInfo.is_dark_mode())
+            is_dark = DesktopInfo.is_dark_mode()
             if not is_dark:
                 path = Path(__file__).parent / 'resource' / 'icon' / 'dark'
             else:
@@ -228,8 +231,8 @@ class AppTray(QSystemTrayIcon):
         elif reason == QSystemTrayIcon.Trigger:
             self.start_capture()
 
-    @qasync.asyncSlot()
-    async def open_setting(self):
+    @pyqtSlot()
+    def open_setting(self):
         setting_dir = Path.home() / '.config' / 'FastOCR'
         setting_dir.mkdir(parents=True, exist_ok=True)
         setting_file = setting_dir / 'config.ini'

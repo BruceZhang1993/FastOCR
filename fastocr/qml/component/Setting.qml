@@ -3,115 +3,8 @@ import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 
-ApplicationWindow {
-    id: setting
-    visible: false
-    width: 600
-    height: 720
-    title: qsTr('FastOCR Setting')
-
-    onClosing: {
-        close.accepted = false
-        setting.visible = false
-    }
-
-    footer: ToolBar {
-        ButtonGroup {
-            id: button_group
-            buttons: buttons.children
-        }
-
-        Row {
-            id: buttons
-            anchors.fill: parent
-            layoutDirection: Qt.RightToLeft
-
-            Button {
-                id: save_button
-                text: qsTr('Save')
-                enabled: true
-                onClicked: {
-                    backend.appid = appid_input.text
-                    backend.apikey = apikey_input.text
-                    backend.seckey = seckey_input.text
-                    backend.accurate = accurate_input.checked
-
-                    backend.yd_appid = yd_appid_input.text
-                    backend.yd_seckey = yd_seckey_input.text
-
-                    backend.face_apikey = face_apikey_input.text
-                    backend.face_apisec = face_apisec_input.text
-
-                    // Languages
-                    var lang_checkboxes = language_flow.children
-                    var checked = []
-                    for (var i=0; i < lang_checkboxes.length; i++)
-                        if (lang_checkboxes[i].checked)
-                            checked.push(lang_checkboxes[i].value)
-                    backend.languages = checked
-
-                    // General
-                    backend.icon_theme = icon_theme_select.currentValue
-                    backend.mode = working_mode_select.currentValue
-                    var radios = select_flow.children
-                    for (var i=0; i < radios.length; i++)
-                        if (radios[i].checked)
-                            backend.default_backend = radios[i].value
-
-                    backend.save()
-                    setting.visible = false
-                }
-            }
-
-            Button {
-                id: apply_button
-                text: qsTr('Apply')
-                enabled: true
-                onClicked: {
-                    backend.appid = appid_input.text
-                    backend.apikey = apikey_input.text
-                    backend.seckey = seckey_input.text
-                    backend.accurate = accurate_input.checked
-
-                    backend.yd_appid = yd_appid_input.text
-                    backend.yd_seckey = yd_seckey_input.text
-
-                    backend.face_apikey = face_apikey_input.text
-                    backend.face_apisec = face_apisec_input.text
-
-                    // Languages
-                    var lang_checkboxes = language_flow.children
-                    var checked = []
-                    for (var i=0; i < lang_checkboxes.length; i++)
-                        if (lang_checkboxes[i].checked)
-                            checked.push(lang_checkboxes[i].value)
-                    backend.languages = checked
-
-                    // General
-                    backend.icon_theme = icon_theme_select.currentValue
-                    backend.mode = working_mode_select.currentValue
-                    var radios = select_flow.children
-                    for (var i=0; i < radios.length; i++)
-                        if (radios[i].checked)
-                            backend.default_backend = radios[i].value
-
-                    backend.save()
-                }
-            }
-
-            Button {
-                text: qsTr('Close')
-                onClicked: setting.visible = false
-            }
-
-            Button {
-                text: qsTr('Open in editor')
-                onClicked: {
-                    backend.open_setting_file()
-                }
-            }
-        }
-    }
+Column {
+    anchors.fill: parent
 
     ScrollView
     {
@@ -418,6 +311,85 @@ ApplicationWindow {
                             Layout.fillWidth: true
                         }
                     }
+                }
+            }
+        }
+    }
+
+    ToolBar {
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+
+        ButtonGroup {
+            id: button_group
+            buttons: buttons.children
+        }
+
+        Row {
+            id: buttons
+            anchors.fill: parent
+            layoutDirection: Qt.RightToLeft
+
+            function saveAll() {
+                backend.appid = appid_input.text
+                backend.apikey = apikey_input.text
+                backend.seckey = seckey_input.text
+                backend.accurate = accurate_input.checked
+
+                backend.yd_appid = yd_appid_input.text
+                backend.yd_seckey = yd_seckey_input.text
+
+                backend.face_apikey = face_apikey_input.text
+                backend.face_apisec = face_apisec_input.text
+
+                // Languages
+                var lang_checkboxes = language_flow.children
+                var checked = []
+                for (var i=0; i < lang_checkboxes.length; i++)
+                    if (lang_checkboxes[i].checked)
+                        checked.push(lang_checkboxes[i].value)
+                backend.languages = checked
+
+                // General
+                backend.icon_theme = icon_theme_select.currentValue
+                backend.mode = working_mode_select.currentValue
+                var radios = select_flow.children
+                for (var i=0; i < radios.length; i++)
+                    if (radios[i].checked)
+                        backend.default_backend = radios[i].value
+
+                backend.save()
+            }
+
+            Button {
+                id: save_button
+                text: qsTr('Save')
+                enabled: true
+                onClicked: {
+                    parent.saveAll()
+                    setting.visible = false
+                }
+            }
+
+            Button {
+                id: apply_button
+                text: qsTr('Apply')
+                enabled: true
+                onClicked: {
+                    parent.saveAll()
+                }
+            }
+
+            Button {
+                text: qsTr('Close')
+                onClicked: setting.visible = false
+            }
+
+            Button {
+                text: qsTr('Open in editor')
+                onClicked: {
+                    backend.open_setting_file()
                 }
             }
         }

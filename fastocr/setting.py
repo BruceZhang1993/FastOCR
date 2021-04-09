@@ -70,8 +70,8 @@ class Setting(metaclass=Singleton):
         for cb in self._callbacks:
             try:
                 cb()
-            except:
-                raise Exception('save callback error')
+            except Exception as e:
+                print(e)
 
     def register_callback(self, callback):
         if callback not in self._callbacks:
