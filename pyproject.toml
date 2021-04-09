@@ -9,7 +9,7 @@ repository = "https://github.com/BruceZhang1993/FastOCR"
 documentation = "https://github.com/BruceZhang1993/FastOCR"
 keywords = ["ocr"]
 readme = "README.md"
-include = ["fastocr/qml/*.qml", "fastocr/data/FastOCR.desktop", "fastocr/data/config.example.ini",
+include = ["fastocr/qml/*.qml", "fastocr/qml/component/*.qml", "fastocr/data/FastOCR.desktop", "fastocr/data/config.example.ini",
     "fastocr/data/i18n.pro", "fastocr/i18n/*.qm", "fastocr/resource/icon/*/*.svg", "fastocr/resource/icon/*/*.png"]
 
 [tool.poetry.dependencies]

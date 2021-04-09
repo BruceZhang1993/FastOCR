@@ -35,7 +35,7 @@ setup(
     entry_points={"console_scripts": ["fastocr = fastocr.__main__:main"]},
     packages=['fastocr'],
     package_dir={"": "."},
-    package_data={"fastocr": ["data/*.desktop", "data/*.ini", "data/*.pro", "i18n/*.qm", "i18n/*.ts", "qml/*.qml", "resource/icon/dark/*.png", "resource/icon/dark/*.svg", "resource/icon/light/*.png", "resource/icon/light/*.svg"]},
+    package_data={"fastocr": ["data/*.desktop", "data/*.ini", "data/*.pro", "i18n/*.qm", "i18n/*.ts", "qml/*.qml", "qml/component/*.qml", "resource/icon/dark/*.png", "resource/icon/dark/*.svg", "resource/icon/light/*.png", "resource/icon/light/*.svg"]},
     install_requires=['aiohttp', 'click', 'pyqt5', 'pyqt5-sip', 'qasync'],
     extras_require={"dev": ["dephell"], "linux": ["dbus-python"]},
 )
