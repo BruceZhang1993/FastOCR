@@ -40,6 +40,17 @@ class SettingBackend(QObject):
     def open_setting_file(self):
         asyncio.gather(open_in_default(APP_SETTING_FILE.as_posix()))
 
+    # Consts
+    @pyqtProperty(str, constant=True)
+    def appver(self) -> str:
+        import pkg_resources
+        return pkg_resources.get_distribution('fastocr').version
+
+    @appver.setter
+    def appver(self, text: str):
+        pass
+
+    # Settings
     @pyqtProperty(str, constant=True)
     def appid(self) -> str:
         return self.setting.baidu_appid

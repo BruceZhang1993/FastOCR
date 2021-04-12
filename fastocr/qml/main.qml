@@ -28,6 +28,9 @@ ApplicationWindow {
             TabButton {
                 text: qsTr("Setting")
             }
+            TabButton {
+                text: qsTr("About")
+            }
         }
 
         StackLayout {
@@ -36,6 +39,7 @@ ApplicationWindow {
             anchors.fill: parent
             currentIndex: bar.currentIndex
             CustomComponent.Setting {}
+            CustomComponent.About {}
         }
     }
 
