@@ -1,4 +1,4 @@
 lupdate_only {
-    SOURCES = ../qml/setting.qml ../tray.py
+    SOURCES = ../qml/main.qml ../qml/component/*.qml
     TRANSLATIONS = ../i18n/zh_cn.ts
 }
