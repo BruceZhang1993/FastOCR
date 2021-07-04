@@ -50,6 +50,14 @@ class SettingBackend(QObject):
     def appver(self, text: str):
         pass
 
+    @pyqtProperty(list, constant=True)
+    def all_language_tags(self) -> list:
+        return ['JAP', 'KOR', 'FRE', 'SPA', 'GER', 'RUS']
+
+    @pyqtProperty(list, constant=True)
+    def all_language_names(self) -> list:
+        return ['Japanese', 'Korea', 'French', 'Spanish', 'Germany', 'Russian']
+
     # Settings
     @pyqtProperty(str, constant=True)
     def appid(self) -> str:
