@@ -16,15 +16,25 @@ ScrollView
         boundsBehavior: Flickable.StopAtBounds
         anchors.fill: parent
 
-        ColumnLayout {
+        GridLayout {
             id: clayout
             width: parent.width
             Layout.fillWidth: true
-            spacing: 2
+            columns: 2
+            rowSpacing: 4
+            columnSpacing: 4
 
             Label {
-                text: "FastOCR - Version " + (backend ? backend.appver : 'Unknown')
-                font.pixelSize: 22
+                Layout.minimumWidth: width + 10
+                text: "FastOCR"
+                font.pixelSize: 18
+                font.bold: true
+            }
+
+            Label {
+                Layout.fillWidth: true
+                text: backend.appver
+                font.pixelSize: 18
                 font.bold: true
             }
         }

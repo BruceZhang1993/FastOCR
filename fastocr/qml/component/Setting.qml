@@ -39,7 +39,7 @@ Column {
 
                             id: baidu_select
                             value: 'baidu'
-                            checked: backend ? backend.default_backend == value : false
+                            checked: backend.default_backend == value
                             text: qsTr("BaiduOCR")
                         }
 
@@ -48,7 +48,7 @@ Column {
 
                             id: youdao_select
                             value: 'youdao'
-                            checked: backend ? backend.default_backend == value : false
+                            checked: backend.default_backend == value
                             text: qsTr("YoudaoOCR")
                         }
 
@@ -57,7 +57,7 @@ Column {
 
                             id: face_select
                             value: 'face'
-                            checked: backend ? backend.default_backend == value : false
+                            checked: backend.default_backend == value
                             text: qsTr("Face++OCR")
                         }
                     }
@@ -73,7 +73,7 @@ Column {
                             id: icon_theme_select
                             textRole: 'text'
                             valueRole: 'value'
-                            Component.onCompleted: currentIndex = indexOfValue(backend ? backend.icon_theme : 'auto')
+                            Component.onCompleted: currentIndex = indexOfValue(backend.icon_theme)
                             model: [
                                 { value: 'auto', text: qsTr('Auto Select') },
                                 { value: 'light', text: qsTr("Light") },
@@ -93,7 +93,7 @@ Column {
                             id: working_mode_select
                             textRole: 'text'
                             valueRole: 'value'
-                            Component.onCompleted: currentIndex = indexOfValue(backend ? backend.mode : 0)
+                            Component.onCompleted: currentIndex = indexOfValue(backend.mode)
                             model: [
                                 { value: 0, text: qsTr('Copy to clipboard') },
                                 { value: 1, text: qsTr("Show notification only") }
@@ -124,7 +124,7 @@ Column {
 
                         TextField {
                             id: appid_input
-                            text: backend ? backend.appid : ''
+                            text: backend.appid
                             Layout.columnSpan: 3
                             Layout.fillWidth: true
                         }
@@ -136,7 +136,7 @@ Column {
 
                         TextField {
                             id: apikey_input
-                            text: backend ? backend.apikey : ''
+                            text: backend.apikey
                             Layout.columnSpan: 3
                             Layout.fillWidth: true
                         }
@@ -148,7 +148,7 @@ Column {
 
                         TextField {
                             id: seckey_input
-                            text: backend ? backend.seckey : ''
+                            text: backend.seckey
                             Layout.columnSpan: 3
                             Layout.fillWidth: true
                         }
@@ -164,58 +164,15 @@ Column {
                             Layout.fillWidth: true
                             spacing: 2
 
-                            CheckBox {
-                                property string value
+                            Repeater {
+                                model: backend.all_language_tags
+                                CheckBox {
+                                    property string value
 
-                                id: japanese
-                                text: qsTr('Japanese')
-                                checked: backend ? backend.languages.includes(this.value): false
-                                value: 'JAP'
-                            }
-
-                            CheckBox {
-                                property string value
-
-                                id: korean
-                                text: qsTr('Korean')
-                                checked: backend ? backend.languages.includes(this.value): false
-                                value: 'KOR'
-                            }
-
-                            CheckBox {
-                                property string value
-
-                                id: french
-                                text: qsTr('French')
-                                checked: backend ? backend.languages.includes(this.value): false
-                                value: 'FRE'
-                            }
-
-                            CheckBox {
-                                property string value
-
-                                id: spanish
-                                text: qsTr('Spanish')
-                                checked: backend ? backend.languages.includes(this.value): false
-                                value: 'SPA'
-                            }
-
-                            CheckBox {
-                                property string value
-
-                                id: germany
-                                text: qsTr('Germany')
-                                checked: backend ? backend.languages.includes(this.value): false
-                                value: 'GER'
-                            }
-
-                            CheckBox {
-                                property string value
-
-                                id: russian
-                                text: qsTr('Russian')
-                                checked: backend ? backend.languages.includes(this.value): false
-                                value: 'RUS'
+                                    text: qsTr(backend.all_language_names[index])
+                                    checked: backend.languages.includes(this.value)
+                                    value: modelData
+                                }
                             }
                         }
 
@@ -223,7 +180,7 @@ Column {
                             CheckBox {
                                 id: accurate_input
                                 text: qsTr('Use accurate mode')
-                                checked: backend ? backend.accurate : false
+                                checked: backend.accurate
                                 Layout.columnSpan: 4
                                 Layout.fillWidth: true
                             }
@@ -253,7 +210,7 @@ Column {
 
                         TextField {
                             id: yd_appid_input
-                            text: backend ? backend.yd_appid : ''
+                            text: backend.yd_appid
                             Layout.columnSpan: 3
                             Layout.fillWidth: true
                         }
@@ -265,7 +222,7 @@ Column {
 
                         TextField {
                             id: yd_seckey_input
-                            text: backend ? backend.yd_seckey : ''
+                            text: backend.yd_seckey
                             Layout.columnSpan: 3
                             Layout.fillWidth: true
                         }
@@ -294,7 +251,7 @@ Column {
 
                         TextField {
                             id: face_apikey_input
-                            text: backend ? backend.face_apikey : ''
+                            text: backend.face_apikey
                             Layout.columnSpan: 3
                             Layout.fillWidth: true
                         }
