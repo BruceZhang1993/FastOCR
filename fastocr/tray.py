@@ -177,6 +177,7 @@ class AppTray(QSystemTrayIcon):
         self.engine = QQmlApplicationEngine()
         self.setting = Setting()
         self.backend = SettingBackend(tray=self)
+        self.engine.setOutputWarningsToStandardError(False)
         self.engine.rootContext().setContextProperty('backend', self.backend)
         self.engine.load((Path(__file__).parent / 'qml' / 'main.qml').as_posix())
         self.setting_window = self.engine.rootObjects()[0]
