@@ -15,7 +15,7 @@ from fastocr.consts import APP_SETTING_FILE
 from fastocr.grabber import CaptureWidget
 from fastocr.service import OcrService, BaiduOcr
 from fastocr.setting import Setting
-from fastocr.util import DesktopInfo, open_in_default
+from fastocr.util import DesktopInfo, open_in_default, get_environment_values
 
 if DesktopInfo.dbus_supported():
     from fastocr.bus import AppDBusObject
@@ -57,6 +57,15 @@ class SettingBackend(QObject):
     @pyqtProperty(list, constant=True)
     def all_language_names(self) -> list:
         return ['Japanese', 'Korea', 'French', 'Spanish', 'Germany', 'Russian']
+
+    # Environment
+    @pyqtProperty(list, constant=True)
+    def about_data(self) -> list:
+        result = []
+        values = get_environment_values()
+        for k, v in values.items():
+            result.append({'name': k, 'value': str(v)})
+        return result
 
     # Settings
     @pyqtProperty(str, constant=True)

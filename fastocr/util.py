@@ -146,3 +146,27 @@ def instance_already_running(label="default"):
         already_running = True
 
     return already_running
+
+
+def get_environment_values():
+    data = {}
+    import platform
+    _version = sys.version.replace('\n', ' ')
+    data['System'] = f'{platform.system()} {platform.version()}'
+    data['Infomation'] = " ".join(platform.uname())
+    data['Python'] = _version
+    data['Platform'] = sys.platform
+    # noinspection PyUnresolvedReferences
+    try:
+        import PyQt5.QtCore
+        data['Qt'] = PyQt5.QtCore.qVersion()
+    except ImportError as e:
+        pass
+    try:
+        data['DBus'] = DesktopInfo.dbus_supported()
+    except ModuleNotFoundError:
+        data['DBus'] = False
+    if sys.platform not in ['win32', 'darwin', 'cygwin']:
+        data['Desktop'] = DesktopInfo.desktop_environment()
+        data['Wayland'] = DesktopInfo.is_wayland()
+    return data

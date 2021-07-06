@@ -9,7 +9,7 @@ import pkg_resources
 
 from fastocr import __appname__
 from fastocr.log import AppLogger
-from fastocr.util import instance_already_running, DesktopInfo
+from fastocr.util import instance_already_running, DesktopInfo, get_environment_values
 
 __version__ = pkg_resources.get_distribution('fastocr').version
 
@@ -91,27 +91,10 @@ def diagnose():
     print()
     # Environment
     print('== Environment ==')
-    import platform
-    _version = sys.version.replace('\n', ' ')
-    print(f'System: {platform.system()} {platform.version()}')
-    print(f'Info: {" ".join(platform.uname())}')
-    print(f'Python: {_version}')
-    print(f'Platform: {sys.platform}')
-    # noinspection PyUnresolvedReferences
-    try:
-        import PyQt5.QtCore
-        print(f'Running Qt: {PyQt5.QtCore.qVersion()}')
-    except ImportError as e:
-        print(f'Running Qt: {e}')
-    try:
-        print(f'DBus: {DesktopInfo.dbus_supported()}')
-    except ModuleNotFoundError as e:
-        print(f'DBus: {e}')
-    if sys.platform not in ['win32', 'darwin', 'cygwin']:
-        print(f'Desktop: {DesktopInfo.desktop_environment()}')
-        print(f'Wayland: {DesktopInfo.is_wayland()}')
+    values = get_environment_values()
+    for k, v in values.items():
+        print(f'{k}: {v}')
     print()
-
     # Dependency
     packages = ['PyQt5', 'aiohttp']
     if sys.platform not in ['win32', 'darwin', 'cygwin']:
