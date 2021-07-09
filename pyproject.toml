@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fastocr"
-version = "0.2.0"
+version = "0.3.0"
 description = "FastOCR is a desktop application for OCR API."
 license = "LGPL-3.0-only"
 authors = ["Bruce Zhang <zttt183525594@gmail.com>"]
@@ -22,7 +22,7 @@ PyQt5 = "*"
 PyQt5-sip = "*"
 
 [tool.poetry.dev-dependencies]
-dephell = "*"
+poetry2setup = "*"
 
 [tool.poetry.extras]
 linux = ["dbus-python"]
@@ -42,7 +42,3 @@ default = true
 [[tool.poetry.source]]
 name = "tuna"
 url = "https://pypi.tuna.tsinghua.edu.cn/simple/"
-
-[tool.dephell.main]
-from = {format = "poetry", path = "pyproject.toml"}
-to = {format = "setuppy", path = "setup.py"}
