@@ -206,13 +206,17 @@ class CaptureWidget(QWidget):
         self.setWindowFlags(
             Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint | Qt.Tool |
             Qt.BypassWindowManagerHint)
-        self.screenshot = ScreenGrabber().grab_entire_desktop()
+        self.screenshot = None
         self._clipping_state = 0
         self._startpos: Optional[QPoint] = None
         self._endpos: Optional[QPoint] = None
         self._tool_panel = ToolPanel(self)
+
+    def showEvent(self, _):
+        self.screenshot = ScreenGrabber().grab_entire_desktop()
         self.move(0, 0)
         self.resize(self.screenshot.size())
+        self.repaint()
 
     def keyPressEvent(self, event: QKeyEvent):
         """

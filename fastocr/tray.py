@@ -304,7 +304,7 @@ class AppTray(QSystemTrayIcon):
 
     @qasync.asyncSlot(QPixmap)
     async def start_ocr(self, no_copy: bool = False, lang='', pixmap: QPixmap = None, action: CaptureAction = None):
-        self.capture_widget.close()
+        self.capture_widget.hide()
         self.setting.reload()
         default = self.setting.get('General', 'default_backend')
         if default == '':
@@ -345,7 +345,8 @@ class AppTray(QSystemTrayIcon):
     async def run_capture(self, seconds=.5, no_copy=False, lang=''):
         self.contextMenu().close()
         await asyncio.sleep(seconds)
-        self.capture_widget = CaptureWidget()
+        if self.capture_widget is None:
+            self.capture_widget = CaptureWidget()
         self.capture_widget.captured.connect(partial(self.start_ocr, no_copy, lang))
         self.capture_widget.showFullScreen()
 
