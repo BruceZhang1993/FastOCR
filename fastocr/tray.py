@@ -12,7 +12,7 @@ from PyQt5.QtQuick import QQuickWindow
 from PyQt5.QtWidgets import QSystemTrayIcon, QMenu, QApplication
 
 from fastocr.consts import APP_SETTING_FILE
-from fastocr.grabber import CaptureWidget
+from fastocr.grabber import CaptureWidget, CaptureAction
 from fastocr.service import OcrService, BaiduOcr
 from fastocr.setting import Setting
 from fastocr.util import DesktopInfo, open_in_default, get_environment_values
@@ -303,7 +303,7 @@ class AppTray(QSystemTrayIcon):
         return pixmap
 
     @qasync.asyncSlot(QPixmap)
-    async def start_ocr(self, no_copy: bool = False, lang='', pixmap: QPixmap = None):
+    async def start_ocr(self, no_copy: bool = False, lang='', pixmap: QPixmap = None, action: CaptureAction = None):
         self.capture_widget.close()
         self.setting.reload()
         default = self.setting.get('General', 'default_backend')
@@ -320,6 +320,9 @@ class AppTray(QSystemTrayIcon):
             del service
         except Exception as err:
             self.showMessage('OCR 识别异常', str(err), QIcon.fromTheme('dialog-error-symbolic'), 5000)
+            return
+        if action == CaptureAction.search:
+            await open_in_default(f'https://www.google.com/search?q={data.strip()}')
             return
         if no_copy:
             if self.bus is not None:

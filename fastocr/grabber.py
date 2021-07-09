@@ -1,5 +1,6 @@
 import sys
 from abc import ABCMeta, abstractmethod
+from enum import Enum
 from typing import Optional
 
 from PyQt5.QtCore import QObject, QRect, QPoint, QDir, pyqtSignal, Qt
@@ -148,7 +149,15 @@ class FastCopyButton(BaseToolButton):
         return 'Copy'
 
     def handle(self, widget: 'CaptureWidget'):
-        widget.fast_copy()
+        widget.fast_action()
+
+
+class SearchButton(BaseToolButton):
+    def get_text(self) -> str:
+        return 'Web Search'
+
+    def handle(self, widget: 'CaptureWidget'):
+        widget.fast_action(CaptureAction.search)
 
 
 class ToolPanel(QFrame):
@@ -174,11 +183,16 @@ class ToolPanel(QFrame):
     def setup_tools(self):
         self._layout.addWidget(CloseButton(self, self.parentWidget()))
         self._layout.addWidget(FastCopyButton(self, self.parentWidget()))
-        # self._layout.addWidget(QPushButton('Search Text', self))
+        self._layout.addWidget(SearchButton(self, self.parentWidget()))
+
+
+class CaptureAction(Enum):
+    copy = 1
+    search = 2
 
 
 class CaptureWidget(QWidget):
-    captured = pyqtSignal(QPixmap)
+    captured = pyqtSignal(QPixmap, CaptureAction)
 
     def __init__(self):
         """
@@ -211,9 +225,11 @@ class CaptureWidget(QWidget):
             self._tool_panel.hide()
             self.close()
         if event.key() in [Qt.Key.Key_Return, Qt.Key.Key_Enter]:
-            self.fast_copy()
+            self.fast_action()
 
-    def fast_copy(self):
+    def fast_action(self, action=None):
+        if action is None:
+            action = CaptureAction.copy
         self._tool_panel.hide()
         if self._startpos is None or self._endpos is None:
             return
@@ -226,7 +242,7 @@ class CaptureWidget(QWidget):
             int((self._endpos.y() - self._startpos.y()) * ratio),
         ))
         # noinspection PyUnresolvedReferences
-        self.captured.emit(cropped)
+        self.captured.emit(cropped, action)
 
     def mousePressEvent(self, event: QMouseEvent):
         """
