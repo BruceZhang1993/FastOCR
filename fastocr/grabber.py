@@ -213,6 +213,7 @@ class CaptureWidget(QWidget):
         self._tool_panel = ToolPanel(self)
 
     def showEvent(self, _):
+        self._clipping_state = 0
         self.screenshot = ScreenGrabber().grab_entire_desktop()
         self.move(0, 0)
         self.resize(self.screenshot.size())
