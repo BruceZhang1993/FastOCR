@@ -23,6 +23,8 @@ PyQt5-sip = "*"
 
 [tool.poetry.dev-dependencies]
 poetry2setup = "*"
+pytest = "*"
+pytest-asyncio = "^0.15.1"
 
 [tool.poetry.extras]
 linux = ["dbus-python"]

@@ -161,7 +161,7 @@ def get_environment_values():
         import PyQt5.QtCore
         data['Qt'] = PyQt5.QtCore.qVersion()
     except ImportError as e:
-        pass
+        data['Qt'] = 'Unknown'
     try:
         data['DBus'] = DesktopInfo.dbus_supported()
     except ModuleNotFoundError:
