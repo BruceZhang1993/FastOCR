@@ -40,3 +40,7 @@ jobs:
           allowUpdates: true
           artifacts: dist/*.tar.gz,dist/*.whl
           token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload PyPI
+        env:
+          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
+        run: poetry publish
