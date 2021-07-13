@@ -347,6 +347,8 @@ class AppTray(QSystemTrayIcon):
         await asyncio.sleep(seconds)
         if self.capture_widget is None:
             self.capture_widget = CaptureWidget()
+        else:
+            self.capture_widget.captured.disconnect()
         self.capture_widget.captured.connect(partial(self.start_ocr, no_copy, lang))
         self.capture_widget.showFullScreen()
 
