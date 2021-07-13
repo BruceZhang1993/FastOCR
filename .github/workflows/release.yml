@@ -2,8 +2,8 @@ name: Build Release
 
 on:
   push:
-    tags:
-      - *
+    tags-ignore:
+      - pre*
 
 jobs:
   build:
