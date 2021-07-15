@@ -49,8 +49,6 @@ jobs:
         run: poetry publish
       - name: Telegram notify
         uses: appleboy/telegram-action@master
-        env:
-          GITHUB_VERSION: ${{ steps.var.outputs.version }}
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
@@ -58,11 +56,11 @@ jobs:
           format: markdown
           disable_web_page_preview: true
           message: |
-            *FastOCR $GITHUB_VERSION released*
+            *FastOCR ${{ steps.var.outputs.version }} released*
 
             Check out:
-            [Release page](https://github.com/BruceZhang1993/FastOCR/releases/tag/$GITHUB_VERSION)
-            [PyPI page](https://pypi.org/project/fastocr/$GITHUB_VERSION/)
+            [Release page](https://github.com/BruceZhang1993/FastOCR/releases/tag/${{ steps.var.outputs.version }})
+            [PyPI page](https://pypi.org/project/fastocr/${{ steps.var.outputs.version }}/)
 
             Wheel package here
           document: dist/fastocr-$GITHUB_VERSION-py3-none-any.whl
