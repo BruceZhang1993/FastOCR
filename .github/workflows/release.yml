@@ -58,11 +58,11 @@ jobs:
           format: markdown
           disable_web_page_preview: true
           message: |
-            *FastOCR ${{ GITHUB_VERSION }} released*
+            *FastOCR $GITHUB_VERSION released*
 
             Check out:
-            [Release page](https://github.com/BruceZhang1993/FastOCR/releases/tag/${{ GITHUB_VERSION }})
-            [PyPI page](https://pypi.org/project/fastocr/${{ GITHUB_VERSION }}/)
+            [Release page](https://github.com/BruceZhang1993/FastOCR/releases/tag/$GITHUB_VERSION)
+            [PyPI page](https://pypi.org/project/fastocr/$GITHUB_VERSION/)
 
             Wheel package here
-          document: dist/fastocr-${{ GITHUB_VERSION }}-py3-none-any.whl
+          document: dist/fastocr-$GITHUB_VERSION-py3-none-any.whl
