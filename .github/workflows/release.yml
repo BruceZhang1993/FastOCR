@@ -16,6 +16,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
+      - name: Set varaiables
+        id: var
+        run: echo ::set-output name=version::${GITHUB_REF#refs/*/}
       - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
@@ -44,3 +47,22 @@ jobs:
         env:
           POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
         run: poetry publish
+      - name: Telegram notify
+        uses: appleboy/telegram-action@master
+        env:
+          GITHUB_VERSION: ${{ steps.var.outputs.version }}
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          debug: true
+          format: markdown
+          disable_web_page_preview: true
+          message: |
+            *FastOCR ${{ GITHUB_VERSION }} released*
+
+            Check out:
+            [Release page](https://github.com/BruceZhang1993/FastOCR/releases/tag/${{ GITHUB_VERSION }})
+            [PyPI page](https://pypi.org/project/fastocr/${{ GITHUB_VERSION }}/)
+
+            Wheel package here
+          document: dist/fastocr-${{ GITHUB_VERSION }}-py3-none-any.whl
