@@ -12,8 +12,12 @@ ApplicationWindow {
     title: qsTr('FastOCR Setting')
 
     onClosing: {
-        close.accepted = false
-        setting.visible = false
+        if (backend.mocked === true) {
+            close.accepted = true
+        } else {
+            close.accepted = false
+            setting.visible = false
+        }
     }
 
     Column {
@@ -31,6 +35,9 @@ ApplicationWindow {
             TabButton {
                 text: qsTr("About")
             }
+            TabButton {
+                text: qsTr("Actions")
+            }
         }
 
         StackLayout {
@@ -40,6 +47,7 @@ ApplicationWindow {
             currentIndex: bar.currentIndex
             CustomComponent.Setting {}
             CustomComponent.About {}
+            CustomComponent.Actions {}
         }
     }
 

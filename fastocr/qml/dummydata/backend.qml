@@ -2,6 +2,7 @@ import QtQuick 2.3
 
 // 以下是模拟数据用于 qmlscene 加载
 QtObject {
+    property bool mocked: true
     property string appid: 'mocked_appid'
     property string apikey: 'mocked_apikey'
     property string seckey: 'mocked_seckey'
@@ -19,6 +20,11 @@ QtObject {
     property string appver: '0.0.1-mocked'
     property var about_data: [
         { name: 'Qt', value: '5.1.0' }
+    ]
+    property var action_list: [
+        { id: 'google', text: 'Google', action: 'uri', params: ['https://www.google.com/search?q={result_text}'] },
+        { id: 'google', text: 'Google', action: 'uri', params: ['https://www.google.com/search?q={result_text}'] },
+        { id: 'tofile', text: 'Save', action: 'shell', params: ['echo "{result_text_lines}" | tee $HOME/Desktop/ocr.txt'] }
     ]
 
     function save() {

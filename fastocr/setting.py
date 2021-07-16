@@ -8,20 +8,23 @@ from fastocr.util import Singleton
 
 
 class Setting(metaclass=Singleton):
-    def __init__(self):
+    def __init__(self, setting_file: Path = None):
+        self.setting_file = setting_file
+        if setting_file is None:
+            self.setting_file = APP_SETTING_FILE
         self.parser = ConfigParser()
         self.loaded = False
         self._callbacks = []
 
-    @staticmethod
-    def get_config_file() -> Path:
-        if not APP_SETTING_FILE.exists():
-            APP_SETTING_FILE.parent.mkdir(parents=True, exist_ok=True)
-            APP_SETTING_FILE.touch()
-        return APP_SETTING_FILE
+    def get_config_file(self) -> Path:
+        if not self.setting_file.exists():
+            self.setting_file.parent.mkdir(parents=True, exist_ok=True)
+            self.setting_file.touch()
+        return self.setting_file
 
     def reload(self):
         self.parser.read(self.get_config_file())
+        self.loaded = True
 
     def lazy_load(self):
         if not self.loaded:
