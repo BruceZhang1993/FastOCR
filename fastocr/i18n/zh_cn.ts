@@ -2,6 +2,21 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="zh_CN">
 <context>
+    <name>ActionWizard</name>
+    <message>
+        <source>Back</source>
+        <translation>上一步</translation>
+    </message>
+    <message>
+        <source>Next</source>
+        <translation>下一步</translation>
+    </message>
+    <message>
+        <source>Ok</source>
+        <translation>完成</translation>
+    </message>
+</context>
+<context>
     <name>AppTray</name>
     <message>
         <source>Capture</source>
@@ -148,6 +163,10 @@
     <message>
         <source>About</source>
         <translation>关于</translation>
+    </message>
+    <message>
+        <source>Actions</source>
+        <translation>动作</translation>
     </message>
 </context>
 </TS>
