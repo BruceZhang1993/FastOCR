@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fastocr"
-version = "0.3.4"
+version = "0.3.5"
 description = "FastOCR is a desktop application for OCR API."
 license = "LGPL-3.0-only"
 authors = ["Bruce Zhang <zttt183525594@gmail.com>"]
@@ -13,7 +13,7 @@ include = ["fastocr/qml/*.qml", "fastocr/qml/component/*.qml", "fastocr/data/Fas
     "fastocr/data/i18n.pro", "fastocr/i18n/*.qm", "fastocr/resource/icon/*/*.svg", "fastocr/resource/icon/*/*.png"]
 
 [tool.poetry.dependencies]
-python = ">=3.7,<3.10"
+python = ">=3.7,<4.0"
 qasync = "*"
 click = "*"
 aiohttp = "*"
