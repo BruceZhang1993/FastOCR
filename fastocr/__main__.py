@@ -50,8 +50,10 @@ def run(show_config: bool):
     loop = QEventLoop(app)
     asyncio.set_event_loop(loop)
     loop = asyncio.get_event_loop()
-    for s in [signal.SIGINT, signal.SIGTERM]:
-        loop.add_signal_handler(s, partial(quit_application, s))
+    if sys.platform != 'win32':
+        # add_signal_handler is not available on Windows
+        for s in [signal.SIGINT, signal.SIGTERM]:
+            loop.add_signal_handler(s, partial(quit_application, s))
     if DesktopInfo.dbus_supported():
         from fastocr.bus import app_dbus
         app_dbus.tray = AppTray(bus=app_dbus)

@@ -26,6 +26,7 @@ PyQt5-Qt5 = "*"
 poetry2setup = "*"
 pytest = "*"
 pytest-asyncio = "*"
+pyinstaller = { version = "*", platform = "win32" }
 
 [tool.poetry.extras]
 linux = ["dbus-python"]
