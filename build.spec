@@ -64,3 +64,12 @@ coll = COLLECT(exe,
                a.datas,
                strip=False,
                name='FastOCR')
+app = BUNDLE(exe,
+             name='FastOCR',
+             icon=None,
+             bundle_identifier=None,
+             version='0.0.1',
+             info_plist={
+                 'NSPrincipalClass': 'NSApplication',
+                 'NSAppleScriptEnabled': False,
+             })
