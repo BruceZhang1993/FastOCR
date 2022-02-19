@@ -1,4 +1,5 @@
 import asyncio
+import os
 import signal
 import sys
 from functools import partial
@@ -32,6 +33,11 @@ def main(ctx):
 @main.command()
 @click.option('--show-config', '-C', is_flag=True)
 def run(show_config: bool):
+    if sys.platform == 'win32':
+        os.environ['QT_QUICK_CONTROLS_STYLE'] = 'Universal'
+    elif sys.platform == 'darwin':
+        os.environ['QT_QUICK_CONTROLS_STYLE'] = 'macOS'
+
     from PyQt5.QtWidgets import QApplication
     from qasync import QEventLoop
     from fastocr.i18n import Translation
