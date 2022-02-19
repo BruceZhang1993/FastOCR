@@ -5,113 +5,119 @@
 [![GitHub version](https://img.shields.io/github/v/tag/BruceZhang1993/FastOCR?label=Version&style=flat-square)](https://github.com/BruceZhang1993/FastOCR/releases)
 ![PyPI](https://img.shields.io/pypi/v/fastocr?style=flat-square)
 
-FastOCR is a desktop application for OCR API.
+FastOCR 是一款开源免费的提供在线 OCR 文字识别的桌面工具
 
-## Supported OCR API
+## 支持的 OCR API 后端
 
-- 百度 AI 文字识别服务  https://ai.baidu.com/tech/ocr
-- 有道文字识别服务  https://ai.youdao.com/product-ocr-print.s
-- 旷视 Face++ 文字识别服务 (Experimental)  https://www.faceplusplus.com.cn/general-text-recognition/
+- [x] 百度 AI 文字识别服务  https://ai.baidu.com/tech/ocr
+- [x] 有道文字识别服务  https://ai.youdao.com/product-ocr-print.s
+- [x] 旷视 Face++ 文字识别服务 (Experimental)  https://www.faceplusplus.com.cn/general-text-recognition/
+- [ ] 本地 OCR
 
-### Features
+### 特性
 
-- 通用文字识别
-- 多语言支持 / Baidu
-- 高精度接口支持 / Baidu
+- [x] 通用文字识别 / 多个在线 OCR API 支持
+- [x] 多语言支持 / 百度
+- [x] 高精度接口支持 / 百度
+- [x] 识别文字搜索
+- [ ] 本地 OCR 后端
+- [ ] 自定义快捷动作
 
-## Supported environment
+## 支持操作系统
 
 - Linux X11
 - Windows
-- macOS
+- macOS (Experimental)
 - Linux Wayland (Experimental)
 
-### Supported wayland environment
+### 支持的 Wayland 环境 (Linux)
 
 - Gnome Wayland
 - KDE Wayland
 - Sway
 
-## Installation
+## 安装
+
+### Windows  
+ 64 位预编译版，解压即可使用
+
+点击下载 -> [Download](https://github.com/BruceZhang1993/FastOCR/releases/lastest) 解压到安装目录，执行 FastOCR.exe
 
 ### Arch Linux
 
-Stable version: https://aur.archlinux.org/packages/fastocr
+稳定版本 https://aur.archlinux.org/packages/fastocr
 
-Git version: https://aur.archlinux.org/packages/fastocr-git
+开发版本 https://aur.archlinux.org/packages/fastocr-git
 
-Build from AUR or install with your favorite AUR helper.
+ 从 AUR 下载脚本编译或使用你喜欢的 AUR 辅助工具
 
 ```shell
-yay -S fastocr  # Using yay
-pikaur -S fastocr  # Using pikaur
-# ...
+yay -S fastocr  # 使用 yay
+pikaur -S fastocr  # 使用 pikaur
 ```
 
 ### Nix/NixOS
  
-Use [NixOS CN flakes](https://github.com/nixos-cn/flakes) or [berberman flakes](https://github.com/berberman/flakes)
-
-Run FastOCR
+使用 [NixOS CN flakes](https://github.com/nixos-cn/flakes) 或 [berberman flakes](https://github.com/berberman/flakes) 安装
 
 ```shell
 nix run github:berberman/flakes#fastocr
 ```
 
-
-### PyPI
+### 通用 (PyPI)
 
 [fastocr @ PyPI](https://pypi.org/project/fastocr/)
 
 ```shell
 pip install --user fastocr
-# Then copy desktop file to ~/.local/share/applications
+# Linux 复制 desktop 文件到 ~/.local/share/applications
 ```
 
-### Manually
+### 通用 (手动安装)
 
 ```shell
 python setup.py install
-# Then copy desktop file to ~/.local/share/applications
+# Linux 复制 desktop 文件到 ~/.local/share/applications
 ```
 
-## Development
+## 通用 (仅本地开发)
 
-Proudly use [Poetry](https://python-poetry.org/docs/) for developing.
+ 自豪地使用 [Poetry](https://python-poetry.org/docs/) 进行开发
 
 ```shell
 poetry install
 ```
 
-## Usage
+## 使用方法
 
 ```shell
-fastocr
+fastocr  # 运行
+fastocr --help  # 查看帮助
 ```
 
-## DBus
+## DBus (Linux only)
 
 Service name: `io.github.brucezhang1993.FastOCR`
 
 Object: `/io/github/brucezhang1993/FastOCR`
 
-### Methods
+### 方法
 
 | Actions            | Arguments           | Description                                                 |
 |:-------------------|:--------------------|:------------------------------------------------------------|
-| captureToClipboard | {seconds} {no_copy} | Capture and OCR to system clipboard or dbus signal          |
-|                    |                     | seconds: Delay capture in seconds                           |
-|                    |                     | no_copy: If true, the result will not be saved in clipboard |
-| quitApp            | --                  | Quit app                                                    |
+| captureToClipboard | {seconds} {no_copy} | 执行 OCR 捕获到系统剪贴板或触发 dbus 信号                      |
+|                    |                     | seconds: 延迟执行单位为秒                                    |
+|                    |                     | no_copy: 如果为 true 则仅触发 dbus 信号而不复制到系统剪贴板    |
+| quitApp            | --                  | 退出应用                                                    |
 
-### Signal
+### 信号
 
 | Signals  | Arguments | Description                            |
 |:---------|:----------|:---------------------------------------|
-| captured | {text}    | OCR result will be sent to this signal |
-|          |           | text: OCR result in plain text         |
+| captured | {text}    | OCR 识别结果文本会触发此信号             |
+|          |           | text: 文本识别结果                      |
 
-## Contributing
+## 贡献
 
 Pull requests are welcome.
 
