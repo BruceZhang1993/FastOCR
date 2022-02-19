@@ -47,6 +47,7 @@ class AppLogger(metaclass=Singleton):
     AppLogger a simple wrapper for logging
     """
     def __init__(self):
+        APP_CACHE_DIR.mkdir(parents=True, exist_ok=True)
         logging.config.dictConfig(LOGGING_CONFIG)
         self.loggers: Dict[str, logging.Logger] = {}
 

@@ -115,7 +115,9 @@ async def check_exists(command):
 async def run_command(*args, allow_fail=False):
     process = await asyncio.create_subprocess_exec(
         *args,
-        stderr=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE)
+        stderr=asyncio.subprocess.PIPE,
+        stdout=asyncio.subprocess.PIPE
+    )
     stdout, stderr = await process.communicate()
     if not allow_fail and process.returncode != 0:
         raise Exception(stderr.decode().strip())
@@ -126,7 +128,7 @@ async def open_in_default(filename):
     if sys.platform == 'darwin':
         await run_command('open', filename)
     if sys.platform == 'win32':
-        await run_command('start', filename)
+        os.startfile(filename)
     if sys.platform == 'linux':
         await run_command('xdg-open', filename)
 
