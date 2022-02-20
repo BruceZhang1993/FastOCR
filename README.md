@@ -41,7 +41,7 @@ FastOCR 是一款开源免费的提供在线 OCR 文字识别的桌面工具
 ### Windows  
  64 位预编译版，解压即可使用
 
-点击下载 -> [Download](https://github.com/BruceZhang1993/FastOCR/releases/lastest) 解压到安装目录，执行 FastOCR.exe
+点击下载 -> [Download](https://github.com/BruceZhang1993/FastOCR/releases/latest) 解压到安装目录，执行 FastOCR.exe
 
 ### Arch Linux
 
