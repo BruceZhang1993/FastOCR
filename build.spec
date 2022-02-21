@@ -57,6 +57,7 @@ exe = EXE(pyz,
           console=False,
           debug=False,
           strip=True,
+          icon='assets/FastOCR.ico',
           name='FastOCR')
 coll = COLLECT(exe,
                a.binaries,
@@ -66,7 +67,7 @@ coll = COLLECT(exe,
                name='FastOCR')
 app = BUNDLE(exe,
              name='FastOCR',
-             icon=None,
+             icon='assets/FastOCR.png',
              bundle_identifier=None,
              version='0.0.1',
              info_plist={
