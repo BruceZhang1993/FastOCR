@@ -2,6 +2,8 @@ import asyncio
 import os
 import sys
 
+from fastocr.library.singleton import SingleInstance, SingleInstanceException
+
 
 class Singleton(type):
     """ singleton metaclass """
@@ -138,13 +140,11 @@ def instance_already_running(label="default"):
     Detect if an an instance with the label is already running, globally
     at the operating system level.
     """
-    import fcntl
-    lock_file_pointer = os.open(f"/tmp/fastocr_{label}.lock", os.O_WRONLY | os.O_CREAT)
+    already_running = False
 
     try:
-        fcntl.lockf(lock_file_pointer, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        already_running = False
-    except IOError:
+        SingleInstance(label)
+    except SingleInstanceException:
         already_running = True
 
     return already_running
