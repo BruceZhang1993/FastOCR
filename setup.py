@@ -15,7 +15,7 @@ package_data = \
              'resource/icon/light/*']}
 
 install_requires = \
-['PyQt5', 'PyQt5-Qt5', 'PyQt5-sip', 'aiohttp', 'click', 'qasync']
+['PyQt5', 'aiohttp', 'click', 'qasync']
 
 extras_require = \
 {'linux': ['dbus-python']}

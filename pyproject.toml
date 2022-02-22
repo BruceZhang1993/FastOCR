@@ -19,8 +19,6 @@ click = "*"
 aiohttp = "*"
 dbus-python = { version = "*", optional = true }
 PyQt5 = "*"
-PyQt5-sip = "*"
-PyQt5-Qt5 = "*"
 
 [tool.poetry.dev-dependencies]
 poetry2setup = "*"
