@@ -43,7 +43,7 @@ def run(show_config: bool):
     from fastocr.i18n import Translation
     from fastocr.tray import AppTray
 
-    if sys.platform not in ['win32', 'darwin', 'cygwin'] and instance_already_running():
+    if instance_already_running():
         AppLogger().info('only one instance running allowed')
         sys.exit(1)
 
