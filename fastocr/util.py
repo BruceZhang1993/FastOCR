@@ -1,8 +1,7 @@
 import asyncio
 import os
 import sys
-
-from fastocr.library.singleton import SingleInstance, SingleInstanceException
+import tempfile
 
 
 class Singleton(type):
@@ -63,7 +62,8 @@ class DesktopInfo:
         if sys.platform == 'darwin':
             # macOS darkmode
             loop = asyncio.get_event_loop()
-            out, _, __ = loop.run_until_complete(run_command('defaults', 'read', '-g', 'AppleInterfaceStyle', allow_fail=True))
+            out, _, __ = loop.run_until_complete(
+                run_command('defaults', 'read', '-g', 'AppleInterfaceStyle', allow_fail=True))
             if out.strip().lower() == 'dark':
                 return True
             else:
@@ -142,10 +142,26 @@ def instance_already_running(label="default"):
     """
     already_running = False
 
-    try:
-        SingleInstance(label)
-    except SingleInstanceException:
-        already_running = True
+    if sys.platform == 'win32':
+        tempdir = tempfile.gettempdir()
+        lockfile = os.sep.join([tempdir, f'fastocr_{label}.lock'])
+
+        try:
+            if os.path.exists(lockfile):
+                os.unlink(lockfile)
+            os.open(lockfile, os.O_CREAT | os.O_EXCL | os.O_RDWR)
+        except EnvironmentError as err:
+            if err.errno == 13:
+                already_running = True
+            else:
+                raise
+    else:
+        import fcntl
+        lock_file_pointer = os.open(f'/tmp/fastocr_{label}.lock', os.O_WRONLY | os.O_CREAT)
+        try:
+            fcntl.lockf(lock_file_pointer, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except IOError:
+            already_running = True
 
     return already_running
 
