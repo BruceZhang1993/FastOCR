@@ -43,6 +43,16 @@ FastOCR 是一款开源免费的提供在线 OCR 文字识别的桌面工具
 
 点击下载 -> [Download](https://github.com/BruceZhang1993/FastOCR/releases/latest) 解压到安装目录，执行 FastOCR.exe
 
+### macOS
+
+理论上支持但无构建环境，打包过程类似 Windows 如下，生成的文件位于项目的 dist 目录下
+
+```shell
+pip install poetry
+poetry update
+poetry run pyinstaller build.spec
+```
+
 ### Arch Linux
 
 稳定版本 https://aur.archlinux.org/packages/fastocr
@@ -80,7 +90,7 @@ python setup.py install
 # Linux 复制 desktop 文件到 ~/.local/share/applications
 ```
 
-## 通用 (仅本地开发)
+### 通用 (仅本地开发)
 
  自豪地使用 [Poetry](https://python-poetry.org/docs/) 进行开发
 
