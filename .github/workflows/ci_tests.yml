@@ -29,7 +29,6 @@ jobs:
         if: matrix.os == 'ubuntu-20.04'
         run: sudo apt install libdbus-1-dev build-essential libpython3-dev qt5-default
       - name: Install dependencies
-        if: matrix.os != 'ubuntu-20.04'
         run: poetry install
       - name: Run tests
         uses: GabrielBB/xvfb-action@v1
