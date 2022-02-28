@@ -61,11 +61,14 @@ def run(show_config: bool):
         for s in [signal.SIGINT, signal.SIGTERM]:
             loop.add_signal_handler(s, partial(quit_application, s))
     if DesktopInfo.dbus_supported():
-        from fastocr.bus import app_dbus
-        app_dbus.tray = AppTray(bus=app_dbus)
-        app_dbus.tray.show()
+        from fastocr.bus import AppDBusInterface
+        tray = AppTray()
+        bus = AppDBusInterface.init(tray)
+        loop.create_task(bus.run()).add_done_callback(lambda _: print('DBus service stopped'))
+        tray.bus = bus
+        tray.show()
         if show_config:
-            app_dbus.tray.open_setting()
+            tray.open_setting()
     else:
         tray = AppTray()
         tray.show()

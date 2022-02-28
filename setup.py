@@ -18,7 +18,7 @@ install_requires = \
 ['PyQt5', 'aiohttp', 'click', 'qasync']
 
 extras_require = \
-{'linux': ['dbus-python']}
+{':sys_platform == "linux"': ['dbus-next']}
 
 entry_points = \
 {'console_scripts': ['fastocr = fastocr.__main__:main']}

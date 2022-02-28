@@ -17,17 +17,14 @@ python = ">=3.7,<4.0"
 qasync = "*"
 click = "*"
 aiohttp = "*"
-dbus-python = { version = "*", optional = true }
+dbus-next = { version = "*", platform = "linux" }
 PyQt5 = "*"
 
 [tool.poetry.dev-dependencies]
 poetry2setup = "*"
 pytest = "*"
 pytest-asyncio = "*"
-pyinstaller = { version = "*", platform = "win32" }
-
-[tool.poetry.extras]
-linux = ["dbus-python"]
+pyinstaller = "*"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

@@ -1,3 +1,4 @@
+import asyncio
 import sys
 from abc import ABCMeta, abstractmethod
 from enum import Enum
@@ -11,7 +12,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QFrame, QHBoxLayout, QPushBut
 from fastocr.util import DesktopInfo
 
 if DesktopInfo.dbus_supported():
-    from fastocr.bus import app_dbus
+    from dbus_next.aio import MessageBus
 
 
 class ScreenGrabber(QObject):
@@ -26,25 +27,29 @@ class ScreenGrabber(QObject):
                 # Implements screenshot on wayland linux
                 try:
                     if DesktopInfo.desktop_environment() == DesktopInfo.GNOME:
-                        return self.grab_entire_desktop_wayland_gnome()
+                        return asyncio.run(self.grab_entire_desktop_wayland_gnome())
                     if DesktopInfo.desktop_environment() == DesktopInfo.KDE:
-                        return self.grab_entire_desktop_wayland_kde()
+                        return asyncio.run(self.grab_entire_desktop_wayland_kde())
                     if DesktopInfo.desktop_environment() == DesktopInfo.SWAY:
-                        return self.grab_entire_desktop_wayland_sway()
+                        return asyncio.run(self.grab_entire_desktop_wayland_sway())
                 except Exception as e:
                     print(e)
         return self.grab_entire_desktop_qt()
 
     @staticmethod
-    def grab_entire_desktop_wayland_sway() -> Optional[QPixmap]:
+    async def grab_entire_desktop_wayland_sway() -> Optional[QPixmap]:
         """
         Grab the entire desktop screenshot to QPixmap (Sway implementation)
         :return: QPixmap instance or None
         :rtype: Optional[QPixmap]
         """
-        bus = app_dbus.session_bus
-        obj = bus.get_object('org.freedesktop.portal.Desktop', '/org/freedesktop/portal/desktop')
-        reply = obj.get_dbus_method('Screenshot', 'org.freedesktop.portal.Screenshot')('', {})
+        bus = await MessageBus().connect()
+        introspection = await bus.introspect('org.freedesktop.portal.Desktop', '/org/freedesktop/portal/desktop')
+        proxy_object = bus.get_proxy_object('org.freedesktop.portal.Desktop', '/org/freedesktop/portal/desktop',
+                                            introspection)
+        interface = proxy_object.get_interface('org.freedesktop.portal.Desktop')
+        # noinspection PyUnresolvedReferences
+        reply = await interface.call_screenshot('', {})
         if reply:
             res = QPixmap(reply)
         else:
@@ -52,15 +57,19 @@ class ScreenGrabber(QObject):
         return res
 
     @staticmethod
-    def grab_entire_desktop_wayland_kde() -> Optional[QPixmap]:
+    async def grab_entire_desktop_wayland_kde() -> Optional[QPixmap]:
         """
         Grab the entire desktop screenshot to QPixmap (KDE implementation)
         :return: QPixmap instance or None
         :rtype: Optional[QPixmap]
         """
-        bus = app_dbus.session_bus
-        obj = bus.get_object('org.kde.KWin', '/Screenshot')
-        reply = obj.get_dbus_method('screenshotFullscreen')()
+        bus = await MessageBus().connect()
+        introspection = await bus.introspect('org.kde.KWin', '/Screenshot')
+        proxy_object = bus.get_proxy_object('org.kde.KWin', '/Screenshot',
+                                            introspection)
+        interface = proxy_object.get_interface('org.kde.KWin')
+        # noinspection PyUnresolvedReferences
+        reply = await interface.call_screenshot_fullscreen()
         if reply:
             res = QPixmap(reply)
         else:
@@ -68,16 +77,20 @@ class ScreenGrabber(QObject):
         return res
 
     @staticmethod
-    def grab_entire_desktop_wayland_gnome() -> Optional[QPixmap]:
+    async def grab_entire_desktop_wayland_gnome() -> Optional[QPixmap]:
         """
         Grab the entire desktop screenshot to QPixmap (Gnome implementation)
         :return: QPixmap instance or None
         :rtype: Optional[QPixmap]
         """
-        bus = app_dbus.session_bus
         path = QDir.tempPath() + '/tmp_fastocr_screenshot.tmp'
-        obj = bus.get_object('org.gnome.Shell', '/org/gnome/Shell/Screenshot')
-        reply = obj.get_dbus_method('Screenshot', 'org.gnome.Shell.Screenshot')(False, False, path)
+        bus = await MessageBus().connect()
+        introspection = await bus.introspect('org.gnome.Shell', '/org/gnome/Shell/Screenshot')
+        proxy_object = bus.get_proxy_object('org.gnome.Shell', '/org/gnome/Shell/Screenshot',
+                                            introspection)
+        interface = proxy_object.get_interface('org.gnome.Shell.Screenshot')
+        # noinspection PyUnresolvedReferences
+        reply = await interface.call_screenshot(False, False, path)
         if reply:
             res = QPixmap(path)
         else:

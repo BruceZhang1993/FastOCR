@@ -18,7 +18,7 @@ from fastocr.setting import Setting
 from fastocr.util import DesktopInfo, open_in_default, get_environment_values
 
 if DesktopInfo.dbus_supported():
-    from fastocr.bus import AppDBusObject
+    from fastocr.bus import AppDBusInterface
 
 
 # noinspection PyPep8Naming,PyPropertyDefinition
@@ -169,10 +169,10 @@ class SettingBackend(QObject):
 
 
 class AppTray(QSystemTrayIcon):
-    def __init__(self, bus=None):
+    def __init__(self):
         super(AppTray, self).__init__()
         self.setting = None
-        self.bus: Optional['AppDBusObject'] = bus
+        self.bus: Optional['AppDBusInterface'] = None
         self.capture_widget: Optional[CaptureWidget] = None
         self.engine: Optional[QQmlApplicationEngine] = None
         self.setting_window: Optional[QQuickWindow] = None
