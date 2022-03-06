@@ -25,6 +25,7 @@ poetry2setup = "*"
 pytest = "*"
 pytest-asyncio = "*"
 pyinstaller = "*"
+appimage-builder = { version = "*", platform = "linux" }
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
