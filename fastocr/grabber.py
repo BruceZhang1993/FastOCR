@@ -27,17 +27,17 @@ class ScreenGrabber(QObject):
                 # Implements screenshot on wayland linux
                 try:
                     if DesktopInfo.desktop_environment() == DesktopInfo.GNOME:
-                        return asyncio.run(self.grab_entire_desktop_wayland_gnome())
+                        return asyncio.run(self.grab_entire_desktop_freedesktop_portal())
                     if DesktopInfo.desktop_environment() == DesktopInfo.KDE:
                         return asyncio.run(self.grab_entire_desktop_wayland_kde())
                     if DesktopInfo.desktop_environment() == DesktopInfo.SWAY:
-                        return asyncio.run(self.grab_entire_desktop_wayland_sway())
+                        return asyncio.run(self.grab_entire_desktop_freedesktop_portal())
                 except Exception as e:
                     print(e)
         return self.grab_entire_desktop_qt()
 
     @staticmethod
-    async def grab_entire_desktop_wayland_sway() -> Optional[QPixmap]:
+    async def grab_entire_desktop_freedesktop_portal() -> Optional[QPixmap]:
         """
         Grab the entire desktop screenshot to QPixmap (Sway implementation)
         :return: QPixmap instance or None
