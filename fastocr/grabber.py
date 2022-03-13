@@ -23,17 +23,15 @@ class ScreenGrabber(QObject):
         :rtype: Optional[QPixmap]
         """
         if sys.platform == 'linux':
-            if DesktopInfo.is_wayland():
-                # Implements screenshot on wayland linux
-                try:
-                    if DesktopInfo.desktop_environment() == DesktopInfo.GNOME:
-                        return asyncio.run(self.grab_entire_desktop_freedesktop_portal())
-                    if DesktopInfo.desktop_environment() == DesktopInfo.KDE:
-                        return asyncio.run(self.grab_entire_desktop_wayland_kde())
-                    if DesktopInfo.desktop_environment() == DesktopInfo.SWAY:
-                        return asyncio.run(self.grab_entire_desktop_freedesktop_portal())
-                except Exception as e:
-                    print(e)
+            try:
+                if DesktopInfo.desktop_environment() == DesktopInfo.KDE:
+                    return asyncio.run(self.grab_entire_desktop_wayland_kde())
+                if DesktopInfo.desktop_environment() == DesktopInfo.GNOME:
+                    return asyncio.run(self.grab_entire_desktop_freedesktop_portal())
+                if DesktopInfo.desktop_environment() == DesktopInfo.SWAY:
+                    return asyncio.run(self.grab_entire_desktop_freedesktop_portal())
+            except Exception as e:
+                print(e)
         return self.grab_entire_desktop_qt()
 
     @staticmethod
