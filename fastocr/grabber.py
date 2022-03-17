@@ -1,6 +1,7 @@
 import asyncio
 import sys
 from abc import ABCMeta, abstractmethod
+from asyncio import Task
 from enum import Enum
 from typing import Optional
 
@@ -16,7 +17,7 @@ if DesktopInfo.dbus_supported():
 
 
 class ScreenGrabber(QObject):
-    def grab_entire_desktop(self) -> Optional[QPixmap]:
+    async def grab_entire_desktop(self) -> Optional[QPixmap]:
         """
         Grab the entire desktop screenshot to QPixmap
         :return: QPixmap instance or None
@@ -25,11 +26,11 @@ class ScreenGrabber(QObject):
         if sys.platform == 'linux':
             try:
                 if DesktopInfo.desktop_environment() == DesktopInfo.KDE:
-                    return asyncio.run(self.grab_entire_desktop_wayland_kde())
+                    return await self.grab_entire_desktop_wayland_kde()
                 if DesktopInfo.desktop_environment() == DesktopInfo.GNOME:
-                    return asyncio.run(self.grab_entire_desktop_freedesktop_portal())
+                    return await self.grab_entire_desktop_freedesktop_portal()
                 if DesktopInfo.desktop_environment() == DesktopInfo.SWAY:
-                    return asyncio.run(self.grab_entire_desktop_freedesktop_portal())
+                    return await self.grab_entire_desktop_freedesktop_portal()
             except Exception as e:
                 print(e)
         return self.grab_entire_desktop_qt()
@@ -210,6 +211,7 @@ class CaptureWidget(QWidget):
         CapturedWidget __init__
         """
         super().__init__()
+        self._task = None
         self.painter = QPainter()
         self.setCursor(Qt.CursorShape.CrossCursor)
         # Make widget stay on top & fullscreen
@@ -223,14 +225,18 @@ class CaptureWidget(QWidget):
         self._endpos: Optional[QPoint] = None
         self._tool_panel = None
 
+    def on_desktop_grabbed(self, task: 'Task[QPixmap]'):
+        self.screenshot = task.result()
+        self.move(0, 0)
+        self.resize(self.screenshot.size())
+        self.repaint()
+
     def showEvent(self, _):
         if self._tool_panel is None:
             self._tool_panel = ToolPanel(self)
         self._clipping_state = 0
-        self.screenshot = ScreenGrabber().grab_entire_desktop()
-        self.move(0, 0)
-        self.resize(self.screenshot.size())
-        self.repaint()
+        self._task = asyncio.get_event_loop().create_task(ScreenGrabber().grab_entire_desktop())
+        self._task.add_done_callback(self.on_desktop_grabbed)
 
     def keyPressEvent(self, event: QKeyEvent):
         """
@@ -307,19 +313,20 @@ class CaptureWidget(QWidget):
         :param event: QPaintEvent instance
         :type event: QPaintEvent
         """
-        self.painter.begin(self)
-        self.painter.drawPixmap(0, 0, self.screenshot)
-        overlay = QColor(0, 0, 0, 120)
-        self.painter.setBrush(overlay)
-        grey = QRegion(self.rect())
-        if self._clipping_state != 0:
-            grey = grey.subtracted(QRegion(
-                self._startpos.x(),
-                self._startpos.y(),
-                self._endpos.x() - self._startpos.x(),
-                self._endpos.y() - self._startpos.y()
-            ))
-        self.painter.setClipRegion(grey)
-        self.painter.drawRect(0, 0, self.rect().width(), self.rect().height())
-        self.painter.setClipRegion(QRegion(self.rect()))
-        self.painter.end()
+        if self.screenshot is not None:
+            self.painter.begin(self)
+            self.painter.drawPixmap(0, 0, self.screenshot)
+            overlay = QColor(0, 0, 0, 120)
+            self.painter.setBrush(overlay)
+            grey = QRegion(self.rect())
+            if self._clipping_state != 0:
+                grey = grey.subtracted(QRegion(
+                    self._startpos.x(),
+                    self._startpos.y(),
+                    self._endpos.x() - self._startpos.x(),
+                    self._endpos.y() - self._startpos.y()
+                ))
+            self.painter.setClipRegion(grey)
+            self.painter.drawRect(0, 0, self.rect().width(), self.rect().height())
+            self.painter.setClipRegion(QRegion(self.rect()))
+            self.painter.end()
