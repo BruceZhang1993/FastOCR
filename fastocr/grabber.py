@@ -11,6 +11,7 @@ from PyQt5.QtGui import QGuiApplication, QPixmap, QKeyEvent, QPaintEvent, QPaint
     QRegion
 from PyQt5.QtWidgets import QApplication, QWidget, QFrame, QHBoxLayout, QPushButton
 
+from fastocr.log import AppLogger
 from fastocr.util import DesktopInfo
 
 if DesktopInfo.dbus_supported():
@@ -33,7 +34,7 @@ class ScreenGrabber(QObject):
                 if DesktopInfo.desktop_environment() == DesktopInfo.SWAY:
                     return await self.grab_entire_desktop_freedesktop_portal()
             except Exception as e:
-                print('DBus screenshot API not working, falling back to Qt: ', e)
+                AppLogger().info('DBus screenshot API not working, falling back to Qt: ' + str(e))
                 print(traceback.format_exc())
         return self.grab_entire_desktop_qt()
 
