@@ -1,5 +1,6 @@
 import asyncio
 import sys
+import traceback
 from abc import ABCMeta, abstractmethod
 from asyncio import Task
 from enum import Enum
@@ -32,7 +33,8 @@ class ScreenGrabber(QObject):
                 if DesktopInfo.desktop_environment() == DesktopInfo.SWAY:
                     return await self.grab_entire_desktop_freedesktop_portal()
             except Exception as e:
-                print(e)
+                print('DBus screenshot API not working, falling back to Qt: ', e)
+                print(traceback.format_exc())
         return self.grab_entire_desktop_qt()
 
     @staticmethod
@@ -66,9 +68,9 @@ class ScreenGrabber(QObject):
         introspection = await bus.introspect('org.kde.KWin', '/Screenshot')
         proxy_object = bus.get_proxy_object('org.kde.KWin', '/Screenshot',
                                             introspection)
-        interface = proxy_object.get_interface('org.kde.KWin')
+        interface = proxy_object.get_interface('org.kde.kwin.Screenshot')
         # noinspection PyUnresolvedReferences
-        reply = await interface.call_screenshot_fullscreen()
+        reply = await interface.call_screenshot_fullscreen(False)
         if reply:
             res = QPixmap(reply)
         else:
