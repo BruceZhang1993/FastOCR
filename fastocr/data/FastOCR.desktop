@@ -11,4 +11,5 @@ Type=Application
 Categories=Graphics;
 StartupNotify=false
 X-DBUS-StartupType=Unique
-X-KDE-DBUS-Restricted-Interfaces=org.kde.kwin.Screenshot
+X-DBUS-ServiceName=io.github.brucezhang1993.FastOCR
+X-KDE-DBUS-Restricted-Interfaces=org.kde.kwin.Screenshot,org.kde.KWin.ScreenShot2
