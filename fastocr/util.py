@@ -121,15 +121,16 @@ def remove_registry_value(registry: int, regpath: str, name: str):
 
 
 def get_pyinstaller_path():
-    import sys, os
+    import sys
+    import os
     if getattr(sys, 'frozen', False):
         # If the application is run as a bundle, the PyInstaller bootloader
         # extends the sys module by a flag frozen=True and sets the app
         # path into variable _MEIPASS'.
         # noinspection PyUnresolvedReferences,PyProtectedMember
-        application_path = sys._MEIPASS
+        application_path = os.path.join(sys._MEIPASS, 'FastOCR.exe')
     else:
-        application_path = os.path.dirname(os.path.abspath(__file__))
+        application_path = sys.executable + ' ' + ' '.join(sys.argv)
     return application_path
 
 
