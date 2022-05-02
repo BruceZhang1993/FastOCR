@@ -1,4 +1,5 @@
 import json
+import sys
 from configparser import ConfigParser, NoSectionError, NoOptionError
 from pathlib import Path
 from typing import Optional, List
@@ -79,6 +80,32 @@ class Setting(metaclass=Singleton):
     def register_callback(self, callback):
         if callback not in self._callbacks:
             self._callbacks.append(callback)
+
+    @property
+    def autostart(self) -> bool:
+        return self.check_is_autostart()
+
+    @autostart.setter
+    def autostart(self, value: bool):
+        self.set_is_autostart(value)
+
+    @staticmethod
+    def set_is_autostart(value: bool):
+        if sys.platform == 'linux':
+            if value:
+                target_path = Path('/usr/share/applications/FastOCR.desktop')
+                if target_path.exists():
+                    (Path.home() / '.config' / 'autostart').mkdir(parents=True, exist_ok=True)
+                    (Path.home() / '.config' / 'autostart' / 'FastOCR.desktop').symlink_to(target_path)
+            else:
+                (Path.home() / '.config' / 'autostart' / 'FastOCR.desktop').unlink(missing_ok=True)
+
+    @staticmethod
+    def check_is_autostart():
+        if sys.platform == 'linux':
+            if (Path.home() / '.config' / 'autostart' / 'FastOCR.desktop').exists():
+                return True
+        return False
 
     @property
     def baidu_appid(self) -> str:

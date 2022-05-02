@@ -25,52 +25,33 @@ Column {
                 spacing: 2
 
                 GroupBox {
-                    title: qsTr("Default backend")
+                    title: qsTr("General")
                     Layout.fillWidth: true
                     Layout.alignment: Qt.AlignTop
 
-                    Flow {
-                        id: select_flow
-                        anchors.fill: parent
-                        spacing: 2
+                    GridLayout {
+                        Layout.fillWidth: true
+                        anchors.top: parent.top
+                        Layout.alignment: Qt.AlignTop
+                        columns: 4
 
-                        RadioButton {
-                            property string value
-
-                            id: baidu_select
-                            value: 'baidu'
-                            checked: backend.default_backend == value
-                            text: qsTr("BaiduOCR")
+                        CheckBox {
+                            id: autostart_input
+                            text: qsTr('Run at system start')
+                            checked: backend.autostart
+                            Layout.columnSpan: 4
+                            Layout.fillWidth: true
                         }
 
-                        RadioButton {
-                            property string value
-
-                            id: youdao_select
-                            value: 'youdao'
-                            checked: backend.default_backend == value
-                            text: qsTr("YoudaoOCR")
+                        Label {
+                            id: icontheme_label
+                            text: qsTr("Icon theme")
                         }
 
-                        RadioButton {
-                            property string value
-
-                            id: face_select
-                            value: 'face'
-                            checked: backend.default_backend == value
-                            text: qsTr("Face++OCR")
-                        }
-                    }
-                }
-
-                GroupBox {
-                    title: qsTr("Icon theme")
-                    Layout.fillWidth: true
-                    Layout.alignment: Qt.AlignTop
-
-                    Flow {
                         ComboBox {
                             id: icon_theme_select
+                            Layout.columnSpan: 3
+                            Layout.fillWidth: true
                             textRole: 'text'
                             valueRole: 'value'
                             Component.onCompleted: currentIndex = indexOfValue(backend.icon_theme)
@@ -80,17 +61,16 @@ Column {
                                 { value: 'dark', text: qsTr("Dark") }
                             ]
                         }
-                    }
-                }
 
-                GroupBox {
-                    title: qsTr("Working mode")
-                    Layout.fillWidth: true
-                    Layout.alignment: Qt.AlignTop
+                        Label {
+                            id: working_mode_label
+                            text: qsTr("Working mode")
+                        }
 
-                    Flow {
                         ComboBox {
                             id: working_mode_select
+                            Layout.columnSpan: 3
+                            Layout.fillWidth: true
                             textRole: 'text'
                             valueRole: 'value'
                             Component.onCompleted: currentIndex = indexOfValue(backend.mode)
@@ -101,6 +81,45 @@ Column {
                         }
                     }
                 }
+
+                GroupBox {
+                                    title: qsTr("Default backend")
+                                    Layout.fillWidth: true
+                                    Layout.alignment: Qt.AlignTop
+
+                                    Flow {
+                                        id: select_flow
+                                        anchors.fill: parent
+                                        spacing: 2
+
+                                        RadioButton {
+                                            property string value
+
+                                            id: baidu_select
+                                            value: 'baidu'
+                                            checked: backend.default_backend == value
+                                            text: qsTr("BaiduOCR")
+                                        }
+
+                                        RadioButton {
+                                            property string value
+
+                                            id: youdao_select
+                                            value: 'youdao'
+                                            checked: backend.default_backend == value
+                                            text: qsTr("YoudaoOCR")
+                                        }
+
+                                        RadioButton {
+                                            property string value
+
+                                            id: face_select
+                                            value: 'face'
+                                            checked: backend.default_backend == value
+                                            text: qsTr("Face++OCR")
+                                        }
+                                    }
+                                }
 
                 GroupBox {
                     id: group1
@@ -289,6 +308,7 @@ Column {
             layoutDirection: Qt.RightToLeft
 
             function saveAll() {
+                backend.autostart = autostart_input.checked
                 backend.appid = appid_input.text
                 backend.apikey = apikey_input.text
                 backend.seckey = seckey_input.text

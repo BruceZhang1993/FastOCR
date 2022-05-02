@@ -68,6 +68,14 @@ class SettingBackend(QObject):
         return result
 
     # Settings
+    @pyqtProperty(bool, constant=True)
+    def autostart(self) -> bool:
+        return self.setting.autostart
+
+    @autostart.setter
+    def autostart(self, value: bool):
+        self.setting.autostart = value
+
     @pyqtProperty(str, constant=True)
     def appid(self) -> str:
         return self.setting.baidu_appid
