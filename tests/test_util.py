@@ -2,8 +2,8 @@ import asyncio
 import sys
 import pytest
 
-from fastocr.util import DesktopInfo, get_registry_value, run_command, check_exists, instance_already_running, \
-    get_environment_values
+from fastocr.util import DesktopInfo, run_command, check_exists, instance_already_running, \
+    get_environment_values, get_registry_value_new
 
 
 class TestUtil:
@@ -41,7 +41,7 @@ class TestUtil:
         if sys.platform != 'win32':
             pytest.skip('windows platform only')
         import winreg
-        get_registry_value(winreg.HKEY_CURRENT_USER, r'SOFTWARE\Microsoft\Windows\CurrentVersion\Themes'
+        get_registry_value_new(winreg.HKEY_CURRENT_USER, r'SOFTWARE\Microsoft\Windows\CurrentVersion\Themes'
                                                      r'\Personalize', 'SystemUsesLightTheme')
 
     @pytest.mark.asyncio

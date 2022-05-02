@@ -5,7 +5,8 @@ from pathlib import Path
 from typing import Optional, List
 
 from fastocr.consts import APP_SETTING_FILE
-from fastocr.util import Singleton
+from fastocr.util import Singleton, get_registry_value_new, set_registry_value, get_pyinstaller_path, \
+    remove_registry_value
 
 
 class Setting(metaclass=Singleton):
@@ -99,12 +100,24 @@ class Setting(metaclass=Singleton):
                     (Path.home() / '.config' / 'autostart' / 'FastOCR.desktop').symlink_to(target_path)
             else:
                 (Path.home() / '.config' / 'autostart' / 'FastOCR.desktop').unlink(missing_ok=True)
+        elif sys.platform == 'win32':
+            import winreg
+            if value:
+                set_registry_value(winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Windows\CurrentVersion\Run',
+                                   'FastOCR', get_pyinstaller_path())
+            else:
+                remove_registry_value(winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Windows\CurrentVersion\Run',
+                                      'FastOCR')
 
     @staticmethod
     def check_is_autostart():
         if sys.platform == 'linux':
             if (Path.home() / '.config' / 'autostart' / 'FastOCR.desktop').exists():
                 return True
+        elif sys.platform == 'win32':
+            import winreg
+            return get_registry_value_new(winreg.HKEY_CURRENT_USER, r'Software\Microsoft\Windows\CurrentVersion\Run',
+                                          'FastOCR') is not None
         return False
 
     @property

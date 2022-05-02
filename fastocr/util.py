@@ -72,7 +72,7 @@ class DesktopInfo:
             # Windows 10 darkmode
             try:
                 import winreg
-                value = get_registry_value(winreg.HKEY_CURRENT_USER, r'SOFTWARE\Microsoft\Windows\CurrentVersion\Themes'
+                value = get_registry_value_new(winreg.HKEY_CURRENT_USER, r'SOFTWARE\Microsoft\Windows\CurrentVersion\Themes'
                                                                      r'\Personalize', 'SystemUsesLightTheme')
                 if value is not None:
                     return value == 0
@@ -89,24 +89,48 @@ class DesktopInfo:
             return lightness <= 160
 
 
-def get_registry_value(registry: int, regpath: str, name: str):
+def get_registry_value_new(registry: int, regpath: str, name: str):
     try:
         import winreg
-        registry = winreg.ConnectRegistry(None, registry)
-        try:
-            regkey = winreg.OpenKey(registry, regpath)
-        except:
-            return None
-        for i in range(1024):
-            try:
-                value_name, value, _ = winreg.EnumValue(regkey, i)
-                if value_name == name:
-                    return value
-            except OSError:
-                break
-        return None
+        ok = winreg.OpenKey(registry, regpath, 0, winreg.KEY_READ)
+        return winreg.QueryValueEx(ok, name)
     except:
         return None
+
+
+def set_registry_value(registry: int, regpath: str, name: str, value: str):
+    try:
+        import winreg
+        ok = winreg.OpenKey(registry, regpath, 0, winreg.KEY_WRITE)
+        winreg.SetValueEx(ok, name, 0, winreg.REG_SZ, value)
+        winreg.CloseKey(ok)
+        return True
+    except:
+        return False
+
+
+def remove_registry_value(registry: int, regpath: str, name: str):
+    try:
+        import winreg
+        ok = winreg.OpenKey(registry, regpath, 0, winreg.KEY_ALL_ACCESS)
+        winreg.DeleteValue(ok, name)
+        winreg.CloseKey(ok)
+        return True
+    except:
+        return False
+
+
+def get_pyinstaller_path():
+    import sys, os
+    if getattr(sys, 'frozen', False):
+        # If the application is run as a bundle, the PyInstaller bootloader
+        # extends the sys module by a flag frozen=True and sets the app
+        # path into variable _MEIPASS'.
+        # noinspection PyUnresolvedReferences,PyProtectedMember
+        application_path = sys._MEIPASS
+    else:
+        application_path = os.path.dirname(os.path.abspath(__file__))
+    return application_path
 
 
 async def check_exists(command):
