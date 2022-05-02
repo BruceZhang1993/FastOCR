@@ -39,6 +39,8 @@ Column {
                             id: autostart_input
                             text: qsTr('Run at system start')
                             checked: backend.autostart
+                            checkable: backend.autostart_supported
+                            enabled: backend.autostart_supported
                             Layout.columnSpan: 4
                             Layout.fillWidth: true
                         }

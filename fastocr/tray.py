@@ -1,4 +1,5 @@
 import asyncio
+import sys
 from functools import partial
 from pathlib import Path
 from typing import Optional, List
@@ -68,6 +69,10 @@ class SettingBackend(QObject):
         return result
 
     # Settings
+    @pyqtProperty(bool, constant=True)
+    def autostart_supported(self) -> bool:
+        return sys.platform in ['win32', 'linux']
+
     @pyqtProperty(bool, constant=True)
     def autostart(self) -> bool:
         return self.setting.autostart
