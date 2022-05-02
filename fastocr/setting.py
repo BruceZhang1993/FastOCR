@@ -95,7 +95,7 @@ class Setting(metaclass=Singleton):
         if sys.platform == 'linux':
             if value:
                 target_path = Path('/usr/share/applications/FastOCR.desktop')
-                if target_path.exists():
+                if target_path.exists() and not (Path.home() / '.config' / 'autostart' / 'FastOCR.desktop').exists():
                     (Path.home() / '.config' / 'autostart').mkdir(parents=True, exist_ok=True)
                     (Path.home() / '.config' / 'autostart' / 'FastOCR.desktop').symlink_to(target_path)
             else:
