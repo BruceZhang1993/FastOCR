@@ -77,51 +77,51 @@ Column {
                             valueRole: 'value'
                             Component.onCompleted: currentIndex = indexOfValue(backend.mode)
                             model: [
-                                { value: 0, text: qsTr('Copy to clipboard') },
-                                { value: 1, text: qsTr("Show notification only") }
+                                { value: 0, text: qsTr('Copy to clipboard automatic') },
+                                { value: 1, text: qsTr("Show notification to copy (Cannot click on notifications on some platforms)") }
                             ]
                         }
                     }
                 }
 
                 GroupBox {
-                                    title: qsTr("Default backend")
-                                    Layout.fillWidth: true
-                                    Layout.alignment: Qt.AlignTop
+                    title: qsTr("Default backend")
+                    Layout.fillWidth: true
+                    Layout.alignment: Qt.AlignTop
 
-                                    Flow {
-                                        id: select_flow
-                                        anchors.fill: parent
-                                        spacing: 2
+                    Flow {
+                        id: select_flow
+                        anchors.fill: parent
+                        spacing: 2
 
-                                        RadioButton {
-                                            property string value
+                        RadioButton {
+                            property string value
 
-                                            id: baidu_select
-                                            value: 'baidu'
-                                            checked: backend.default_backend == value
-                                            text: qsTr("BaiduOCR")
-                                        }
+                            id: baidu_select
+                            value: 'baidu'
+                            checked: backend.default_backend == value
+                            text: qsTr("BaiduOCR")
+                        }
 
-                                        RadioButton {
-                                            property string value
+                        RadioButton {
+                            property string value
 
-                                            id: youdao_select
-                                            value: 'youdao'
-                                            checked: backend.default_backend == value
-                                            text: qsTr("YoudaoOCR")
-                                        }
+                            id: youdao_select
+                            value: 'youdao'
+                            checked: backend.default_backend == value
+                            text: qsTr("YoudaoOCR")
+                        }
 
-                                        RadioButton {
-                                            property string value
+                        RadioButton {
+                            property string value
 
-                                            id: face_select
-                                            value: 'face'
-                                            checked: backend.default_backend == value
-                                            text: qsTr("Face++OCR")
-                                        }
-                                    }
-                                }
+                            id: face_select
+                            value: 'face'
+                            checked: backend.default_backend == value
+                            text: qsTr("Face++OCR")
+                        }
+                    }
+                }
 
                 GroupBox {
                     id: group1
