@@ -14,7 +14,7 @@ AppDir:
   app_info:
     id: com.github.brucezhang1993.fastocr
     name: FastOCR
-    version: 0.3.6
+    version: 0.3.7
     icon: applications-system
     # Set the python executable as entry point
     exec: usr/bin/python3

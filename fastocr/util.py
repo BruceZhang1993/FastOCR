@@ -133,7 +133,7 @@ def get_pyinstaller_path():
         exe = sys.executable
         if 'python.exe' in exe:
             # Try to make python script run in window mode
-            exe.replace('python.exe', 'pythonw.exe')
+            exe = exe.replace('python.exe', 'pythonw.exe')
         application_path = exe + ' ' + ' '.join(sys.argv)
     return application_path
 
