@@ -130,7 +130,11 @@ def get_pyinstaller_path():
         # noinspection PyUnresolvedReferences,PyProtectedMember
         application_path = os.path.join(sys._MEIPASS, 'FastOCR.exe')
     else:
-        application_path = sys.executable + ' ' + ' '.join(sys.argv)
+        exe = sys.executable
+        if 'python.exe' in exe:
+            # Try to make python script run in window mode
+            exe.replace('python.exe', 'pythonw.exe')
+        application_path = exe + ' ' + ' '.join(sys.argv)
     return application_path
 
 
