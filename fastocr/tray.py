@@ -57,7 +57,7 @@ class SettingBackend(QObject):
 
     @pyqtProperty(list, constant=True)
     def all_language_names(self) -> list:
-        return ['Japanese', 'Korea', 'French', 'Spanish', 'Germany', 'Russian']
+        return ['Japanese', 'Korean', 'French', 'Spanish', 'Germany', 'Russian']
 
     # Environment
     @pyqtProperty(list, constant=True)
@@ -182,6 +182,16 @@ class SettingBackend(QObject):
 
 
 class AppTray(QSystemTrayIcon):
+    # ['JAP', 'KOR', 'FRE', 'SPA', 'GER', 'RUS']
+    LANGUAGE_MAP = {
+        'JAP': 'Japanese',
+        'KOR': 'Korean',
+        'FRE': 'French',
+        'SPA': 'Spanish',
+        'GER': 'Germany',
+        'RUS': 'Russian',
+    }
+
     def __init__(self):
         super(AppTray, self).__init__()
         self.setting = None
@@ -263,7 +273,7 @@ class AppTray(QSystemTrayIcon):
         self.language_menu.clear()
         self.language_actions.clear()
         for lang in self.setting.baidu_languages:
-            self.language_actions[lang] = self.language_menu.addAction(lang)
+            self.language_actions[lang] = self.language_menu.addAction(self.tr(self.LANGUAGE_MAP.get(lang, lang)))
             # noinspection PyUnresolvedReferences
             self.language_actions[lang].triggered.connect(partial(self.start_capture_lang, lang))
 

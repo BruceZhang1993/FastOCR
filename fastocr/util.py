@@ -200,7 +200,7 @@ def get_environment_values():
     import platform
     _version = sys.version.replace('\n', ' ')
     data['System'] = f'{platform.system()} {platform.version()}'
-    data['Infomation'] = " ".join(platform.uname())
+    data['Kernel'] = " ".join(platform.uname())
     data['Python'] = _version
     data['Platform'] = sys.platform
     # noinspection PyUnresolvedReferences

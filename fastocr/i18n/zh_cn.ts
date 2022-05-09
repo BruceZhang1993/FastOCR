@@ -27,6 +27,30 @@
         <translation>捕获（其他语言）</translation>
     </message>
     <message>
+        <source>Japanese</source>
+        <translation>日语</translation>
+    </message>
+    <message>
+        <source>Korean</source>
+        <translation>韩语</translation>
+    </message>
+    <message>
+        <source>French</source>
+        <translation>法语</translation>
+    </message>
+    <message>
+        <source>Spanish</source>
+        <translation>西班牙语</translation>
+    </message>
+    <message>
+        <source>Germany</source>
+        <translation>德语</translation>
+    </message>
+    <message>
+        <source>Russian</source>
+        <translation>俄语</translation>
+    </message>
+    <message>
         <source>Setting</source>
         <translation>设置</translation>
     </message>
@@ -167,6 +191,25 @@
     <message>
         <source>Actions</source>
         <translation>动作</translation>
+    </message>
+</context>
+<context>
+    <name>About</name>
+    <message>
+        <source>System</source>
+        <translation>系统</translation>
+    </message>
+    <message>
+        <source>Kernel</source>
+        <translation>内核</translation>
+    </message>
+    <message>
+        <source>Platform</source>
+        <translation>平台</translation>
+    </message>
+    <message>
+        <source>Desktop</source>
+        <translation>桌面</translation>
     </message>
 </context>
 </TS>

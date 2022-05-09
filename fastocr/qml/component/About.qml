@@ -69,7 +69,7 @@ ScrollView
                         anchors.left: parent.left
                         anchors.leftMargin: 6
                         clip: true
-                        text: display
+                        text: qsTr(display)
                         readOnly: true
                         wrapMode: Text.WordWrap
                         selectByMouse: true
