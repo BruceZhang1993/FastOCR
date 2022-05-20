@@ -37,6 +37,8 @@ def run(show_config: bool):
         os.environ['QT_QUICK_CONTROLS_STYLE'] = 'Universal'
     elif sys.platform == 'darwin':
         os.environ['QT_QUICK_CONTROLS_STYLE'] = 'macOS'
+    else:
+        os.environ['QT_QUICK_CONTROLS_STYLE'] = 'Material'
 
     from PyQt5.QtWidgets import QApplication
     from qasync import QEventLoop
