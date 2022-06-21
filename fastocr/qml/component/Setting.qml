@@ -197,16 +197,6 @@ Column {
                             }
                         }
 
-                        Row {
-                            CheckBox {
-                                id: accurate_input
-                                text: qsTr('Use accurate mode')
-                                checked: backend.accurate
-                                Layout.columnSpan: 4
-                                Layout.fillWidth: true
-                            }
-                        }
-
                         Label {
                             id: default_lang_label
                             text: qsTr("Default language")
@@ -217,6 +207,16 @@ Column {
                             text: backend.default_language
                             Layout.columnSpan: 3
                             Layout.fillWidth: true
+                        }
+
+                        Row {
+                            CheckBox {
+                                id: accurate_input
+                                text: qsTr('Use accurate mode')
+                                checked: backend.accurate
+                                Layout.columnSpan: 4
+                                Layout.fillWidth: true
+                            }
                         }
                     }
                 }
