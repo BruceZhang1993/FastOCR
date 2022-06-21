@@ -53,11 +53,11 @@ class SettingBackend(QObject):
 
     @pyqtProperty(list, constant=True)
     def all_language_tags(self) -> list:
-        return ['JAP', 'KOR', 'FRE', 'SPA', 'GER', 'RUS']
+        return ['auto_detect','JAP', 'KOR', 'FRE', 'SPA', 'GER', 'RUS']
 
     @pyqtProperty(list, constant=True)
     def all_language_names(self) -> list:
-        return ['Japanese', 'Korean', 'French', 'Spanish', 'Germany', 'Russian']
+        return ['Auto detect','Japanese', 'Korean', 'French', 'Spanish', 'Germany', 'Russian']
 
     # Environment
     @pyqtProperty(list, constant=True)

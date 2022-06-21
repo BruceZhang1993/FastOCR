@@ -27,6 +27,10 @@
         <translation>捕获（其他语言）</translation>
     </message>
     <message>
+        <source>Auto detect</source>
+        <translation>自动识别</translation>
+    </message>
+    <message>
         <source>Japanese</source>
         <translation>日语</translation>
     </message>
