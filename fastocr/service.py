@@ -21,6 +21,9 @@ class BaiduOcr(BaseOcr):
         self.apikey = setting.baidu_apikey
         self.seckey = setting.baidu_seckey
         self.use_accurate_mode = setting.baidu_accurate
+        self.default_lang = setting.default_language
+        if self.default_lang is None or self.default_lang == '':
+            self.default_lang = 'CHN_ENG'
 
     @property
     async def token(self):
@@ -54,7 +57,7 @@ class BaiduOcr(BaseOcr):
         api_type = '/accurate_basic' if self.use_accurate_mode else '/general_basic'
         data = {
             'image': b64encode(image).decode(),
-            'language_type': lang if lang != '' else 'CHN_ENG'
+            'language_type': lang if lang != '' else self.default_lang
         }
         async with self.session.post(f'{self.API_BASE}{api_type}?access_token={await self.token}', data=data) as r:
             data = await r.json()

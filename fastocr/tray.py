@@ -122,6 +122,14 @@ class SettingBackend(QObject):
         self.setting.baidu_languages = langs
 
     @pyqtProperty(str, constant=True)
+    def default_language(self) -> str:
+        return self.setting.default_language
+
+    @default_language.setter
+    def default_language(self, value: str):
+        self.setting.default_language = value
+
+    @pyqtProperty(str, constant=True)
     def yd_appid(self) -> str:
         return self.setting.get('YoudaoOCR', 'app_id')
 

@@ -206,6 +206,18 @@ Column {
                                 Layout.fillWidth: true
                             }
                         }
+
+                        Label {
+                            id: default_lang_label
+                            text: qsTr("Default language")
+                        }
+
+                        TextField {
+                            id: default_lang_input
+                            text: backend.default_language
+                            Layout.columnSpan: 3
+                            Layout.fillWidth: true
+                        }
                     }
                 }
 
@@ -315,6 +327,7 @@ Column {
                 backend.apikey = apikey_input.text
                 backend.seckey = seckey_input.text
                 backend.accurate = accurate_input.checked
+                backend.default_language = default_lang_input.text
 
                 backend.yd_appid = yd_appid_input.text
                 backend.yd_seckey = yd_seckey_input.text

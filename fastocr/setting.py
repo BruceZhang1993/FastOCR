@@ -164,6 +164,14 @@ class Setting(metaclass=Singleton):
         self.set('BaiduOCR', 'languages', json.dumps(value))
 
     @property
+    def default_language(self) -> str:
+        return self.get('BaiduOCR', 'default_language')
+
+    @default_language.setter
+    def default_language(self, value: str):
+        self.set('BaiduOCR', 'default_language', value)
+
+    @property
     def face_apikey(self) -> str:
         return self.get('FaceOCR', 'face_apikey')
 
