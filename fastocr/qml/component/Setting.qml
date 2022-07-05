@@ -138,6 +138,19 @@ Column {
                         anchors.leftMargin: 0
                         columns: 4
 
+                        Text {
+                            id: link_free_resource
+                            Layout.columnSpan: 4
+                            text: '<a href="https://console.bce.baidu.com/ai/#/ai/ocr/overview/resource/getFree">Get free quota</a>'
+                            onLinkActivated: Qt.openUrlExternally(link)
+                            MouseArea {
+                                id: freeLinkMouseArea
+                                anchors.fill: parent
+                                cursorShape: Qt.PointingHandCursor
+                                enabled: false
+                            }
+                        }
+
                         Label {
                             id: appid_label
                             text: qsTr("APP_ID")
