@@ -40,7 +40,7 @@ def run(show_config: bool):
     else:
         os.environ['QT_QUICK_CONTROLS_STYLE'] = 'Material'
 
-    from PyQt5.QtWidgets import QApplication
+    from PyQt6.QtWidgets import QApplication
     from qasync import QEventLoop
     from fastocr.i18n import Translation
     from fastocr.tray import AppTray
@@ -109,7 +109,7 @@ def diagnose():
         print(f'{k}: {v}')
     print()
     # Dependency
-    packages = ['PyQt5', 'aiohttp']
+    packages = ['PyQt6', 'aiohttp']
     if sys.platform not in ['win32', 'darwin', 'cygwin']:
         packages.append('dbus')
     for p in packages:

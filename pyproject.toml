@@ -18,7 +18,7 @@ qasync = "*"
 click = "*"
 aiohttp = "*"
 dbus-next = { version = "*", platform = "linux" }
-PyQt5 = "*"
+PyQt6 = "*"
 
 [tool.poetry.dev-dependencies]
 poetry2setup = "*"

@@ -1,7 +1,7 @@
 import locale
 from pathlib import Path
 
-from PyQt5.QtCore import QTranslator
+from PyQt6.QtCore import QTranslator
 
 from fastocr.util import Singleton
 

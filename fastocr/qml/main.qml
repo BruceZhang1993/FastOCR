@@ -32,9 +32,9 @@ ApplicationWindow {
             TabButton {
                 text: qsTr("Setting")
             }
-            TabButton {
-                text: qsTr("About")
-            }
+//            TabButton {
+//                text: qsTr("About")
+//            }
             TabButton {
                 text: qsTr("Actions")
             }
@@ -46,7 +46,7 @@ ApplicationWindow {
             anchors.fill: parent
             currentIndex: bar.currentIndex
             CustomComponent.Setting {}
-            CustomComponent.About {}
+//            CustomComponent.About {}
             CustomComponent.Actions {}
         }
     }

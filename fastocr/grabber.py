@@ -7,10 +7,10 @@ from enum import Enum
 from pathlib import Path
 from typing import Optional
 
-from PyQt5.QtCore import QObject, QRect, QPoint, QDir, pyqtSignal, Qt
-from PyQt5.QtGui import QGuiApplication, QPixmap, QKeyEvent, QPaintEvent, QPainter, QColor, QMouseEvent, \
+from PyQt6.QtCore import QObject, QRect, QPoint, QDir, pyqtSignal, Qt
+from PyQt6.QtGui import QGuiApplication, QPixmap, QKeyEvent, QPaintEvent, QPainter, QColor, QMouseEvent, \
     QRegion
-from PyQt5.QtWidgets import QApplication, QWidget, QFrame, QHBoxLayout, QPushButton
+from PyQt6.QtWidgets import QApplication, QWidget, QFrame, QHBoxLayout, QPushButton
 
 from fastocr.log import AppLogger
 from fastocr.util import DesktopInfo
@@ -68,6 +68,7 @@ class ScreenGrabber(QObject):
         request_interface = request_object.get_interface('org.freedesktop.portal.Request')
         request_interface.on_response(response_notify)
         await response_event.wait()
+        # await request_interface.call_close()
         return ScreenGrabber.pixmap
 
     @staticmethod

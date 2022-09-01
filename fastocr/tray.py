@@ -6,11 +6,11 @@ from typing import Optional, List
 
 import qasync
 # noinspection PyUnresolvedReferences
-from PyQt5.QtCore import QByteArray, QBuffer, QIODevice, QObject, pyqtSlot, pyqtProperty
-from PyQt5.QtGui import QPixmap, QIcon, QImage
-from PyQt5.QtQml import QQmlApplicationEngine
-from PyQt5.QtQuick import QQuickWindow
-from PyQt5.QtWidgets import QSystemTrayIcon, QMenu, QApplication
+from PyQt6.QtCore import QByteArray, QBuffer, QIODevice, QObject, pyqtSlot, pyqtProperty
+from PyQt6.QtGui import QPixmap, QIcon, QImage
+from PyQt6.QtQml import QQmlApplicationEngine
+from PyQt6.QtQuick import QQuickWindow
+from PyQt6.QtWidgets import QSystemTrayIcon, QMenu, QApplication
 
 from fastocr.consts import APP_SETTING_FILE
 from fastocr.grabber import CaptureWidget, CaptureAction

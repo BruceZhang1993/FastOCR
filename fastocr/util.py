@@ -30,7 +30,7 @@ class DesktopInfo:
     @staticmethod
     def tray_supported():
         try:
-            from PyQt5.QtWidgets import QSystemTrayIcon
+            from PyQt6.QtWidgets import QSystemTrayIcon
             return QSystemTrayIcon.isSystemTrayAvailable()
         except:
             return False
@@ -81,10 +81,10 @@ class DesktopInfo:
                 return False
         else:
             # Qt darkmode
-            from PyQt5.QtWidgets import QApplication
-            from PyQt5.QtGui import QPalette
+            from PyQt6.QtWidgets import QApplication
+            from PyQt6.QtGui import QPalette
             palette = QApplication.palette()
-            back_color = palette.color(QPalette.ColorGroup.Normal, QPalette.ColorRole.Background)
+            back_color = palette.color(QPalette.ColorGroup.Normal, QPalette.ColorRole.Base)
             lightness = back_color.lightness()
             return lightness <= 160
 
@@ -205,8 +205,8 @@ def get_environment_values():
     data['Platform'] = sys.platform
     # noinspection PyUnresolvedReferences
     try:
-        import PyQt5.QtCore
-        data['Qt'] = PyQt5.QtCore.qVersion()
+        import PyQt6.QtCore
+        data['Qt'] = PyQt6.QtCore.qVersion()
     except ImportError as e:
         data['Qt'] = 'Unknown'
     try:
