@@ -4,6 +4,7 @@ import traceback
 from abc import ABCMeta, abstractmethod
 from asyncio import Task
 from enum import Enum
+from pathlib import Path
 from typing import Optional
 
 from PyQt5.QtCore import QObject, QRect, QPoint, QDir, pyqtSignal, Qt
@@ -19,6 +20,8 @@ if DesktopInfo.dbus_supported():
 
 
 class ScreenGrabber(QObject):
+    pixmap = None
+
     async def grab_entire_desktop(self) -> Optional[QPixmap]:
         """
         Grab the entire desktop screenshot to QPixmap
@@ -27,12 +30,7 @@ class ScreenGrabber(QObject):
         """
         if sys.platform == 'linux':
             try:
-                if DesktopInfo.desktop_environment() == DesktopInfo.KDE:
-                    return await self.grab_entire_desktop_wayland_kde()
-                if DesktopInfo.desktop_environment() == DesktopInfo.GNOME:
-                    return await self.grab_entire_desktop_freedesktop_portal()
-                if DesktopInfo.desktop_environment() == DesktopInfo.SWAY:
-                    return await self.grab_entire_desktop_freedesktop_portal()
+                return await self.grab_entire_desktop_freedesktop_portal()
             except Exception as e:
                 AppLogger().info('DBus screenshot API not working, falling back to Qt: ' + str(e))
                 print(traceback.format_exc())
@@ -46,17 +44,31 @@ class ScreenGrabber(QObject):
         :rtype: Optional[QPixmap]
         """
         bus = await MessageBus().connect()
-        introspection = await bus.introspect('org.freedesktop.portal.Desktop', '/org/freedesktop/portal/desktop')
+        # introspection = await bus.introspect('org.freedesktop.portal.Desktop', '/org/freedesktop/portal/desktop')
+        with (Path(__file__).parent / 'data' / 'introspection.xml').open('r') as f:
+            introspection = f.read()
+        # noinspection PyTypeChecker
         proxy_object = bus.get_proxy_object('org.freedesktop.portal.Desktop', '/org/freedesktop/portal/desktop',
                                             introspection)
-        interface = proxy_object.get_interface('org.freedesktop.portal.Desktop')
+        interface = proxy_object.get_interface('org.freedesktop.portal.Screenshot')
+
+        response_event = asyncio.Event()
+
+        def response_notify(_, result):
+            path = result['uri'].value
+            ScreenGrabber.pixmap = QPixmap()
+            ScreenGrabber.pixmap.load(path.replace('file://', ''))
+            Path(path.replace('file://', '')).unlink(missing_ok=True)
+            response_event.set()
+
         # noinspection PyUnresolvedReferences
-        reply = await interface.call_screenshot('', {})
-        if reply:
-            res = QPixmap(reply)
-        else:
-            res = None
-        return res
+        reply_handle = await interface.call_screenshot('', {})
+        introspection1 = await bus.introspect('org.freedesktop.portal.Desktop', reply_handle)
+        request_object = bus.get_proxy_object('org.freedesktop.portal.Desktop', reply_handle, introspection1)
+        request_interface = request_object.get_interface('org.freedesktop.portal.Request')
+        request_interface.on_response(response_notify)
+        await response_event.wait()
+        return ScreenGrabber.pixmap
 
     @staticmethod
     async def grab_entire_desktop_wayland_kde() -> Optional[QPixmap]:
