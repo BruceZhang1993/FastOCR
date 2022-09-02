@@ -1,7 +1,7 @@
 import asyncio
 import sys
 import traceback
-from abc import ABCMeta, abstractmethod
+from abc import abstractmethod
 from asyncio import Task
 from enum import Enum
 from pathlib import Path
@@ -66,6 +66,7 @@ class ScreenGrabber(QObject):
         introspection1 = await bus.introspect('org.freedesktop.portal.Desktop', reply_handle)
         request_object = bus.get_proxy_object('org.freedesktop.portal.Desktop', reply_handle, introspection1)
         request_interface = request_object.get_interface('org.freedesktop.portal.Request')
+        # noinspection PyUnresolvedReferences
         request_interface.on_response(response_notify)
         await response_event.wait()
         # await request_interface.call_close()
@@ -198,11 +199,11 @@ class ToolPanel(QFrame):
     def setup_ui(self):
         self.setContentsMargins(0, 0, 0, 0)
         self.setWindowFlags(
-            Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint | Qt.Tool |
-            Qt.BypassWindowManagerHint)
-        self.setFocusPolicy(Qt.NoFocus)
+            Qt.WindowType.WindowStaysOnTopHint | Qt.WindowType.FramelessWindowHint | Qt.WindowType.Tool |
+            Qt.WindowType.BypassWindowManagerHint)
+        # self.setFocusPolicy(Qt.WindowType.NoFocus)
         self.setStyleSheet("background-color: transparent;")
-        self.setAttribute(Qt.WA_TranslucentBackground)
+        # self.setAttribute(Qt.WindowType.WA_TranslucentBackground)
         self.setWindowOpacity(.8)
         self._layout = QHBoxLayout(self)
         self._layout.setContentsMargins(0, 0, 0, 0)
@@ -233,8 +234,8 @@ class CaptureWidget(QWidget):
         # Make widget stay on top & fullscreen
         self.setWindowState(Qt.WindowState.WindowFullScreen)
         self.setWindowFlags(
-            Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint | Qt.Tool |
-            Qt.BypassWindowManagerHint)
+            Qt.WindowType.WindowStaysOnTopHint | Qt.WindowType.FramelessWindowHint | Qt.WindowType.Tool |
+            Qt.WindowType.BypassWindowManagerHint)
         self.screenshot = None
         self._clipping_state = 0
         self._startpos: Optional[QPoint] = None

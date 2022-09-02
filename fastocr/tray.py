@@ -1,5 +1,6 @@
 import asyncio
 import sys
+import traceback
 from functools import partial
 from pathlib import Path
 from typing import Optional, List
@@ -10,7 +11,7 @@ from PyQt6.QtCore import QByteArray, QBuffer, QIODevice, QObject, pyqtSlot, pyqt
 from PyQt6.QtGui import QPixmap, QIcon, QImage
 from PyQt6.QtQml import QQmlApplicationEngine
 from PyQt6.QtQuick import QQuickWindow
-from PyQt6.QtWidgets import QSystemTrayIcon, QMenu, QApplication
+from PyQt6.QtWidgets import QSystemTrayIcon, QMenu, QApplication, QMessageBox
 
 from fastocr.consts import APP_SETTING_FILE
 from fastocr.grabber import CaptureWidget, CaptureAction
@@ -313,7 +314,7 @@ class AppTray(QSystemTrayIcon):
         grayed = image.convertToFormat(QImage.Format.Format_Grayscale8)
         ba = QByteArray()
         bf = QBuffer(ba)
-        bf.open(QIODevice.WriteOnly)
+        bf.open(QIODevice.OpenModeFlag.WriteOnly)
         ok = grayed.save(bf, 'PNG')
         assert ok
         return ba.data()
@@ -350,6 +351,7 @@ class AppTray(QSystemTrayIcon):
             data = '\n'.join(result)
             del service
         except Exception as err:
+            print(traceback.format_exc())
             self.showMessage('OCR 识别异常', str(err), QIcon.fromTheme('dialog-error-symbolic'), 5000)
             return
         if action == CaptureAction.search:
@@ -364,14 +366,17 @@ class AppTray(QSystemTrayIcon):
         else:
             if self.bus is not None:
                 self.bus.captured(data)
-            mode = self.setting.general_mode
-            if mode == 1:
-                self.saved_data = data
-                self.showMessage('OCR 识别成功', '点击复制到系统剪切板', QIcon.fromTheme('object-select-symbolic'), 8000)
+            if DesktopInfo.is_wayland():
+                QMessageBox.information(self.capture_widget, 'OCR 识别结果', data)
             else:
-                clipboard = qasync.QApplication.clipboard()
-                clipboard.setText(data)
-                self.showMessage('OCR 识别成功', '已复制到系统剪切板', QIcon.fromTheme('object-select-symbolic'), 5000)
+                mode = self.setting.general_mode
+                if mode == 1:
+                    self.saved_data = data
+                    self.showMessage('OCR 识别成功', '点击复制到系统剪切板', QIcon.fromTheme('object-select-symbolic'), 8000)
+                else:
+                    clipboard = QApplication.clipboard()
+                    clipboard.setText(data)
+                    self.showMessage('OCR 识别成功', '已复制到系统剪切板', QIcon.fromTheme('object-select-symbolic'), 5000)
 
     async def run_capture(self, seconds=.5, no_copy=False, lang=''):
         self.contextMenu().close()
