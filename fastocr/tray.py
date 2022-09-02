@@ -286,9 +286,9 @@ class AppTray(QSystemTrayIcon):
             self.language_actions[lang].triggered.connect(partial(self.start_capture_lang, lang))
 
     def activate_action(self, reason: QSystemTrayIcon.ActivationReason):
-        if reason == QSystemTrayIcon.DoubleClick:
+        if reason == QSystemTrayIcon.ActivationReason.DoubleClick:
             self.open_setting()
-        elif reason == QSystemTrayIcon.Trigger:
+        elif reason == QSystemTrayIcon.ActivationReason.Trigger:
             self.start_capture()
 
     @pyqtSlot()
