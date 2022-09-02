@@ -368,15 +368,14 @@ class AppTray(QSystemTrayIcon):
                 self.bus.captured(data)
             if DesktopInfo.is_wayland():
                 QMessageBox.information(self.capture_widget, 'OCR 识别结果', data)
+            mode = self.setting.general_mode
+            if mode == 1:
+                self.saved_data = data
+                self.showMessage('OCR 识别成功', '点击复制到系统剪切板', QIcon.fromTheme('object-select-symbolic'), 8000)
             else:
-                mode = self.setting.general_mode
-                if mode == 1:
-                    self.saved_data = data
-                    self.showMessage('OCR 识别成功', '点击复制到系统剪切板', QIcon.fromTheme('object-select-symbolic'), 8000)
-                else:
-                    clipboard = QApplication.clipboard()
-                    clipboard.setText(data)
-                    self.showMessage('OCR 识别成功', '已复制到系统剪切板', QIcon.fromTheme('object-select-symbolic'), 5000)
+                clipboard = QApplication.clipboard()
+                clipboard.setText(data)
+                self.showMessage('OCR 识别成功', '已复制到系统剪切板', QIcon.fromTheme('object-select-symbolic'), 5000)
 
     async def run_capture(self, seconds=.5, no_copy=False, lang=''):
         self.contextMenu().close()
