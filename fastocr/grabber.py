@@ -1,5 +1,6 @@
 import asyncio
 import sys
+import time
 import traceback
 from abc import abstractmethod
 from asyncio import Task
@@ -55,6 +56,9 @@ class ScreenGrabber(QObject):
         response_event = asyncio.Event()
 
         def response_notify(_, result):
+            if 'uri' not in result:
+                print('cannot get screenshot result')
+                return
             path = result['uri'].value
             ScreenGrabber.pixmap = QPixmap()
             ScreenGrabber.pixmap.load(path.replace('file://', ''))
@@ -243,6 +247,8 @@ class CaptureWidget(QWidget):
         self._tool_panel = None
 
     def on_desktop_grabbed(self, task: 'Task[QPixmap]'):
+        # sleep 500ms to avoid screenshot corrupt
+        time.sleep(.5)
         self.screenshot = task.result()
         self.move(0, 0)
         self.resize(self.screenshot.size())
