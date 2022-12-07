@@ -385,7 +385,7 @@ class AppTray(QSystemTrayIcon):
         else:
             self.capture_widget.captured.disconnect()
         self.capture_widget.captured.connect(partial(self.start_ocr, no_copy, lang))
-        self.capture_widget.showFullScreen()
+        self.capture_widget.start_screenshot()
 
     @qasync.asyncSlot()
     async def start_capture_lang(self, lang, _):

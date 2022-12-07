@@ -60,6 +60,7 @@ class ScreenGrabber(QObject):
                 print('cannot get screenshot result')
                 return
             path = result['uri'].value
+            ScreenGrabber.pixmap = None
             ScreenGrabber.pixmap = QPixmap()
             ScreenGrabber.pixmap.load(path.replace('file://', ''))
             Path(path.replace('file://', '')).unlink(missing_ok=True)
@@ -247,14 +248,13 @@ class CaptureWidget(QWidget):
         self._tool_panel = None
 
     def on_desktop_grabbed(self, task: 'Task[QPixmap]'):
-        # sleep 500ms to avoid screenshot corrupt
-        time.sleep(.5)
         self.screenshot = task.result()
         self.move(0, 0)
         self.resize(self.screenshot.size())
         self.repaint()
+        self.showFullScreen()
 
-    def showEvent(self, _):
+    def start_screenshot(self):
         if self._tool_panel is None:
             self._tool_panel = ToolPanel(self)
         self._clipping_state = 0
