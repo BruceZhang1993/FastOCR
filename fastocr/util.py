@@ -42,7 +42,7 @@ class DesktopInfo:
     @staticmethod
     def is_wayland():
         return DesktopInfo.XDG_SESSION_TYPE == 'wayland' \
-               or 'wayland' in DesktopInfo.WAYLAND_DISPLAY.lower()
+            or 'wayland' in DesktopInfo.WAYLAND_DISPLAY.lower()
 
     @staticmethod
     def desktop_environment():
@@ -72,8 +72,9 @@ class DesktopInfo:
             # Windows 10 darkmode
             try:
                 import winreg
-                value = get_registry_value_new(winreg.HKEY_CURRENT_USER, r'SOFTWARE\Microsoft\Windows\CurrentVersion\Themes'
-                                                                     r'\Personalize', 'SystemUsesLightTheme')
+                value = get_registry_value_new(winreg.HKEY_CURRENT_USER,
+                                               r'SOFTWARE\Microsoft\Windows\CurrentVersion\Themes'
+                                               r'\Personalize', 'SystemUsesLightTheme')
                 if value is not None:
                     return value == 0
                 return False
@@ -165,34 +166,13 @@ async def open_in_default(filename):
 
 
 def instance_already_running(label="default"):
-    """
-    Detect if an an instance with the label is already running, globally
-    at the operating system level.
-    """
-    already_running = False
-
-    if sys.platform == 'win32':
-        tempdir = tempfile.gettempdir()
-        lockfile = os.sep.join([tempdir, f'fastocr_{label}.lock'])
-
-        try:
-            if os.path.exists(lockfile):
-                os.unlink(lockfile)
-            os.open(lockfile, os.O_CREAT | os.O_EXCL | os.O_RDWR)
-        except EnvironmentError as err:
-            if err.errno == 13:
-                already_running = True
-            else:
-                raise
-    else:
-        import fcntl
-        lock_file_pointer = os.open(f'/tmp/fastocr_{label}.lock', os.O_WRONLY | os.O_CREAT)
-        try:
-            fcntl.lockf(lock_file_pointer, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except IOError:
-            already_running = True
-
-    return already_running
+    import socket
+    try:
+        s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        s.bind(f'\0{label}')
+        return False
+    except socket.error:
+        return True
 
 
 def get_environment_values():
