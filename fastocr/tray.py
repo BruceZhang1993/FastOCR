@@ -251,7 +251,7 @@ class AppTray(QSystemTrayIcon):
     def message_clicked(self):
         if self.saved_data is not None:
             if DesktopInfo.is_wayland():
-                await run_command('wl-copy', self.saved_data, allow_fail=True)
+                asyncio.run(run_command('wl-copy', self.saved_data, allow_fail=True))
             clipboard = qasync.QApplication.clipboard()
             clipboard.setText(self.saved_data)
             self.saved_data = None
