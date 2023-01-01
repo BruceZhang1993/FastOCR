@@ -249,6 +249,8 @@ class CaptureWidget(QWidget):
 
     def on_desktop_grabbed(self, task: 'Task[QPixmap]'):
         self.screenshot = task.result()
+        self.screenshot = self.screenshot.scaledToHeight(int(self.screenshot.height() / self.screenshot.devicePixelRatio()),
+                                                         Qt.TransformationMode.SmoothTransformation)
         self.move(0, 0)
         self.resize(self.screenshot.size())
         self.repaint()

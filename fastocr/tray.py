@@ -17,7 +17,7 @@ from fastocr.consts import APP_SETTING_FILE
 from fastocr.grabber import CaptureWidget, CaptureAction
 from fastocr.service import OcrService, BaiduOcr
 from fastocr.setting import Setting
-from fastocr.util import DesktopInfo, open_in_default, get_environment_values
+from fastocr.util import DesktopInfo, open_in_default, get_environment_values, run_command
 
 if DesktopInfo.dbus_supported():
     from fastocr.bus import AppDBusInterface
@@ -250,6 +250,8 @@ class AppTray(QSystemTrayIcon):
 
     def message_clicked(self):
         if self.saved_data is not None:
+            if DesktopInfo.is_wayland():
+                await run_command('wl-copy', self.saved_data, allow_fail=True)
             clipboard = qasync.QApplication.clipboard()
             clipboard.setText(self.saved_data)
             self.saved_data = None
@@ -366,13 +368,13 @@ class AppTray(QSystemTrayIcon):
         else:
             if self.bus is not None:
                 self.bus.captured(data)
-            if DesktopInfo.is_wayland():
-                QMessageBox.information(self.capture_widget, 'OCR 识别结果', data)
             mode = self.setting.general_mode
             if mode == 1:
                 self.saved_data = data
                 self.showMessage('OCR 识别成功', '点击复制到系统剪切板', QIcon.fromTheme('object-select-symbolic'), 8000)
             else:
+                if DesktopInfo.is_wayland():
+                    await run_command('wl-copy', data, allow_fail=True)
                 clipboard = QApplication.clipboard()
                 clipboard.setText(data)
                 self.showMessage('OCR 识别成功', '已复制到系统剪切板', QIcon.fromTheme('object-select-symbolic'), 5000)
