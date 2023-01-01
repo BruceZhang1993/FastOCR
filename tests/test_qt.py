@@ -2,7 +2,7 @@ import sys
 
 import pytest
 
-from PyQt5.QtWidgets import QApplication
+from PyQt6.QtWidgets import QApplication
 from qasync import QEventLoop
 
 from fastocr.util import DesktopInfo
