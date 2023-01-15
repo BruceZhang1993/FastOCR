@@ -75,7 +75,7 @@ class TestUtil:
         values = get_environment_values()
         assert isinstance(values, dict)
         assert 'System' in values
-        assert 'Infomation' in values
+        assert 'Kernel' in values
         assert 'Python' in values
         assert 'Platform' in values
         assert 'Qt' in values
