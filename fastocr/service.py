@@ -65,6 +65,9 @@ class BaiduOcr(BaseOcr):
                 raise Exception(f"{data.get('error_code')}: {data.get('error_msg')}")
             return [w_.get('words', '') for w_ in data.get('words_result', [])]
 
+    async def formula_general(self, image: bytes) -> List[str]:
+        pass
+
     async def close(self):
         await self.session.close()
 
@@ -117,12 +120,15 @@ class YoudaoOcr(BaseOcr):
                 result += [l_.get('text') for l_ in r_.get('lines', [])]
             return result
 
+    async def formula_general(self, image: bytes) -> List[str]:
+        pass
+
     async def close(self):
         await self.session.close()
 
 
 class FaceOcr(BaseOcr):
-    API_BASE = 'https://api-cn.faceplusplus.com'
+    API_BASE = 'https://api.mathpix.com'
     MIN_SIZE = 48
     MAX_SIZE = 800
 
@@ -144,6 +150,37 @@ class FaceOcr(BaseOcr):
             result = filter(lambda x: x.get('type') == 'textline', res.get('result', []))
             return [r.get('value', '') for r in result]
 
+    async def formula_general(self, image: bytes) -> List[str]:
+        pass
+
+    async def close(self):
+        await self.session.close()
+
+
+class MathpixOcr(BaseOcr):
+    API_BASE = 'https://api-cn.faceplusplus.com'
+    MIN_SIZE = 48
+    MAX_SIZE = 800
+
+    def __init__(self, setting: Setting):
+        super().__init__()
+        self.appid = setting.mathpix_appid
+        self.appkey = setting.mathpix_appkey
+
+    async def basic_general(self, image: bytes, lang='') -> List[str]:
+        pass
+
+    async def formula_general(self, image: bytes) -> List[str]:
+        data = {
+            'app_id': self.appid,
+            'app_key': self.appkey,
+            'src': b64encode(image).decode(),
+            'formats': 'text',
+        }
+        async with self.session.post(f'{self.API_BASE}/v3/text', data=data) as r:
+            res = await r.json()
+            return [res.get('text')]
+
     async def close(self):
         await self.session.close()
 
@@ -152,6 +189,7 @@ BACKENDS = {
     'baidu': BaiduOcr,
     'youdao': YoudaoOcr,
     'face': FaceOcr,
+    'mathpix': MathpixOcr,
 }
 
 
@@ -178,3 +216,6 @@ class OcrService:
 
     async def basic_general_ocr(self, image: bytes, lang='') -> List[str]:
         return await self.backend.basic_general(image, lang=lang)
+
+    async def formula_general_ocr(self, image: bytes) -> List[str]:
+        return await self.backend.formula_general(image)

@@ -54,11 +54,11 @@ class SettingBackend(QObject):
 
     @pyqtProperty(list, constant=True)
     def all_language_tags(self) -> list:
-        return ['auto_detect','JAP', 'KOR', 'FRE', 'SPA', 'GER', 'RUS']
+        return ['auto_detect', 'JAP', 'KOR', 'FRE', 'SPA', 'GER', 'RUS']
 
     @pyqtProperty(list, constant=True)
     def all_language_names(self) -> list:
-        return ['Auto detect','Japanese', 'Korean', 'French', 'Spanish', 'Germany', 'Russian']
+        return ['Auto detect', 'Japanese', 'Korean', 'French', 'Spanish', 'Germany', 'Russian']
 
     # Environment
     @pyqtProperty(list, constant=True)
@@ -163,6 +163,22 @@ class SettingBackend(QObject):
         self.setting.face_apisec = value
 
     @pyqtProperty(str, constant=True)
+    def mathpix_appid(self) -> str:
+        return self.setting.mathpix_appid
+
+    @mathpix_appid.setter
+    def mathpix_appid(self, value: str):
+        self.setting.mathpix_appid = value
+
+    @pyqtProperty(str, constant=True)
+    def mathpix_appkey(self) -> str:
+        return self.setting.mathpix_appkey
+
+    @mathpix_appid.setter
+    def mathpix_appkey(self, value: str):
+        self.setting.mathpix_appkey = value
+
+    @pyqtProperty(str, constant=True)
     def default_backend(self) -> str:
         res = self.setting.get('General', 'default_backend')
         if res == '':
@@ -226,7 +242,8 @@ class AppTray(QSystemTrayIcon):
     # noinspection PyUnresolvedReferences
     def initialize(self):
         if not DesktopInfo.tray_supported():
-            self.showMessage('错误信息', '当前环境不支持系统托盘显示，应用将正常退出', QIcon.fromTheme('dialog-error-symbolic'), 5000)
+            self.showMessage('错误信息', '当前环境不支持系统托盘显示，应用将正常退出',
+                             QIcon.fromTheme('dialog-error-symbolic'), 5000)
             print('当前环境不支持系统托盘显示，应用将正常退出')
             QApplication.quit()
         self.setToolTip('FastOCR')
@@ -237,11 +254,13 @@ class AppTray(QSystemTrayIcon):
         capture_action = context_menu.addAction(self.tr('Capture'))
 
         self.language_menu = QMenu(self.tr('Capture (Other Languages)'))
+        self.formula_action = context_menu.addAction(self.tr('Capture (Formula)'))
         context_menu.addMenu(self.language_menu)
         self.update_menu()
         setting_action = context_menu.addAction(self.tr('Setting'))
         quit_action = context_menu.addAction(self.tr('Quit'))
         capture_action.triggered.connect(self.start_capture)
+        self.formula_action.triggered.connect(self.start_capture_formula)
         setting_action.triggered.connect(self.open_setting)
         quit_action.triggered.connect(self.quit_app)
         # self.setting.register_callback(self.update_menu)
@@ -337,18 +356,23 @@ class AppTray(QSystemTrayIcon):
         return pixmap
 
     @qasync.asyncSlot(QPixmap)
-    async def start_ocr(self, no_copy: bool = False, lang='', pixmap: QPixmap = None, action: CaptureAction = None):
+    async def start_ocr(self, no_copy: bool = False, lang='', content_type=None, pixmap: QPixmap = None, action: CaptureAction = None):
         self.capture_widget.hide()
         self.setting.reload()
         default = self.setting.get('General', 'default_backend')
         if default == '':
             default = 'baidu'
+        if content_type == 'formula':
+            default = 'mathpix'
         try:
             service = OcrService(default)
             min_size, max_size = service.image_scaling()
             if min_size > 0 or max_size > 0:
                 pixmap = self.image_resize(pixmap, min_size, max_size)
-            result = await service.basic_general_ocr(self.pixmap_to_bytes(pixmap), lang=lang)
+            if content_type == 'formula':
+                result = await service.basic_general_ocr(self.pixmap_to_bytes(pixmap), lang=lang)
+            else:
+                result = await service.formula_general_ocr(self.pixmap_to_bytes(pixmap))
             await service.close()
             data = '\n'.join(result)
             del service
@@ -371,7 +395,8 @@ class AppTray(QSystemTrayIcon):
             mode = self.setting.general_mode
             if mode == 1:
                 self.saved_data = data
-                self.showMessage('OCR 识别成功', '点击复制到系统剪切板', QIcon.fromTheme('object-select-symbolic'), 8000)
+                self.showMessage('OCR 识别成功', '点击复制到系统剪切板', QIcon.fromTheme('object-select-symbolic'),
+                                 8000)
             else:
                 if DesktopInfo.is_wayland():
                     await run_command('wl-copy', data, allow_fail=True)
@@ -379,19 +404,23 @@ class AppTray(QSystemTrayIcon):
                 clipboard.setText(data)
                 self.showMessage('OCR 识别成功', '已复制到系统剪切板', QIcon.fromTheme('object-select-symbolic'), 5000)
 
-    async def run_capture(self, seconds=.5, no_copy=False, lang=''):
+    async def run_capture(self, seconds=.5, no_copy=False, lang='', content_type=None):
         self.contextMenu().close()
         await asyncio.sleep(seconds)
         if self.capture_widget is None:
             self.capture_widget = CaptureWidget()
         else:
             self.capture_widget.captured.disconnect()
-        self.capture_widget.captured.connect(partial(self.start_ocr, no_copy, lang))
+        self.capture_widget.captured.connect(partial(self.start_ocr, no_copy, lang, content_type))
         self.capture_widget.start_screenshot()
 
     @qasync.asyncSlot()
     async def start_capture_lang(self, lang, _):
         await self.run_capture(.5, lang=lang)
+
+    @qasync.asyncSlot()
+    async def start_capture_formula(self):
+        await self.run_capture(.5, content_type='formula')
 
     @qasync.asyncSlot()
     async def start_capture(self):
