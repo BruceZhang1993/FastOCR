@@ -188,6 +188,22 @@ class Setting(metaclass=Singleton):
         self.set('FaceOCR', 'face_apisec', value)
 
     @property
+    def mathpix_appid(self) -> str:
+        return self.get('FaceOCR', 'mathpix_appid')
+
+    @mathpix_appid.setter
+    def mathpix_appid(self, value: str):
+        self.set('FaceOCR', 'mathpix_appid', value)
+
+    @property
+    def mathpix_appkey(self) -> str:
+        return self.get('FaceOCR', 'mathpix_appkey')
+
+    @mathpix_appkey.setter
+    def mathpix_appkey(self, value: str):
+        self.set('FaceOCR', 'mathpix_appkey', value)
+
+    @property
     def general_icon_theme(self) -> str:
         r = self.get('General', 'icon_theme')
         return r if r != '' else 'auto'

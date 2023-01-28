@@ -23,3 +23,7 @@ class BaseOcr(metaclass=ABCMeta):
     @abstractmethod
     async def basic_general(self, image: bytes, lang: str = '') -> List[str]:
         pass
+
+    @abstractmethod
+    async def formula_general(self, image: bytes) -> List[str]:
+        pass

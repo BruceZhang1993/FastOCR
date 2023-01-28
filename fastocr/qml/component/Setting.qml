@@ -13,6 +13,7 @@ Column {
         contentWidth: availableWidth
         ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
         contentHeight: clayout.height
+        bottomPadding: bottom_toolbar.height + 10
         clip: true
 
         Flickable {
@@ -85,7 +86,7 @@ Column {
                 }
 
                 GroupBox {
-                    title: qsTr("Default backend")
+                    title: qsTr("Default text backend")
                     Layout.fillWidth: true
                     Layout.alignment: Qt.AlignTop
 
@@ -119,6 +120,27 @@ Column {
                             value: 'face'
                             checked: backend.default_backend == value
                             text: qsTr("Face++OCR")
+                        }
+                    }
+                }
+
+                GroupBox {
+                    title: qsTr("Default formula backend")
+                    Layout.fillWidth: true
+                    Layout.alignment: Qt.AlignTop
+
+                    Flow {
+                        id: select_formula_flow
+                        anchors.fill: parent
+                        spacing: 2
+
+                        RadioButton {
+                            property string value
+
+                            id: mathpix_select
+                            value: 'mathpix'
+                            checked: true
+                            text: qsTr("Mathpix")
                         }
                     }
                 }
@@ -315,11 +337,53 @@ Column {
                         }
                     }
                 }
+
+                GroupBox {
+                    id: group4
+                    Layout.fillWidth: true
+                    Layout.alignment: Qt.AlignTop
+                    title: qsTr("Mathpix OCR")
+
+                    GridLayout {
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.top: parent.top
+                        anchors.topMargin: 0
+                        anchors.rightMargin: 0
+                        anchors.leftMargin: 0
+                        columns: 4
+
+                        Label {
+                            id: mathpix_appid_label
+                            text: qsTr("App ID")
+                        }
+
+                        TextField {
+                            id: mathpix_appid_input
+                            text: backend.mathpix_appid
+                            Layout.columnSpan: 3
+                            Layout.fillWidth: true
+                        }
+
+                        Label {
+                            id: mathpix_appkey_label
+                            text: qsTr("App Key")
+                        }
+
+                        TextField {
+                            id: mathpix_appkey_input
+                            text: backend ? backend.mathpix_appkey : ''
+                            Layout.columnSpan: 3
+                            Layout.fillWidth: true
+                        }
+                    }
+                }
             }
         }
     }
 
     ToolBar {
+        id: bottom_toolbar
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
