@@ -1,18 +1,24 @@
 import asyncio
 import os
+import platform
 import signal
 import sys
 from functools import partial
 from pathlib import Path
 
 import click
-import pkg_resources
+
 
 from fastocr import __appname__
 from fastocr.log import AppLogger
 from fastocr.util import instance_already_running, DesktopInfo, get_environment_values
 
-__version__ = pkg_resources.get_distribution('fastocr').version
+if sys.version_info.major == 3 and sys.version_info.minor >= 11:
+    from importlib import metadata
+    __version__ = metadata.version('fastocr')
+else:
+    import pkg_resources
+    __version__ = pkg_resources.get_distribution('fastocr').version
 
 
 def print_version(ctx, _, value):

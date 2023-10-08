@@ -370,9 +370,9 @@ class AppTray(QSystemTrayIcon):
             if min_size > 0 or max_size > 0:
                 pixmap = self.image_resize(pixmap, min_size, max_size)
             if content_type == 'formula':
-                result = await service.basic_general_ocr(self.pixmap_to_bytes(pixmap), lang=lang)
+                result = await service.formula_general_ocr(self.pixmap_to_bytes(pixmap), lang=lang)
             else:
-                result = await service.formula_general_ocr(self.pixmap_to_bytes(pixmap))
+                result = await service.basic_general_ocr(self.pixmap_to_bytes(pixmap))
             await service.close()
             data = '\n'.join(result)
             del service
