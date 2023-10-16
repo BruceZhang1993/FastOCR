@@ -185,11 +185,24 @@ class MathpixOcr(BaseOcr):
         await self.session.close()
 
 
+class LocalOcr(BaseOcr):
+    def __init__(self, setting: Setting):
+        super().__init__()
+        self._languages = setting.local_languages
+
+    async def basic_general(self, image: bytes, lang: str = '') -> List[str]:
+        pass
+
+    async def formula_general(self, image: bytes) -> List[str]:
+        pass
+
+
 BACKENDS = {
     'baidu': BaiduOcr,
     'youdao': YoudaoOcr,
     'face': FaceOcr,
     'mathpix': MathpixOcr,
+    'local': LocalOcr,
 }
 
 

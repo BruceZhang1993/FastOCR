@@ -339,6 +339,46 @@ Column {
                 }
 
                 GroupBox {
+                    id: group5
+                    Layout.fillWidth: true
+                    Layout.alignment: Qt.AlignTop
+                    title: qsTr("LocalOCR")
+
+                    GridLayout {
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.top: parent.top
+                        anchors.topMargin: 0
+                        anchors.rightMargin: 0
+                        anchors.leftMargin: 0
+                        columns: 4
+
+                        Label {
+                            id: lang_label
+                            text: qsTr("Languages")
+                        }
+
+                        Flow {
+                            id: language_flow
+                            Layout.columnSpan: 3
+                            Layout.fillWidth: true
+                            spacing: 2
+
+                            Repeater {
+                                model: backend.all_local_language_tags
+                                CheckBox {
+                                    property string value
+
+                                    text: qsTr(backend.all_local_language_names[index])
+                                    checked: backend.local_languages.includes(this.value)
+                                    value: modelData
+                                }
+                            }
+                        }
+                    }
+                }
+
+                GroupBox {
                     id: group4
                     Layout.fillWidth: true
                     Layout.alignment: Qt.AlignTop

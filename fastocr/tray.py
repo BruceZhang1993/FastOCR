@@ -57,8 +57,16 @@ class SettingBackend(QObject):
         return ['auto_detect', 'JAP', 'KOR', 'FRE', 'SPA', 'GER', 'RUS']
 
     @pyqtProperty(list, constant=True)
+    def all_local_language_tags(self) -> list:
+        return ['ch', 'en', 'fr', 'german', 'korean', 'japan']
+
+    @pyqtProperty(list, constant=True)
     def all_language_names(self) -> list:
         return ['Auto detect', 'Japanese', 'Korean', 'French', 'Spanish', 'Germany', 'Russian']
+
+    @pyqtProperty(list, constant=True)
+    def all_local_language_names(self) -> list:
+        return ['Chinese', 'English', 'French', 'German', 'Korean', 'Japanese']
 
     # Environment
     @pyqtProperty(list, constant=True)
@@ -118,9 +126,17 @@ class SettingBackend(QObject):
     def languages(self) -> List[str]:
         return self.setting.baidu_languages
 
+    @pyqtProperty(list, constant=True)
+    def local_languages(self) -> List[str]:
+        return self.setting.local_languages
+
     @languages.setter
     def languages(self, langs: List[str]):
         self.setting.baidu_languages = langs
+
+    @local_languages.setter
+    def local_languages(self, langs: List[str]):
+        self.setting.local_languages = langs
 
     @pyqtProperty(str, constant=True)
     def default_language(self) -> str:
@@ -213,8 +229,15 @@ class AppTray(QSystemTrayIcon):
         'KOR': 'Korean',
         'FRE': 'French',
         'SPA': 'Spanish',
-        'GER': 'Germany',
+        'GER': 'German',
         'RUS': 'Russian',
+    }
+
+    LOCAL_LANGUAGE_MAP = {
+        'fr': 'French',
+        'german': 'German',
+        'korean': 'Korean',
+        'japan': 'Japanese',
     }
 
     def __init__(self):
@@ -302,10 +325,16 @@ class AppTray(QSystemTrayIcon):
         self.setToolTip(f'FastOCR ({default_backend})')
         self.language_menu.clear()
         self.language_actions.clear()
-        for lang in self.setting.baidu_languages:
-            self.language_actions[lang] = self.language_menu.addAction(self.tr(self.LANGUAGE_MAP.get(lang, lang)))
-            # noinspection PyUnresolvedReferences
-            self.language_actions[lang].triggered.connect(partial(self.start_capture_lang, lang))
+        if default_backend == 'baidu':
+            for lang in self.setting.baidu_languages:
+                self.language_actions[lang] = self.language_menu.addAction(self.tr(self.LANGUAGE_MAP.get(lang, lang)))
+                # noinspection PyUnresolvedReferences
+                self.language_actions[lang].triggered.connect(partial(self.start_capture_lang, lang))
+        elif default_backend == 'local':
+            for lang in self.setting.local_languages:
+                self.language_actions[lang] = self.language_menu.addAction(self.tr(self.LOCAL_LANGUAGE_MAP.get(lang, lang)))
+                # noinspection PyUnresolvedReferences
+                self.language_actions[lang].triggered.connect(partial(self.start_capture_lang, lang))
 
     def activate_action(self, reason: QSystemTrayIcon.ActivationReason):
         if reason == QSystemTrayIcon.ActivationReason.DoubleClick:

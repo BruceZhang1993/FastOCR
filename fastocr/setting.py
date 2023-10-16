@@ -204,6 +204,17 @@ class Setting(metaclass=Singleton):
         self.set('FaceOCR', 'mathpix_appkey', value)
 
     @property
+    def local_languages(self) -> List[str]:
+        languages_str = self.get('LocalOCR', 'languages')
+        if languages_str is None or languages_str == '':
+            return []
+        return json.loads(languages_str)
+
+    @local_languages.setter
+    def local_languages(self, value: List[str]):
+        self.set('LocalOCR', 'languages', json.dumps(value))
+
+    @property
     def general_icon_theme(self) -> str:
         r = self.get('General', 'icon_theme')
         return r if r != '' else 'auto'
