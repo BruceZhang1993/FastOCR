@@ -7,10 +7,10 @@ MOCKED_APP_SETTING_FILE = APP_CONFIG_DIR / 'mocked_config.ini'
 
 
 class TestSetting:
-    def setup(self):
+    def setup_method(self):
         self._instance = Setting(MOCKED_APP_SETTING_FILE)
 
-    def teardown(self):
+    def teardown_method(self):
         self._instance.setting_file.unlink(missing_ok=True)
 
     def test_get_file(self):
