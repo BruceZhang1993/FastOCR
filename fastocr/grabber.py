@@ -8,8 +8,8 @@ from enum import Enum
 from pathlib import Path
 from typing import Optional
 
-from PyQt5.QtCore import QPointF, QRectF
-from PyQt5.QtGui import QScreen
+from PyQt6.QtCore import QPointF, QRectF
+from PyQt6.QtGui import QScreen
 from PyQt6.QtCore import QObject, QRect, QPoint, QDir, pyqtSignal, Qt
 from PyQt6.QtGui import QGuiApplication, QPixmap, QKeyEvent, QPaintEvent, QPainter, QColor, QMouseEvent, \
     QRegion

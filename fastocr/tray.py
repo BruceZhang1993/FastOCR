@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Optional, List
 
 import qasync
-from PyQt5.QtGui import QScreen
+from PyQt6.QtGui import QScreen
 # noinspection PyUnresolvedReferences
 from PyQt6.QtCore import QByteArray, QBuffer, QIODevice, QObject, pyqtSlot, pyqtProperty
 from PyQt6.QtGui import QPixmap, QIcon, QImage, QGuiApplication
