@@ -42,20 +42,3 @@ jobs:
         env:
           POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
         run: poetry publish
-      - name: Telegram notify
-        uses: appleboy/telegram-action@master
-        with:
-          to: ${{ secrets.TELEGRAM_TO }}
-          token: ${{ secrets.TELEGRAM_TOKEN }}
-          debug: true
-          format: markdown
-          disable_web_page_preview: true
-          message: |
-            *FastOCR ${{ steps.var.outputs.version }} released*
-
-            Check out:
-            [Release page](https://github.com/BruceZhang1993/FastOCR/releases/tag/${{ steps.var.outputs.version }})
-            [PyPI page](https://pypi.org/project/fastocr/${{ steps.var.outputs.version }}/)
-
-            Wheel package here
-          document: dist/fastocr-$GITHUB_VERSION-py3-none-any.whl
