@@ -6,9 +6,10 @@ from pathlib import Path
 from typing import Optional, List
 
 import qasync
+from PyQt6.QtGui import QScreen
 # noinspection PyUnresolvedReferences
 from PyQt6.QtCore import QByteArray, QBuffer, QIODevice, QObject, pyqtSlot, pyqtProperty
-from PyQt6.QtGui import QPixmap, QIcon, QImage
+from PyQt6.QtGui import QPixmap, QIcon, QImage, QGuiApplication
 from PyQt6.QtQml import QQmlApplicationEngine
 from PyQt6.QtQuick import QQuickWindow
 from PyQt6.QtWidgets import QSystemTrayIcon, QMenu, QApplication, QMessageBox
@@ -221,7 +222,8 @@ class AppTray(QSystemTrayIcon):
         super(AppTray, self).__init__()
         self.setting = None
         self.bus: Optional['AppDBusInterface'] = None
-        self.capture_widget: Optional[CaptureWidget] = None
+        # self.capture_widget: Optional[CaptureWidget] = None
+        self.capture_widget_list: Optional[List[CaptureWidget]] = None
         self.engine: Optional[QQmlApplicationEngine] = None
         self.setting_window: Optional[QQuickWindow] = None
         self.backend: Optional[SettingBackend] = None
@@ -357,7 +359,7 @@ class AppTray(QSystemTrayIcon):
 
     @qasync.asyncSlot(QPixmap)
     async def start_ocr(self, no_copy: bool = False, lang='', content_type=None, pixmap: QPixmap = None, action: CaptureAction = None):
-        self.capture_widget.hide()
+        [w.hide() for w in self.capture_widget_list]
         self.setting.reload()
         default = self.setting.get('General', 'default_backend')
         if default == '':
@@ -407,12 +409,18 @@ class AppTray(QSystemTrayIcon):
     async def run_capture(self, seconds=.5, no_copy=False, lang='', content_type=None):
         self.contextMenu().close()
         await asyncio.sleep(seconds)
-        if self.capture_widget is None:
-            self.capture_widget = CaptureWidget()
-        else:
-            self.capture_widget.captured.disconnect()
-        self.capture_widget.captured.connect(partial(self.start_ocr, no_copy, lang, content_type))
-        self.capture_widget.start_screenshot()
+        if self.capture_widget_list is None:
+            self.capture_widget_list = self.init_capture_widget_list(no_copy, lang, content_type)
+        [w.start_screenshot() for w in self.capture_widget_list]
+
+    def init_capture_widget_list(self, *args):
+        screens = QGuiApplication.screens()
+        return [self.init_capture_widget(s, *args) for s in screens]
+
+    def init_capture_widget(self, screen: QScreen, *args):
+        widget = CaptureWidget(screen)
+        widget.captured.connect(partial(self.start_ocr, *args))
+        return widget
 
     @qasync.asyncSlot()
     async def start_capture_lang(self, lang, _):

@@ -8,17 +8,28 @@ from pathlib import Path
 
 import click
 
-
 from fastocr import __appname__
 from fastocr.log import AppLogger
 from fastocr.util import instance_already_running, DesktopInfo, get_environment_values
 
 if sys.version_info.major == 3 and sys.version_info.minor >= 11:
     from importlib import metadata
+
     __version__ = metadata.version('fastocr')
 else:
     import pkg_resources
+
     __version__ = pkg_resources.get_distribution('fastocr').version
+
+
+def handle_exception(exc_type, exc_value, exc_traceback):
+    if issubclass(exc_type, KeyboardInterrupt):
+        sys.__excepthook__(exc_type, exc_value, exc_traceback)
+        return
+    print(exc_type, exc_value, exc_traceback)
+
+
+sys.excepthook = handle_exception
 
 
 def print_version(ctx, _, value):
