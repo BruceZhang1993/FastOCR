@@ -223,7 +223,7 @@ class AppTray(QSystemTrayIcon):
         self.setting = None
         self.bus: Optional['AppDBusInterface'] = None
         # self.capture_widget: Optional[CaptureWidget] = None
-        self.capture_widget_list = Optional[List[CaptureWidget]] = None
+        self.capture_widget_list: Optional[List[CaptureWidget]] = None
         self.engine: Optional[QQmlApplicationEngine] = None
         self.setting_window: Optional[QQuickWindow] = None
         self.backend: Optional[SettingBackend] = None
