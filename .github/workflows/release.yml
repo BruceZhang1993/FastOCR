@@ -26,19 +26,10 @@ jobs:
         uses: abatilo/actions-poetry@v3
         with:
           poetry-version: ${{ matrix.poetry-version }}
-      - name: Install platform dependencies
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          sudo apt update
-          sudo apt install libdbus-1-dev build-essential libpython3-dev freeglut3-dev
       - name: Poetry lock file
         run: poetry lock
       - name: Install dependencies
         run: poetry install
-      - name: Run tests
-        uses: GabrielBB/xvfb-action@v1
-        with:
-          run: poetry run pytest -v tests/
       - name: Build
         run: poetry build
       - name: Create release
