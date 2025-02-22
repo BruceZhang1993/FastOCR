@@ -8,6 +8,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Optional
 
+from PyQt5.QtCore import QPointF, QRectF
 from PyQt5.QtGui import QScreen
 from PyQt6.QtCore import QObject, QRect, QPoint, QDir, pyqtSignal, Qt
 from PyQt6.QtGui import QGuiApplication, QPixmap, QKeyEvent, QPaintEvent, QPainter, QColor, QMouseEvent, \
@@ -236,6 +237,7 @@ class CaptureWidget(QWidget):
         super().__init__()
         self._screen = screen
         self.setScreen(self._screen)
+        print(self._screen.geometry().x())
         self._task = None
         self.painter = QPainter()
         self.setCursor(Qt.CursorShape.CrossCursor)
@@ -253,8 +255,8 @@ class CaptureWidget(QWidget):
     def on_desktop_grabbed(self, task: 'Task[QPixmap]'):
         self.screenshot = task.result()
         self.screenshot.setDevicePixelRatio(self.devicePixelRatio())
-        self.move(0, 0)
         self.resize(self.screenshot.deviceIndependentSize().toSize())
+        self.move(self._screen.geometry().x(), 0)
         self.repaint()
         self.showFullScreen()
 
@@ -342,7 +344,7 @@ class CaptureWidget(QWidget):
         """
         if self.screenshot is not None:
             self.painter.begin(self)
-            self.painter.drawPixmap(0, 0, self.screenshot)
+            self.painter.drawPixmap(QPoint(0, 0), self.screenshot, QRect(self._screen.geometry().x(), 0, self.screenshot.width(), self.screenshot.height()))
             overlay = QColor(0, 0, 0, 120)
             self.painter.setBrush(overlay)
             grey = QRegion(self.rect())
