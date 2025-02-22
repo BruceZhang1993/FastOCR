@@ -13,14 +13,14 @@ include = ["fastocr/qml/*.qml", "fastocr/qml/component/*.qml", "fastocr/data/Fas
     "fastocr/data/i18n.pro", "fastocr/i18n/*.qm", "fastocr/resource/icon/*/*.svg", "fastocr/resource/icon/*/*.png", "fastocr/data/*.xml"]
 
 [tool.poetry.dependencies]
-python = ">=3.7,<4.0"
+python = ">=3.11,<4.0"
 qasync = "*"
 click = "*"
 aiohttp = "*"
 dbus-next = { version = "*", platform = "linux" }
 PyQt6 = "*"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 poetry2setup = "*"
 pytest = "*"
 pytest-asyncio = "*"
