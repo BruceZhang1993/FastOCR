@@ -8,6 +8,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Optional
 
+from PyQt5.QtGui import QScreen
 from PyQt6.QtCore import QObject, QRect, QPoint, QDir, pyqtSignal, Qt
 from PyQt6.QtGui import QGuiApplication, QPixmap, QKeyEvent, QPaintEvent, QPainter, QColor, QMouseEvent, \
     QRegion
@@ -228,11 +229,13 @@ class CaptureAction(Enum):
 class CaptureWidget(QWidget):
     captured = pyqtSignal(QPixmap, CaptureAction)
 
-    def __init__(self):
+    def __init__(self, screen: QScreen):
         """
         CapturedWidget __init__
         """
         super().__init__()
+        self._screen = screen
+        self.setScreen(self._screen)
         self._task = None
         self.painter = QPainter()
         self.setCursor(Qt.CursorShape.CrossCursor)
