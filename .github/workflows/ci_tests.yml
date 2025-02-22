@@ -29,7 +29,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt update
-          sudo apt install libdbus-1-dev build-essential libpython3-dev qt6-default
+          sudo apt install libdbus-1-dev build-essential libpython3-dev qt6-base
       - name: Poetry lock file
         run: poetry lock
       - name: Install dependencies
