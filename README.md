@@ -11,8 +11,8 @@ FastOCR 是一款开源免费的提供在线 OCR 文字识别的桌面工具
 
 - [x] 百度 AI 文字识别服务  https://ai.baidu.com/tech/ocr
 - [x] 有道文字识别服务  https://ai.youdao.com/product-ocr-print.s
-- [x] 旷视 Face++ 文字识别服务 (Experimental)  https://www.faceplusplus.com.cn/general-text-recognition/
-- [ ] 本地 OCR
+- [x] 旷视 Face++ 文字识别服务  https://www.faceplusplus.com.cn/general-text-recognition/
+- [x] 本地 OCR - PaddleOCR-json (Experimental)
 
 ### 特性
 
@@ -20,14 +20,14 @@ FastOCR 是一款开源免费的提供在线 OCR 文字识别的桌面工具
 - [x] 多语言支持 / 百度
 - [x] 高精度接口支持 / 百度
 - [x] 识别文字搜索
-- [ ] 本地 OCR 后端
+- [x] 本地 OCR 后端
 - [ ] 自定义快捷动作
 
 ## 支持操作系统
 
 - Linux X11
 - Windows
-- macOS (Experimental)
+- macOS (Experimental)  仅支持非本地后端
 - Linux Wayland (Experimental)
 
 ### 支持的 Wayland 环境 (Linux)
@@ -104,6 +104,12 @@ poetry install
 fastocr  # 运行
 fastocr --help  # 查看帮助
 ```
+
+## 本地OCR
+
+前往 https://github.com/hiroi-sora/PaddleOCR-json/releases 下载对应系统版本的二进制包
+解压到 ~/.cache/fastocr/PaddleOCR-json/
+默认后端修改为 PaddleOCR
 
 ## DBus (Linux only)
 

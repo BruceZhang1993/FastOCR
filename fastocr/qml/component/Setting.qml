@@ -121,6 +121,15 @@ Column {
                             checked: backend.default_backend == value
                             text: qsTr("Face++OCR")
                         }
+
+                        RadioButton {
+                            property string value
+
+                            id: paddle_select
+                            value: 'paddle'
+                            checked: backend.default_backend == value
+                            text: qsTr("PaddleOCR")
+                        }
                     }
                 }
 

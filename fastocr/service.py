@@ -1,13 +1,17 @@
 import json
+import sys
 from base64 import b64encode
 from hashlib import sha256
+from pathlib import Path
 from time import time
 from typing import List
 from uuid import uuid1
 
+from fastocr import consts
 from fastocr.base import BaseOcr
 from fastocr.consts import APP_CACHE_DIR
 from fastocr.setting import Setting
+from fastocr.paddle_api.PPOCR_api import GetOcrApi
 
 
 class BaiduOcr(BaseOcr):
@@ -185,11 +189,38 @@ class MathpixOcr(BaseOcr):
         await self.session.close()
 
 
+class PaddleOcr(BaseOcr):
+    def __init__(self, setting: Setting):
+        super().__init__()
+        if sys.platform == 'win32':
+            self.ocr = GetOcrApi((consts.APP_CACHE_DIR / 'PaddleOCR-json' / 'bin'/ 'PaddleOCR-json.exe').as_posix())
+        else:
+            self.ocr = GetOcrApi((consts.APP_CACHE_DIR / 'PaddleOCR-json' / 'run.sh').as_posix())
+        if self.ocr.getRunningMode() == "local":
+            print(f"初始化OCR成功，进程号为 {self.ocr.ret.pid}")
+        elif self.ocr.getRunningMode() == "remote":
+            print(f"连接远程OCR引擎成功，ip：{self.ocr.ip}，port：{self.ocr.port}")
+
+    async def basic_general(self, image: bytes, lang: str = '') -> List[str]:
+        res = self.ocr.runBytes(image)
+        if res['code'] != 100 or 'data' not in res:
+            return []
+        print(res)
+        return [d.get('text', '') for d in res['data']]
+
+    async def formula_general(self, image: bytes) -> List[str]:
+        pass
+
+    async def close(self):
+        pass
+
+
 BACKENDS = {
     'baidu': BaiduOcr,
     'youdao': YoudaoOcr,
     'face': FaceOcr,
     'mathpix': MathpixOcr,
+    'paddle': PaddleOcr,
 }
 
 
