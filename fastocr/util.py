@@ -166,6 +166,8 @@ async def open_in_default(filename):
 
 
 def instance_already_running(label="default"):
+    if sys.platform == 'win32':
+        return False
     import socket
     try:
         s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
