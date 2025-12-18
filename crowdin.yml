@@ -1,0 +1,3 @@
+files:
+  - source: /fastocr/i18n/en.ts
+    translation: /fastocr/i18n/%locale_with_underscore%.ts
