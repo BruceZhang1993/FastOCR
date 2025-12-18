@@ -13,8 +13,6 @@ class Translation(metaclass=Singleton):
     def load(self, name: str = None):
         if name is None:
             name = locale.getdefaultlocale()[0]
-            if name is not None:
-                name = name.lower()
         trans = Path(__file__).parent / 'i18n' / f'{name}.qm'
         if trans.exists():
             self.translator.load(trans.as_posix())
