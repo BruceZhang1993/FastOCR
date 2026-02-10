@@ -1,40 +1,52 @@
-[tool.poetry]
+[project]
 name = "fastocr"
 version = "0.3.8"
 description = "FastOCR is a desktop application for OCR API."
-license = "LGPL-3.0-only"
-authors = ["Bruce Zhang <zttt183525594@gmail.com>"]
-homepage = "https://github.com/BruceZhang1993/FastOCR"
-repository = "https://github.com/BruceZhang1993/FastOCR"
-documentation = "https://github.com/BruceZhang1993/FastOCR"
-keywords = ["ocr"]
 readme = "README.md"
-include = ["fastocr/qml/*.qml", "fastocr/qml/component/*.qml", "fastocr/data/FastOCR.desktop", "fastocr/data/config.example.ini",
-    "fastocr/data/i18n.pro", "fastocr/i18n/*.qm", "fastocr/resource/icon/*/*.svg", "fastocr/resource/icon/*/*.png", "fastocr/data/*.xml"]
+requires-python = ">=3.11,<3.15"
+license = { file = "LICENSE" }
+authors = [{ name = "Bruce Zhang", email = "zttt183525594@gmail.com" }]
+keywords = ["ocr"]
+urls = { homepage = "https://github.com/BruceZhang1993/FastOCR", repository = "https://github.com/BruceZhang1993/FastOCR", documentation = "https://github.com/BruceZhang1993/FastOCR" }
+dependencies = [
+    "PyQt6",
+    "aiohttp",
+    "click",
+    "qasync",
+    "dbus-next; sys_platform == 'linux'",
+]
 
-[tool.poetry.dependencies]
-python = ">=3.11,<3.15"
-qasync = "*"
-click = "*"
-aiohttp = "*"
-dbus-next = { version = "*", platform = "linux" }
-PyQt6 = "*"
+[project.scripts]
+fastocr = "fastocr.__main__:main"
 
-[tool.poetry.group.dev.dependencies]
-poetry2setup = "*"
-pytest = "*"
-pytest-asyncio = "*"
-pyinstaller = ">=6.15.0"
-appimage-builder = { version = "*", platform = "linux" }
+[dependency-groups]
+dev = [
+    "pytest",
+    "pytest-asyncio",
+    "pyinstaller>=6.15.0",
+    "appimage-builder; sys_platform == 'linux'",
+]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
 
-[tool.poetry.scripts]
-fastocr = 'fastocr.__main__:main'
+[tool.setuptools]
+include-package-data = true
 
-[[tool.poetry.source]]
-name = "tuna"
-url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple/"
-priority = "primary"
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["fastocr*"]
+
+[tool.setuptools.package-data]
+fastocr = [
+    "qml/*.qml",
+    "qml/component/*.qml",
+    "data/FastOCR.desktop",
+    "data/config.example.ini",
+    "data/i18n.pro",
+    "data/*.xml",
+    "i18n/*.qm",
+    "resource/icon/*/*.svg",
+    "resource/icon/*/*.png",
+]

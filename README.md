@@ -48,9 +48,8 @@ FastOCR 是一款开源免费的提供在线 OCR 文字识别的桌面工具
 理论上支持但无构建环境，打包过程类似 Windows 如下，生成的文件位于项目的 dist 目录下
 
 ```shell
-pip install poetry
-poetry update
-poetry run pyinstaller build.spec
+uv sync --group dev
+uv run pyinstaller build.spec
 ```
 
 ### Arch Linux
@@ -92,10 +91,10 @@ python setup.py install
 
 ### 通用 (仅本地开发)
 
- 自豪地使用 [Poetry](https://python-poetry.org/docs/) 进行开发
+ 自豪地使用 [uv](https://docs.astral.sh/uv/) 进行开发
 
 ```shell
-poetry install
+uv sync --group dev
 ```
 
 ## 使用方法
