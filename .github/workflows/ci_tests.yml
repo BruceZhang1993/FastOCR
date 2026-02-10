@@ -36,10 +36,10 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt update
-          sudo apt install libdbus-1-dev build-essential libpython3-dev freeglut3-dev
+          sudo apt install libdbus-1-dev build-essential libpython3-dev freeglut3-dev libxkbcommon-x11-0 libxcb-cursor0 libegl1 libgl1
       - name: Install dependencies
         run: uv sync --group dev
       - name: Run tests
         uses: GabrielBB/xvfb-action@v1
         with:
-          run: uv run pytest -v tests/
+          run: QT_DEBUG_PLUGINS=1 uv run pytest -v tests/
