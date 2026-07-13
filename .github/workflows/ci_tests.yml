@@ -40,6 +40,8 @@ jobs:
       - name: Install dependencies
         run: uv sync --group dev
       - name: Run tests
+        env:
+          QT_QPA_PLATFORM: ${{ matrix.os == 'ubuntu-latest' && 'offscreen' || '' }}
         uses: GabrielBB/xvfb-action@v1
         with:
-          run: env QT_DEBUG_PLUGINS=1 uv run pytest -v tests/
+          run: uv run pytest -v tests/
